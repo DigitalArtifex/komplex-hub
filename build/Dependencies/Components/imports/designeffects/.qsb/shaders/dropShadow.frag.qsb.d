@@ -1,0 +1,2 @@
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/designeffects/.qsb/shaders/dropShadow.frag.qsb: \
+  /home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/designeffects/shaders/dropShadow.frag

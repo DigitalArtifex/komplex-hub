@@ -1,0 +1,13 @@
+-rootPath
+/home/parametheus/Projects/QtDesigner/KomplexHub
+-cmake-output
+-output-file
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/.qt/qml_imports/KomplexHub_conf.cmake
+-importPath
+/home/parametheus/Projects/QtDesigner/KomplexHub/build
+-importPath
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-importPath
+/usr/lib/qt6/qml
+-qrcFiles
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/.qt/rcc/configuration.qrc

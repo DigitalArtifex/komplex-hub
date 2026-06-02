@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="/qt/qml/KomplexHubContent/">
+    <file alias="App.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/App.qml</file>
+    <file alias="MainScreen.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/MainScreen.qml</file>
+    <file alias="pages/HomePage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/HomePage.qml</file>
+    <file alias="pages/ImageSearchPage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/ImageSearchPage.qml</file>
+    <file alias="pages/InstalledWallpaperPage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/InstalledWallpaperPage.qml</file>
+    <file alias="pages/LiveSearchPage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/LiveSearchPage.qml</file>
+    <file alias="pages/LoginPage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/LoginPage.qml</file>
+    <file alias="pages/SettingsPage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/SettingsPage.qml</file>
+    <file alias="pages/UserProfilePage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/UserProfilePage.qml</file>
+    <file alias="pages/WallpaperSettingsPage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubContent/pages/WallpaperSettingsPage.qml</file>
+  </qresource>
+</RCC>
+

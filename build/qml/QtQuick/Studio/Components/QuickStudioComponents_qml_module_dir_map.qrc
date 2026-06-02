@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="/qt-project.org/imports/QtQuick/Studio/Components">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/QtQuick/Studio/Components</file>
+
+  </qresource>
+</RCC>

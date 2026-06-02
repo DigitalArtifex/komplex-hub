@@ -1,0 +1,9 @@
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/compat/Extras/.qt/rcc/qmake_QtQuickUltralite_Extras.qrc
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/compat/Extras/.qt/rcc/QuickUltraLiteStudioExtras_raw_qml_0.qrc
+/qt-project.org/imports/QtQuickUltralite/Extras/AnimatedSpriteDirectory.qml
+/qt-project.org/imports/QtQuickUltralite/Extras/ColorizedImage.qml
+/qt-project.org/imports/QtQuickUltralite/Extras/ItemBuffer.qml
+/qt-project.org/imports/QtQuickUltralite/Extras/StaticText.qml
+/qt-project.org/imports/QtQuickUltralite/Extras/QulPerf.qml

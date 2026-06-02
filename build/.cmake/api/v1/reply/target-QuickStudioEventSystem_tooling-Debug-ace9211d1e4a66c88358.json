@@ -1,0 +1,97 @@
+{
+	"abstract" : true,
+	"backtrace" : 3,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"_qt_internal_ensure_tooling_target",
+			"qt6_add_qml_module",
+			"add_dependencies",
+			"_qt_internal_qml_copy_files_to_build_dir"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"Dependencies/Components/imports/tools/eventsystem/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 956,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3103,
+				"parent" : 2
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 970,
+				"parent" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 3083,
+				"parent" : 4
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 976,
+				"parent" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 3083,
+				"parent" : 6
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"folder" : 
+	{
+		"name" : "QtInternalTargets"
+	},
+	"id" : "QuickStudioEventSystem_tooling::@7313da5ee4978bca808b",
+	"name" : "QuickStudioEventSystem_tooling",
+	"orderDependencies" : 
+	[
+		{
+			"backtrace" : 5,
+			"id" : "QuickStudioEventSystem_copy_qml::@7313da5ee4978bca808b"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "QuickStudioEventSystem_copy_res::@7313da5ee4978bca808b"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "Dependencies/Components/imports/tools/eventsystem",
+		"source" : "Dependencies/Components/imports/tools/eventsystem"
+	},
+	"sources" : [],
+	"type" : "INTERFACE_LIBRARY"
+}

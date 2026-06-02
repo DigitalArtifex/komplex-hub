@@ -1,0 +1,2 @@
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/designeffects/.qsb/shaders/gaussianBlur.frag.qsb: \
+  /home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/designeffects/shaders/gaussianBlur.frag

@@ -1,0 +1,12 @@
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/QtQuick/Studio/Application
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/usr/lib/qt6/qml
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/application/.qt/rcc/qmake_QtQuick_Studio_Application.qrc
+--module
+QtQuick.Studio.Application

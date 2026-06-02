@@ -1,0 +1,17 @@
+module KomplexHubContent
+linktarget KomplexHubContentplugin
+optional plugin KomplexHubContentplugin
+classname KomplexHubContentPlugin
+typeinfo KomplexHubContent.qmltypes
+prefer :/qt/qml/KomplexHubContent/
+App 1.0 App.qml
+MainScreen 1.0 MainScreen.qml
+HomePage 1.0 pages/HomePage.qml
+ImageSearchPage 1.0 pages/ImageSearchPage.qml
+InstalledWallpaperPage 1.0 pages/InstalledWallpaperPage.qml
+LiveSearchPage 1.0 pages/LiveSearchPage.qml
+LoginPage 1.0 pages/LoginPage.qml
+SettingsPage 1.0 pages/SettingsPage.qml
+UserProfilePage 1.0 pages/UserProfilePage.qml
+WallpaperSettingsPage 1.0 pages/WallpaperSettingsPage.qml
+

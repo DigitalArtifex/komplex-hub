@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="/qt-project.org/imports/QtQuick/Studio/Utils/">
+    <file alias="JsonListModel.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/utils/JsonListModel.qml</file>
+    <file alias="JsonBackend.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/utils/JsonBackend.qml</file>
+    <file alias="ChildListModel.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/utils/ChildListModel.qml</file>
+  </qresource>
+</RCC>
+

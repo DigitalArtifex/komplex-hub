@@ -1,0 +1,11 @@
+module QtQuickUltralite.Profiling
+linktarget QuickUltraLiteStudioProfilingplugin
+optional plugin QuickUltraLiteStudioProfilingplugin
+classname QtQuickUltralite_ProfilingPlugin
+designersupported
+typeinfo QuickUltraLiteStudioProfiling.qmltypes
+prefer :/qt-project.org/imports/QtQuickUltralite/Profiling/
+QulPerfOverlay 254.0 QulPerfOverlay.qml
+QulPerfOverlay 1.0 QulPerfOverlay.qml
+QulPerfOverlay 2.0 QulPerfOverlay.qml
+

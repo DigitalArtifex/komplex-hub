@@ -1,0 +1,265 @@
+{
+	"backtrace" : 3,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"_qt_internal_deferred_aotstats_setup",
+			"add_custom_command"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1191:EVAL",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 2
+			},
+			{
+				"file" : 2,
+				"line" : -1,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1306,
+				"parent" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 1284,
+				"parent" : 2
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "module_KomplexHubModule_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_KomplexHubModule_Controls_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_KomplexHubModule_Kero_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_KomplexHubContent_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioComponents_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioExtras_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioLayers_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioProfiling_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioComponents_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioDesignEffects_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioLogicHelper_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioUtils_aotstats_target::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "all_aotstats::@6890427a1f51a3e7e1df",
+	"name" : "all_aotstats",
+	"orderDependencies" : 
+	[
+		{
+			"backtrace" : 4,
+			"id" : "Qt6::qmlaotstats::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_KomplexHubModule_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_KomplexHubModule_Controls_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_KomplexHubModule_Kero_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_KomplexHubContent_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioComponents_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioExtras_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioLayers_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickUltraLiteStudioProfiling_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioComponents_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioDesignEffects_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioLogicHelper_aotstats_target::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "module_QuickStudioUtils_aotstats_target::@6890427a1f51a3e7e1df"
+		}
+	],
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 3,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/all_aotstats",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/all_aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/.rcc/qmlcache/all_aotstats.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Components/.rcc/qmlcache/module_QuickUltraLiteStudioComponents.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Extras/.rcc/qmlcache/module_QuickUltraLiteStudioExtras.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/module_QuickUltraLiteStudioLayers.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Profiling/.rcc/qmlcache/module_QuickUltraLiteStudioProfiling.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/components/.rcc/qmlcache/module_QuickStudioComponents.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/designeffects/.rcc/qmlcache/module_QuickStudioDesignEffects.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/logichelper/.rcc/qmlcache/module_QuickStudioLogicHelper.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/utils/.rcc/qmlcache/module_QuickStudioUtils.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/KomplexHubContent/.rcc/qmlcache/module_KomplexHubContent.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/KomplexHubModule/.rcc/qmlcache/module_KomplexHubModule.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/KomplexHubModule/Controls/.rcc/qmlcache/module_KomplexHubModule_Controls.aotstats.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/KomplexHubModule/Kero/.rcc/qmlcache/module_KomplexHubModule_Kero.aotstats.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

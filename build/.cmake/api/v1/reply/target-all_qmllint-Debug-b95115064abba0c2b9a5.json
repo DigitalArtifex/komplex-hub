@@ -1,0 +1,740 @@
+{
+	"backtrace" : 6,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"_qt_internal_add_phony_target",
+			"_qt_internal_add_all_qmllint_target",
+			"_qt_internal_target_enable_qmllint",
+			"qt6_target_qml_sources",
+			"qt6_add_qml_module",
+			"add_dependencies",
+			"_qt_internal_add_phony_target_dependencies",
+			"qt_add_qml_module"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/Qt6/QtPublicCMakeHelpers.cmake",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"KomplexHubModule/CMakeLists.txt",
+			"KomplexHubModule/Controls/CMakeLists.txt",
+			"KomplexHubModule/Kero/CMakeLists.txt",
+			"KomplexHubContent/CMakeLists.txt",
+			"KomplexHubPlugin/CMakeLists.txt",
+			"Dependencies/Components/imports/application/CMakeLists.txt",
+			"Dependencies/Components/imports/compat/Components/CMakeLists.txt",
+			"Dependencies/Components/imports/compat/Extras/CMakeLists.txt",
+			"Dependencies/Components/imports/compat/Layers/CMakeLists.txt",
+			"Dependencies/Components/imports/compat/Profiling/CMakeLists.txt",
+			"Dependencies/Components/imports/components/CMakeLists.txt",
+			"Dependencies/Components/imports/designeffects/CMakeLists.txt",
+			"Dependencies/Components/imports/logichelper/CMakeLists.txt",
+			"Dependencies/Components/imports/utils/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 2
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 10,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 3
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1741,
+				"parent" : 4
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 338,
+				"parent" : 5
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 4
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 7
+			},
+			{
+				"file" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 5,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 10
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 11
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 12
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 13
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 14
+			},
+			{
+				"file" : 4
+			},
+			{
+				"command" : 5,
+				"file" : 4,
+				"line" : 2,
+				"parent" : 16
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 17
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 18
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 19
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 20
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 21
+			},
+			{
+				"file" : 5
+			},
+			{
+				"command" : 5,
+				"file" : 5,
+				"line" : 7,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 24
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 25
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 26
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 27
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 28
+			},
+			{
+				"file" : 6
+			},
+			{
+				"command" : 8,
+				"file" : 6,
+				"line" : 6,
+				"parent" : 30
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 1417,
+				"parent" : 31
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 32
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3280,
+				"parent" : 33
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 34
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 35
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 36
+			},
+			{
+				"file" : 7
+			},
+			{
+				"command" : 5,
+				"file" : 7,
+				"line" : 2,
+				"parent" : 38
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 39
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3280,
+				"parent" : 40
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 41
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 42
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 43
+			},
+			{
+				"file" : 8
+			},
+			{
+				"command" : 5,
+				"file" : 8,
+				"line" : 2,
+				"parent" : 45
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 46
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 47
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 48
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 49
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 50
+			},
+			{
+				"file" : 9
+			},
+			{
+				"command" : 5,
+				"file" : 9,
+				"line" : 7,
+				"parent" : 52
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 53
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 54
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 55
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 56
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 57
+			},
+			{
+				"file" : 10
+			},
+			{
+				"command" : 5,
+				"file" : 10,
+				"line" : 2,
+				"parent" : 59
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 60
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 61
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 62
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 63
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 64
+			},
+			{
+				"file" : 11
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 2,
+				"parent" : 66
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 67
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 68
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 69
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 70
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 71
+			},
+			{
+				"file" : 12
+			},
+			{
+				"command" : 5,
+				"file" : 12,
+				"line" : 2,
+				"parent" : 73
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 74
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 75
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 76
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 77
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 78
+			},
+			{
+				"file" : 13
+			},
+			{
+				"command" : 5,
+				"file" : 13,
+				"line" : 2,
+				"parent" : 80
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 81
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 82
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 83
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 84
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 85
+			},
+			{
+				"file" : 14
+			},
+			{
+				"command" : 5,
+				"file" : 14,
+				"line" : 2,
+				"parent" : 87
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 88
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 89
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 90
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 91
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 92
+			},
+			{
+				"file" : 15
+			},
+			{
+				"command" : 5,
+				"file" : 15,
+				"line" : 2,
+				"parent" : 94
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 960,
+				"parent" : 95
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 3577,
+				"parent" : 96
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1725,
+				"parent" : 97
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 1745,
+				"parent" : 98
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 99
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 8,
+			"id" : "KomplexHubModule_qmllint::@223933d05dca26e970b1"
+		},
+		{
+			"backtrace" : 15,
+			"id" : "KomplexHubModule_Controls_qmllint::@8569b5012d097fd3b387"
+		},
+		{
+			"backtrace" : 22,
+			"id" : "KomplexHubModule_Kero_qmllint::@10aee4b50bac330cac51"
+		},
+		{
+			"backtrace" : 29,
+			"id" : "KomplexHubContent_qmllint::@869b5c3e0043a2b69677"
+		},
+		{
+			"backtrace" : 37,
+			"id" : "KomplexHubPlugin_qmllint::@9d6093dc77c8c3d13422"
+		},
+		{
+			"backtrace" : 44,
+			"id" : "QuickStudioApplication_qmllint::@96628f3d7b199c5571df"
+		},
+		{
+			"backtrace" : 51,
+			"id" : "QuickUltraLiteStudioComponents_qmllint::@0526ae300ede523a7852"
+		},
+		{
+			"backtrace" : 58,
+			"id" : "QuickUltraLiteStudioExtras_qmllint::@e60e1ef64563e370001a"
+		},
+		{
+			"backtrace" : 65,
+			"id" : "QuickUltraLiteStudioLayers_qmllint::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 72,
+			"id" : "QuickUltraLiteStudioProfiling_qmllint::@18181dfaa655dadd9acd"
+		},
+		{
+			"backtrace" : 79,
+			"id" : "QuickStudioComponents_qmllint::@749c3276d580d9ca25a1"
+		},
+		{
+			"backtrace" : 86,
+			"id" : "QuickStudioDesignEffects_qmllint::@30d88e5628b3a63ca79b"
+		},
+		{
+			"backtrace" : 93,
+			"id" : "QuickStudioLogicHelper_qmllint::@79eb3f839f3a7e042382"
+		},
+		{
+			"backtrace" : 100,
+			"id" : "QuickStudioUtils_qmllint::@8ff510d3f555da08768e"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "QtInternalTargets/QmlLinter"
+	},
+	"id" : "all_qmllint::@223933d05dca26e970b1",
+	"name" : "all_qmllint",
+	"orderDependencies" : 
+	[
+		{
+			"backtrace" : 8,
+			"id" : "KomplexHubModule_qmllint::@223933d05dca26e970b1"
+		},
+		{
+			"backtrace" : 15,
+			"id" : "KomplexHubModule_Controls_qmllint::@8569b5012d097fd3b387"
+		},
+		{
+			"backtrace" : 22,
+			"id" : "KomplexHubModule_Kero_qmllint::@10aee4b50bac330cac51"
+		},
+		{
+			"backtrace" : 29,
+			"id" : "KomplexHubContent_qmllint::@869b5c3e0043a2b69677"
+		},
+		{
+			"backtrace" : 37,
+			"id" : "KomplexHubPlugin_qmllint::@9d6093dc77c8c3d13422"
+		},
+		{
+			"backtrace" : 44,
+			"id" : "QuickStudioApplication_qmllint::@96628f3d7b199c5571df"
+		},
+		{
+			"backtrace" : 51,
+			"id" : "QuickUltraLiteStudioComponents_qmllint::@0526ae300ede523a7852"
+		},
+		{
+			"backtrace" : 58,
+			"id" : "QuickUltraLiteStudioExtras_qmllint::@e60e1ef64563e370001a"
+		},
+		{
+			"backtrace" : 65,
+			"id" : "QuickUltraLiteStudioLayers_qmllint::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 72,
+			"id" : "QuickUltraLiteStudioProfiling_qmllint::@18181dfaa655dadd9acd"
+		},
+		{
+			"backtrace" : 79,
+			"id" : "QuickStudioComponents_qmllint::@749c3276d580d9ca25a1"
+		},
+		{
+			"backtrace" : 86,
+			"id" : "QuickStudioDesignEffects_qmllint::@30d88e5628b3a63ca79b"
+		},
+		{
+			"backtrace" : 93,
+			"id" : "QuickStudioLogicHelper_qmllint::@79eb3f839f3a7e042382"
+		},
+		{
+			"backtrace" : 100,
+			"id" : "QuickStudioUtils_qmllint::@8ff510d3f555da08768e"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "KomplexHubModule",
+		"source" : "KomplexHubModule"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

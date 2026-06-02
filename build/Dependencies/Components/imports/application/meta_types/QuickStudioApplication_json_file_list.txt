@@ -1,0 +1,1 @@
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/application/QuickStudioApplication_autogen/include/../EWIEGA46WW/moc_quickstudioapplication.cpp.json

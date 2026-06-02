@@ -1,0 +1,2 @@
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/designeffects/.qsb/shaders/innerShadowClip.frag.qsb: \
+  /home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/designeffects/shaders/innerShadowClip.frag

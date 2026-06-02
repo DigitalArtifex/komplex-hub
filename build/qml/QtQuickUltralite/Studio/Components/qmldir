@@ -1,0 +1,10 @@
+module QtQuickUltralite.Studio.Components
+linktarget QuickUltraLiteStudioComponentsplugin
+optional plugin QuickUltraLiteStudioComponentsplugin
+classname QtQuickUltralite_Studio_ComponentsPlugin
+designersupported
+typeinfo QuickUltraLiteStudioComponents.qmltypes
+prefer :/qt-project.org/imports/QtQuickUltralite/Studio/Components/
+ArcItem 254.0 ArcItem.qml
+ArcItem 1.0 ArcItem.qml
+

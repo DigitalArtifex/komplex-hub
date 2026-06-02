@@ -1,0 +1,8 @@
+module KomplexHub.Controls
+LineEdit 1.0 LineEdit.qml
+MenuButton 1.0 MenuButton.qml
+SquareButton 1.0 SquareButton.qml
+SearchResultItem 1.0 SearchResultItem.qml
+SearchResultList 1.0 SearchResultList.qml
+SearchBar 1.0 SearchBar.qml
+Throbber 1.0 Throbber.qml

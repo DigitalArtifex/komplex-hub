@@ -1,0 +1,14 @@
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/KomplexHub
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/usr/lib/qt6/qml
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/.qt/rcc/qmake_KomplexHub.qrc
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/.qt/rcc/KomplexHubModule_raw_qml_0.qrc
+--module
+KomplexHub

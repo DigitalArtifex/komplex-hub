@@ -1,0 +1,9 @@
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/Controls/.qt/rcc/qmake_KomplexHub_Controls.qrc
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/Controls/.qt/rcc/KomplexHubModule_Controls_raw_qml_0.qrc
+/qt/qml/KomplexHub/Controls/LineEdit.qml
+/qt/qml/KomplexHub/Controls/MenuButton.qml
+/qt/qml/KomplexHub/Controls/SearchBar.qml
+/qt/qml/KomplexHub/Controls/SquareButton.qml
+/qt/qml/KomplexHub/Controls/Throbber.qml

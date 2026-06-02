@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/KomplexHub/Kero">
+    <file alias="qmldir">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/KomplexHub/Kero/qmldir</file>
+  </qresource>
+</RCC>
+

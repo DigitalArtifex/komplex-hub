@@ -1,0 +1,63 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                        {
+                            "codegenResult": 2,
+                            "column": 27,
+                            "durationMicroseconds": 0,
+                            "functionName": "onValue01Changed",
+                            "line": 112,
+                            "message": "Cannot access value for name __internal"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 27,
+                            "durationMicroseconds": 0,
+                            "functionName": "onValue02Changed",
+                            "line": 124,
+                            "message": "Cannot access value for name __internal"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 17,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 138,
+                            "message": "Cannot access value for name __internal"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 16,
+                            "durationMicroseconds": 0,
+                            "functionName": "value",
+                            "line": 140,
+                            "message": "Cannot access value for name target01"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 17,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 144,
+                            "message": "Cannot access value for name __internal"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 16,
+                            "durationMicroseconds": 0,
+                            "functionName": "value",
+                            "line": 146,
+                            "message": "Cannot access value for name target02"
+                        }
+                    ],
+                    "filePath": "/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/logichelper/BidirectionalBinding.qml"
+                }
+            ],
+            "moduleId": "QtQuick.Studio.LogicHelper(QuickStudioLogicHelper)"
+        }
+    ]
+}

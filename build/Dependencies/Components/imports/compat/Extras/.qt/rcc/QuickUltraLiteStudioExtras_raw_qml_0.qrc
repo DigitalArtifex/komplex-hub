@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="/qt-project.org/imports/QtQuickUltralite/Extras/">
+    <file alias="AnimatedSpriteDirectory.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Extras/AnimatedSpriteDirectory.qml</file>
+    <file alias="ColorizedImage.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Extras/ColorizedImage.qml</file>
+    <file alias="ItemBuffer.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Extras/ItemBuffer.qml</file>
+    <file alias="StaticText.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Extras/StaticText.qml</file>
+    <file alias="QulPerf.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Extras/QulPerf.qml</file>
+  </qresource>
+</RCC>
+

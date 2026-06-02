@@ -1,0 +1,1050 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "Dependencies/Components/imports/compat/Layers/libQuickUltraLiteStudioLayers.a"
+		}
+	],
+	"backtrace" : 4,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"_qt_internal_add_library",
+			"qt6_add_library",
+			"qt_add_library",
+			"add_dependencies",
+			"_qt_internal_write_deferred_qmlls_build_ini_file",
+			"_qt_internal_qml_copy_files_to_build_dir",
+			"qt6_add_qml_module",
+			"target_link_libraries",
+			"_qt_internal_target_enable_qmlcachegen",
+			"qt6_target_qml_sources",
+			"__qt_internal_propagate_object_library",
+			"__qt_propagate_generated_resource",
+			"_qt_internal_process_resource",
+			"qt6_add_resources",
+			"add_custom_command",
+			"qt6_extract_metatypes",
+			"_qt_internal_qml_type_registration",
+			"_qt_internal_ensure_tooling_target",
+			"target_include_directories",
+			"target_sources",
+			"_qt_internal_expose_deferred_files_to_ide",
+			"qt6_finalize_target"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
+			"Dependencies/Components/imports/compat/Layers/CMakeLists.txt",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1099:EVAL",
+			"CMakeLists.txt",
+			"/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:848:EVAL"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 1,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 2920,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 2806,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2893,
+				"parent" : 3
+			},
+			{
+				"file" : 4
+			},
+			{
+				"file" : 4,
+				"line" : -1,
+				"parent" : 5
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 1,
+				"parent" : 6
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 1387,
+				"parent" : 7
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 2,
+				"parent" : 0
+			},
+			{
+				"command" : 6,
+				"file" : 2,
+				"line" : 970,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 3083,
+				"parent" : 10
+			},
+			{
+				"command" : 6,
+				"file" : 2,
+				"line" : 976,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 3083,
+				"parent" : 12
+			},
+			{
+				"command" : 8,
+				"file" : 2,
+				"line" : 618,
+				"parent" : 9
+			},
+			{
+				"command" : 10,
+				"file" : 2,
+				"line" : 960,
+				"parent" : 9
+			},
+			{
+				"command" : 9,
+				"file" : 2,
+				"line" : 3691,
+				"parent" : 15
+			},
+			{
+				"command" : 8,
+				"file" : 2,
+				"line" : 1845,
+				"parent" : 16
+			},
+			{
+				"command" : 8,
+				"file" : 1,
+				"line" : 17,
+				"parent" : 0
+			},
+			{
+				"command" : 14,
+				"file" : 2,
+				"line" : 887,
+				"parent" : 9
+			},
+			{
+				"command" : 13,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 19
+			},
+			{
+				"command" : 12,
+				"file" : 0,
+				"line" : 2625,
+				"parent" : 20
+			},
+			{
+				"command" : 11,
+				"file" : 0,
+				"line" : 2156,
+				"parent" : 21
+			},
+			{
+				"command" : 8,
+				"file" : 0,
+				"line" : 2094,
+				"parent" : 22
+			},
+			{
+				"command" : 14,
+				"file" : 2,
+				"line" : 3839,
+				"parent" : 15
+			},
+			{
+				"command" : 13,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 24
+			},
+			{
+				"command" : 12,
+				"file" : 0,
+				"line" : 2625,
+				"parent" : 25
+			},
+			{
+				"command" : 11,
+				"file" : 0,
+				"line" : 2156,
+				"parent" : 26
+			},
+			{
+				"command" : 8,
+				"file" : 0,
+				"line" : 2094,
+				"parent" : 27
+			},
+			{
+				"command" : 14,
+				"file" : 2,
+				"line" : 3893,
+				"parent" : 15
+			},
+			{
+				"command" : 13,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 29
+			},
+			{
+				"command" : 12,
+				"file" : 0,
+				"line" : 2625,
+				"parent" : 30
+			},
+			{
+				"command" : 11,
+				"file" : 0,
+				"line" : 2156,
+				"parent" : 31
+			},
+			{
+				"command" : 8,
+				"file" : 0,
+				"line" : 2094,
+				"parent" : 32
+			},
+			{
+				"command" : 17,
+				"file" : 2,
+				"line" : 835,
+				"parent" : 9
+			},
+			{
+				"command" : 16,
+				"file" : 2,
+				"line" : 4041,
+				"parent" : 34
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 1542,
+				"parent" : 35
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 2564,
+				"parent" : 20
+			},
+			{
+				"command" : 15,
+				"file" : 0,
+				"line" : 1484,
+				"parent" : 35
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 1816,
+				"parent" : 16
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 4146,
+				"parent" : 34
+			},
+			{
+				"command" : 18,
+				"file" : 2,
+				"line" : 956,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 3105,
+				"parent" : 41
+			},
+			{
+				"command" : 19,
+				"file" : 2,
+				"line" : 4246,
+				"parent" : 34
+			},
+			{
+				"command" : 20,
+				"file" : 0,
+				"line" : 1579,
+				"parent" : 35
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 4207,
+				"parent" : 34
+			},
+			{
+				"command" : 20,
+				"file" : 0,
+				"line" : 2165,
+				"parent" : 21
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 1844,
+				"parent" : 16
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3747,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3747,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3747,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3747,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3747,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 2,
+				"line" : 3747,
+				"parent" : 15
+			},
+			{
+				"command" : 20,
+				"file" : 0,
+				"line" : 2165,
+				"parent" : 26
+			},
+			{
+				"command" : 20,
+				"file" : 0,
+				"line" : 2165,
+				"parent" : 31
+			},
+			{
+				"file" : 1,
+				"line" : -1,
+				"parent" : 0
+			},
+			{
+				"command" : 22,
+				"file" : 5,
+				"line" : 1,
+				"parent" : 62
+			},
+			{
+				"command" : 21,
+				"file" : 0,
+				"line" : 873,
+				"parent" : 63
+			},
+			{
+				"command" : 20,
+				"file" : 0,
+				"line" : 2290,
+				"parent" : 64
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"compileDependencies" : 
+	[
+		{
+			"backtrace" : 14,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "Qt6::Core::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 18,
+			"id" : "Qt6::Gui::@6890427a1f51a3e7e1df"
+		}
+	],
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=gnu++20"
+				},
+				{
+					"backtrace" : 14,
+					"fragment" : "-fno-direct-access-external-data"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 14,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 18,
+					"define" : "QT_GUI_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_NETWORK_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QMLINTEGRATION_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QML_LIB"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"path" : "/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/compat/Layers"
+				},
+				{
+					"path" : "/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Layers"
+				},
+				{
+					"backtrace" : 0,
+					"path" : "/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/compat/Layers/QuickUltraLiteStudioLayers_autogen/include"
+				},
+				{
+					"backtrace" : 43,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtQml"
+				},
+				{
+					"backtrace" : 43,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6"
+				},
+				{
+					"backtrace" : 43,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtCore"
+				},
+				{
+					"backtrace" : 43,
+					"isSystem" : true,
+					"path" : "/usr/lib/qt6/mkspecs/linux-g++"
+				},
+				{
+					"backtrace" : 43,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtQmlIntegration"
+				},
+				{
+					"backtrace" : 43,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtNetwork"
+				},
+				{
+					"backtrace" : 18,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtGui"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					14,
+					14
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				2,
+				3,
+				5,
+				6,
+				8,
+				10,
+				12,
+				14,
+				16,
+				17,
+				18
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 8,
+			"id" : "generate_qmlls_build_ini_file::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 11,
+			"id" : "QuickUltraLiteStudioLayers_copy_qml::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 13,
+			"id" : "QuickUltraLiteStudioLayers_copy_res::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"id" : "QuickUltraLiteStudioLayers_autogen_timestamp_deps::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickUltraLiteStudioLayers_autogen::@9cea06909fd7c65dc0a4"
+		}
+	],
+	"id" : "QuickUltraLiteStudioLayers::@9cea06909fd7c65dc0a4",
+	"interfaceCompileDependencies" : 
+	[
+		{
+			"backtrace" : 23,
+			"id" : "QuickUltraLiteStudioLayers_resources_1::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 28,
+			"id" : "QuickUltraLiteStudioLayers_resources_2::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 33,
+			"id" : "QuickUltraLiteStudioLayers_resources_3::@9cea06909fd7c65dc0a4"
+		}
+	],
+	"interfaceLinkLibraries" : 
+	[
+		{
+			"backtrace" : 14,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 23,
+			"id" : "QuickUltraLiteStudioLayers_resources_1::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "Qt6::Core::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 28,
+			"id" : "QuickUltraLiteStudioLayers_resources_2::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 33,
+			"id" : "QuickUltraLiteStudioLayers_resources_3::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 18,
+			"id" : "Qt6::Gui::@6890427a1f51a3e7e1df"
+		}
+	],
+	"linkLibraries" : 
+	[
+		{
+			"backtrace" : 14,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "Qt6::Core::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 18,
+			"id" : "Qt6::Gui::@6890427a1f51a3e7e1df"
+		}
+	],
+	"name" : "QuickUltraLiteStudioLayers",
+	"nameOnDisk" : "libQuickUltraLiteStudioLayers.a",
+	"orderDependencies" : 
+	[
+		{
+			"backtrace" : 36,
+			"id" : "Qt6::moc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 37,
+			"id" : "Qt6::rcc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 38,
+			"id" : "Qt6::cmake_automoc_parser::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "Qt6::uic::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 39,
+			"id" : "Qt6::qmlcachegen::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 40,
+			"id" : "Qt6::qmltyperegistrar::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 8,
+			"id" : "generate_qmlls_build_ini_file::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 42,
+			"id" : "QuickUltraLiteStudioLayers_tooling::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"id" : "QuickUltraLiteStudioLayers_autogen_timestamp_deps::@9cea06909fd7c65dc0a4"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickUltraLiteStudioLayers_autogen::@9cea06909fd7c65dc0a4"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "Dependencies/Components/imports/compat/Layers",
+		"source" : "Dependencies/Components/imports/compat/Layers"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files\\Generated",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				5,
+				6,
+				8,
+				10,
+				12,
+				14,
+				16,
+				17,
+				18,
+				19,
+				21,
+				22,
+				24
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				4,
+				7,
+				9,
+				11,
+				13,
+				15
+			]
+		},
+		{
+			"name" : "Resources",
+			"sourceIndexes" : 
+			[
+				20,
+				23
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				39,
+				40,
+				41,
+				42
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/QuickUltraLiteStudioLayers_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 44,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/meta_types/qt6quickultralitestudiolayers_metatypes.json.gen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 45,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/quickultralitestudiolayers_qmltyperegistrations.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 46,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qrc_qmake_QtQuickUltralite_Layers.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 47,
+			"path" : "Dependencies/Components/imports/compat/Layers/ApplicationScreens.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 48,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_qmlcache_loader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 49,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_ApplicationScreens_qml.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 50,
+			"path" : "Dependencies/Components/imports/compat/Layers/ImageLayer.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 51,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_ImageLayer_qml.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 52,
+			"path" : "Dependencies/Components/imports/compat/Layers/ItemLayer.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 53,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_ItemLayer_qml.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 54,
+			"path" : "Dependencies/Components/imports/compat/Layers/Screen.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 55,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_Screen_qml.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 56,
+			"path" : "Dependencies/Components/imports/compat/Layers/SpriteLayer.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 57,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_SpriteLayer_qml.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 58,
+			"path" : "Dependencies/Components/imports/compat/Layers/+DesignMode/Screen.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 59,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_+DesignMode/Screen_qml.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 60,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qrc_QuickUltraLiteStudioLayers_raw_qml_0.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 61,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qrc_QuickUltraLiteStudioLayers_raw_qml_0_extra_qmldirs.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 65,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qmake_QtQuickUltralite_Layers.qrc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 65,
+			"isGenerated" : true,
+			"path" : "build/qml/QtQuickUltralite/Layers/qmldir",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 65,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/QuickUltraLiteStudioLayers_raw_qml_0.qrc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 65,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/QuickUltraLiteStudioLayers_raw_qml_0_extra_qmldirs.qrc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 65,
+			"isGenerated" : true,
+			"path" : "build/qml/QtQuickUltralite/Layers/+DesignMode/qmldir",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/QuickUltraLiteStudioLayers_autogen/timestamp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/meta_types/qt6quickultralitestudiolayers_metatypes.json.gen.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/quickultralitestudiolayers_qmltyperegistrations.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qrc_qmake_QtQuickUltralite_Layers.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_qmlcache_loader.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_ApplicationScreens_qml.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_ImageLayer_qml.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_ItemLayer_qml.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_Screen_qml.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_SpriteLayer_qml.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.rcc/qmlcache/QuickUltraLiteStudioLayers_+DesignMode/Screen_qml.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qrc_QuickUltraLiteStudioLayers_raw_qml_0.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qrc_QuickUltraLiteStudioLayers_raw_qml_0_extra_qmldirs.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/QuickUltraLiteStudioLayers_autogen/timestamp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/compat/Layers/meta_types/QuickUltraLiteStudioLayers_json_file_list.txt.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/usr/lib/qt6/metatypes/qt6qml_metatypes.json",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/usr/lib/qt6/metatypes/qt6core_metatypes.json",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/usr/lib/qt6/metatypes/qt6network_metatypes.json",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 18,
+			"path" : "/usr/lib/qt6/metatypes/qt6gui_metatypes.json",
+			"sourceGroupIndex" : 4
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

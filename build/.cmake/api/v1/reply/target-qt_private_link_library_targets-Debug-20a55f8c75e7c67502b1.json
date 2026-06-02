@@ -1,0 +1,71 @@
+{
+	"abstract" : true,
+	"backtrace" : 5,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"__qt_internal_walk_libs",
+			"__qt_internal_collect_all_target_dependencies",
+			"_qt_internal_add_static_qml_plugin_dependencies"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/Qt6/QtPublicWalkLibsHelpers.cmake",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:2929:EVAL",
+			"KomplexHubModule/Controls/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 3
+			},
+			{
+				"file" : 3,
+				"line" : -1,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 1,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 5348,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 337,
+				"parent" : 3
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 108,
+				"parent" : 4
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"id" : "qt_private_link_library_targets::@8569b5012d097fd3b387",
+	"imported" : true,
+	"name" : "qt_private_link_library_targets",
+	"paths" : 
+	{
+		"build" : "KomplexHubModule/Controls",
+		"source" : "KomplexHubModule/Controls"
+	},
+	"sources" : [],
+	"type" : "INTERFACE_LIBRARY"
+}

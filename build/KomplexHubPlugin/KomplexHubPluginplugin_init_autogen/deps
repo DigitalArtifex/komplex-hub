@@ -1,0 +1,10 @@
+KomplexHubPluginplugin_init_autogen/timestamp: \
+	/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubPlugin/CMakeLists.txt \
+	/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubPlugin/KomplexHubPluginplugin_KomplexHubPluginPlugin_in.cpp \
+	/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubPlugin/KomplexHubPluginplugin_init.cpp \
+	/usr/lib/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in \
+	/usr/lib/cmake/Qt6Core/Qt6CoreResourceInit.in.cpp \
+	/usr/lib/cmake/Qt6Qml/Qt6QmlModuleDirMappingTemplate.qrc.in \
+	/usr/lib/cmake/Qt6Qml/Qt6QmlPluginTemplate.cpp.in \
+	/usr/lib/cmake/Qt6Qml/Qt6qmldirTemplate.cmake.in \
+	/usr/bin/cmake

@@ -1,0 +1,15 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                    ],
+                    "filePath": "/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Extras/QulPerf.qml"
+                }
+            ],
+            "moduleId": "QtQuickUltralite.Extras(QuickUltraLiteStudioExtras)"
+        }
+    ]
+}

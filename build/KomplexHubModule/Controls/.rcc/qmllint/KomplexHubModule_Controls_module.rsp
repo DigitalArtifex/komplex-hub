@@ -1,0 +1,14 @@
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/KomplexHub/Controls
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/usr/lib/qt6/qml
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/Controls/.qt/rcc/qmake_KomplexHub_Controls.qrc
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/Controls/.qt/rcc/KomplexHubModule_Controls_raw_qml_0.qrc
+--module
+KomplexHub.Controls

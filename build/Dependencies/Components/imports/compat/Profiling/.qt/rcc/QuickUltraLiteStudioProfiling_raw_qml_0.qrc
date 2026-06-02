@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt-project.org/imports/QtQuickUltralite/Profiling/">
+    <file alias="QulPerfOverlay.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Profiling/QulPerfOverlay.qml</file>
+  </qresource>
+</RCC>
+

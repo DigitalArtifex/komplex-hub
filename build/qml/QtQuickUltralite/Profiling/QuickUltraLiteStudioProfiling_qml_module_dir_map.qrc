@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="/qt-project.org/imports/QtQuickUltralite/Profiling">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/QtQuickUltralite/Profiling</file>
+
+  </qresource>
+</RCC>

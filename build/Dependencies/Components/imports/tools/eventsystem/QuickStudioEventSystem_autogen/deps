@@ -1,0 +1,9 @@
+QuickStudioEventSystem_autogen/timestamp: \
+	/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/tools/eventsystem/CMakeLists.txt \
+	/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/tools/eventsystem/QuickStudioEventSystemplugin_QtQuick_Studio_EventSystemPlugin_in.cpp \
+	/usr/lib/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in \
+	/usr/lib/cmake/Qt6Core/Qt6CoreResourceInit.in.cpp \
+	/usr/lib/cmake/Qt6Qml/Qt6QmlModuleDirMappingTemplate.qrc.in \
+	/usr/lib/cmake/Qt6Qml/Qt6QmlPluginTemplate.cpp.in \
+	/usr/lib/cmake/Qt6Qml/Qt6qmldirTemplate.cmake.in \
+	/usr/bin/cmake

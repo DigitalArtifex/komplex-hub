@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="/qt/qml/KomplexHub/Kero/">
+    <file alias="KeroBuildingAnimation.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Kero/KeroBuildingAnimation.qml</file>
+    <file alias="KeroChoiceAvatar.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Kero/KeroChoiceAvatar.qml</file>
+    <file alias="KeroErrorAvatar.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Kero/KeroErrorAvatar.qml</file>
+    <file alias="KeroHelloAvatar.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Kero/KeroHelloAvatar.qml</file>
+    <file alias="KeroLoadingAnimation.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Kero/KeroLoadingAnimation.qml</file>
+    <file alias="KeroNoResultsAvatar.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Kero/KeroNoResultsAvatar.qml</file>
+    <file alias="KeroWarningAvatar.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Kero/KeroWarningAvatar.qml</file>
+  </qresource>
+</RCC>
+

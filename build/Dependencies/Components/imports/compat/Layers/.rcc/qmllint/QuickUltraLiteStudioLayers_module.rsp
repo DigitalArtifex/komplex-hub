@@ -1,0 +1,16 @@
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/QtQuickUltralite/Layers
+-I
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml
+-I
+/usr/lib/qt6/qml
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/compat/Layers/.qt/rcc/qmake_QtQuickUltralite_Layers.qrc
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/compat/Layers/.qt/rcc/QuickUltraLiteStudioLayers_raw_qml_0.qrc
+--resource
+/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/compat/Layers/.qt/rcc/QuickUltraLiteStudioLayers_raw_qml_0_extra_qmldirs.qrc
+--module
+QtQuickUltralite.Layers

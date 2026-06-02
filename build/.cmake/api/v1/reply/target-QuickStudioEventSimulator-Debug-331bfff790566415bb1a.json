@@ -1,0 +1,694 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "Dependencies/Components/imports/tools/eventsimulator/libQuickStudioEventSimulator.a"
+		}
+	],
+	"backtrace" : 4,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"_qt_internal_add_library",
+			"qt6_add_library",
+			"qt_add_library",
+			"add_dependencies",
+			"_qt_internal_write_deferred_qmlls_build_ini_file",
+			"_qt_internal_qml_copy_files_to_build_dir",
+			"qt6_add_qml_module",
+			"target_link_libraries",
+			"__qt_internal_propagate_object_library",
+			"__qt_propagate_generated_resource",
+			"_qt_internal_process_resource",
+			"qt6_add_resources",
+			"qt6_target_qml_sources",
+			"add_custom_command",
+			"qt6_extract_metatypes",
+			"_qt_internal_qml_type_registration",
+			"_qt_internal_ensure_tooling_target",
+			"target_include_directories",
+			"target_sources",
+			"_qt_internal_expose_deferred_files_to_ide",
+			"qt6_finalize_target"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
+			"Dependencies/Components/imports/tools/eventsimulator/CMakeLists.txt",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1099:EVAL",
+			"CMakeLists.txt",
+			"/usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:848:EVAL"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 6,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 2920,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 2806,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2893,
+				"parent" : 3
+			},
+			{
+				"file" : 4
+			},
+			{
+				"file" : 4,
+				"line" : -1,
+				"parent" : 5
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 1,
+				"parent" : 6
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 1387,
+				"parent" : 7
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"command" : 6,
+				"file" : 2,
+				"line" : 970,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 3083,
+				"parent" : 10
+			},
+			{
+				"command" : 6,
+				"file" : 2,
+				"line" : 976,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 3083,
+				"parent" : 12
+			},
+			{
+				"command" : 8,
+				"file" : 2,
+				"line" : 618,
+				"parent" : 9
+			},
+			{
+				"command" : 12,
+				"file" : 2,
+				"line" : 887,
+				"parent" : 9
+			},
+			{
+				"command" : 11,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 15
+			},
+			{
+				"command" : 10,
+				"file" : 0,
+				"line" : 2625,
+				"parent" : 16
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 2156,
+				"parent" : 17
+			},
+			{
+				"command" : 8,
+				"file" : 0,
+				"line" : 2094,
+				"parent" : 18
+			},
+			{
+				"command" : 13,
+				"file" : 2,
+				"line" : 960,
+				"parent" : 9
+			},
+			{
+				"command" : 12,
+				"file" : 2,
+				"line" : 3839,
+				"parent" : 20
+			},
+			{
+				"command" : 11,
+				"file" : 0,
+				"line" : 405,
+				"parent" : 21
+			},
+			{
+				"command" : 10,
+				"file" : 0,
+				"line" : 2625,
+				"parent" : 22
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 2156,
+				"parent" : 23
+			},
+			{
+				"command" : 8,
+				"file" : 0,
+				"line" : 2094,
+				"parent" : 24
+			},
+			{
+				"command" : 16,
+				"file" : 2,
+				"line" : 835,
+				"parent" : 9
+			},
+			{
+				"command" : 15,
+				"file" : 2,
+				"line" : 4041,
+				"parent" : 26
+			},
+			{
+				"command" : 14,
+				"file" : 0,
+				"line" : 1542,
+				"parent" : 27
+			},
+			{
+				"command" : 14,
+				"file" : 0,
+				"line" : 2564,
+				"parent" : 16
+			},
+			{
+				"command" : 14,
+				"file" : 0,
+				"line" : 1484,
+				"parent" : 27
+			},
+			{
+				"command" : 14,
+				"file" : 2,
+				"line" : 4146,
+				"parent" : 26
+			},
+			{
+				"command" : 17,
+				"file" : 2,
+				"line" : 956,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 3105,
+				"parent" : 32
+			},
+			{
+				"command" : 18,
+				"file" : 2,
+				"line" : 4246,
+				"parent" : 26
+			},
+			{
+				"command" : 19,
+				"file" : 0,
+				"line" : 1579,
+				"parent" : 27
+			},
+			{
+				"command" : 19,
+				"file" : 2,
+				"line" : 4207,
+				"parent" : 26
+			},
+			{
+				"command" : 19,
+				"file" : 0,
+				"line" : 2165,
+				"parent" : 17
+			},
+			{
+				"command" : 19,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 20
+			},
+			{
+				"command" : 19,
+				"file" : 2,
+				"line" : 3554,
+				"parent" : 20
+			},
+			{
+				"command" : 19,
+				"file" : 0,
+				"line" : 2165,
+				"parent" : 23
+			},
+			{
+				"file" : 1,
+				"line" : -1,
+				"parent" : 0
+			},
+			{
+				"command" : 21,
+				"file" : 5,
+				"line" : 1,
+				"parent" : 41
+			},
+			{
+				"command" : 20,
+				"file" : 0,
+				"line" : 873,
+				"parent" : 42
+			},
+			{
+				"command" : 19,
+				"file" : 0,
+				"line" : 2290,
+				"parent" : 43
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"compileDependencies" : 
+	[
+		{
+			"backtrace" : 14,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		}
+	],
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=gnu++20"
+				},
+				{
+					"backtrace" : 14,
+					"fragment" : "-fno-direct-access-external-data"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 14,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_NETWORK_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QMLINTEGRATION_LIB"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "QT_QML_LIB"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"path" : "/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/tools/eventsimulator"
+				},
+				{
+					"path" : "/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/tools/eventsimulator"
+				},
+				{
+					"backtrace" : 0,
+					"path" : "/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/tools/eventsimulator/QuickStudioEventSimulator_autogen/include"
+				},
+				{
+					"backtrace" : 34,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtQml"
+				},
+				{
+					"backtrace" : 34,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6"
+				},
+				{
+					"backtrace" : 34,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtCore"
+				},
+				{
+					"backtrace" : 34,
+					"isSystem" : true,
+					"path" : "/usr/lib/qt6/mkspecs/linux-g++"
+				},
+				{
+					"backtrace" : 34,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtQmlIntegration"
+				},
+				{
+					"backtrace" : 34,
+					"isSystem" : true,
+					"path" : "/usr/include/qt6/QtNetwork"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					14,
+					14
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				2,
+				3,
+				6
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 8,
+			"id" : "generate_qmlls_build_ini_file::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 11,
+			"id" : "QuickStudioEventSimulator_copy_qml::@ffe67900f9ff583b4a15"
+		},
+		{
+			"backtrace" : 13,
+			"id" : "QuickStudioEventSimulator_copy_res::@ffe67900f9ff583b4a15"
+		},
+		{
+			"id" : "QuickStudioEventSimulator_autogen_timestamp_deps::@ffe67900f9ff583b4a15"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickStudioEventSimulator_autogen::@ffe67900f9ff583b4a15"
+		}
+	],
+	"id" : "QuickStudioEventSimulator::@ffe67900f9ff583b4a15",
+	"interfaceCompileDependencies" : 
+	[
+		{
+			"backtrace" : 19,
+			"id" : "QuickStudioEventSimulator_resources_1::@ffe67900f9ff583b4a15"
+		},
+		{
+			"backtrace" : 25,
+			"id" : "QuickStudioEventSimulator_resources_2::@ffe67900f9ff583b4a15"
+		}
+	],
+	"interfaceLinkLibraries" : 
+	[
+		{
+			"backtrace" : 14,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 19,
+			"id" : "QuickStudioEventSimulator_resources_1::@ffe67900f9ff583b4a15"
+		},
+		{
+			"backtrace" : 25,
+			"id" : "QuickStudioEventSimulator_resources_2::@ffe67900f9ff583b4a15"
+		}
+	],
+	"linkLibraries" : 
+	[
+		{
+			"backtrace" : 14,
+			"id" : "Qt6::Qml::@6890427a1f51a3e7e1df"
+		}
+	],
+	"name" : "QuickStudioEventSimulator",
+	"nameOnDisk" : "libQuickStudioEventSimulator.a",
+	"orderDependencies" : 
+	[
+		{
+			"backtrace" : 28,
+			"id" : "Qt6::moc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 29,
+			"id" : "Qt6::rcc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 30,
+			"id" : "Qt6::cmake_automoc_parser::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "Qt6::uic::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 31,
+			"id" : "Qt6::qmltyperegistrar::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 8,
+			"id" : "generate_qmlls_build_ini_file::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 33,
+			"id" : "QuickStudioEventSimulator_tooling::@ffe67900f9ff583b4a15"
+		},
+		{
+			"id" : "QuickStudioEventSimulator_autogen_timestamp_deps::@ffe67900f9ff583b4a15"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickStudioEventSimulator_autogen::@ffe67900f9ff583b4a15"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "Dependencies/Components/imports/tools/eventsimulator",
+		"source" : "Dependencies/Components/imports/tools/eventsimulator"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files\\Generated",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				6,
+				7,
+				9,
+				10
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				4,
+				5
+			]
+		},
+		{
+			"name" : "Resources",
+			"sourceIndexes" : 
+			[
+				8
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				11,
+				12,
+				13,
+				14,
+				15,
+				16
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				17,
+				18,
+				19
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/QuickStudioEventSimulator_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 35,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/meta_types/qt6quickstudioeventsimulator_metatypes.json.gen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 36,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/quickstudioeventsimulator_qmltyperegistrations.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 37,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/.qt/rcc/qrc_qmake_QtQuick_Studio_EventSimulator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 38,
+			"path" : "Dependencies/Components/imports/tools/eventsimulator/EventSimulator.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 39,
+			"path" : "Dependencies/Components/imports/tools/eventsimulator/EventSimulatorDelegate.qml",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 40,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/.qt/rcc/qrc_QuickStudioEventSimulator_raw_qml_0.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 44,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/.qt/rcc/qmake_QtQuick_Studio_EventSimulator.qrc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 44,
+			"isGenerated" : true,
+			"path" : "build/qml/QtQuick/Studio/EventSimulator/qmldir",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 44,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/.qt/rcc/QuickStudioEventSimulator_raw_qml_0.qrc",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/QuickStudioEventSimulator_autogen/timestamp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/meta_types/qt6quickstudioeventsimulator_metatypes.json.gen.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/quickstudioeventsimulator_qmltyperegistrations.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/.qt/rcc/qrc_qmake_QtQuick_Studio_EventSimulator.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/.qt/rcc/qrc_QuickStudioEventSimulator_raw_qml_0.cpp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/QuickStudioEventSimulator_autogen/timestamp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Dependencies/Components/imports/tools/eventsimulator/meta_types/QuickStudioEventSimulator_json_file_list.txt.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/usr/lib/qt6/metatypes/qt6qml_metatypes.json",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/usr/lib/qt6/metatypes/qt6core_metatypes.json",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 14,
+			"path" : "/usr/lib/qt6/metatypes/qt6network_metatypes.json",
+			"sourceGroupIndex" : 4
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

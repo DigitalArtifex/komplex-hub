@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt-project.org/imports/QtQuick/Studio/Utils">
+    <file alias="qmldir">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/QtQuick/Studio/Utils/qmldir</file>
+  </qresource>
+</RCC>
+
