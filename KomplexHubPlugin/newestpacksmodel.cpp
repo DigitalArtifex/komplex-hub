@@ -1,6 +1,7 @@
 #include "newestpacksmodel.h"
 #include "common/coreservices.h"
 #include "common/logging.h"
+#include "common/wallpapercache.h"
 
 NewestPacksModel::NewestPacksModel(QObject *parent) : QAbstractListModel{parent}
 {
@@ -19,49 +20,44 @@ auto NewestPacksModel::data(const QModelIndex &index, int role) const -> QVarian
         return {};
     }
 
-    WallpaperCache *dataPoint = m_wallpaperCache.at(index.row());
-
-    if(dataPoint == nullptr)
-    {
-        return {};
-    }
+    WallpaperCache dataPoint = m_wallpaperCache.at(index.row());
 
     QVariant data;
 
     switch(static_cast<DataRole>(role))
     {
         case UriRole:
-            data = dataPoint->uri;
+            data = dataPoint.uri;
             break;
         case AuthorRole:
-            data = dataPoint->author;
+            data = dataPoint.author;
             break;
         case DescriptionRole:
-            data = dataPoint->description;
+            data = dataPoint.description;
             break;
         case NameRole:
-            data = dataPoint->name;
+            data = dataPoint.name;
             break;
         case ThumbnailRole:
-            data = dataPoint->thumbnail;
+            data = dataPoint.thumbnail;
             break;
         case CreatedDateRole:
-            data = dataPoint->createdDate;
+            data = dataPoint.createdDate;
             break;
         case AuthorIdRole:
-            data = dataPoint->authorId;
+            data = dataPoint.authorId;
             break;
         case PriceRole:
-            data = dataPoint->price;
+            data = dataPoint.price;
             break;
         case CurrencyRole:
-            data = dataPoint->currency;
+            data = dataPoint.currency;
             break;
         case DownloadCountRole:
-            data = dataPoint->downloadCount;
+            data = dataPoint.downloadCount;
             break;
         case TypeRole:
-            data = dataPoint->type;
+            data = dataPoint.type;
             break;
     }
 
@@ -72,7 +68,8 @@ auto NewestPacksModel::index(int row, int column, const QModelIndex &parent) con
 {
     Q_UNUSED(parent)
 
-    return createIndex(row, column, m_wallpaperCache.at(row));
+    WallpaperCache data = m_wallpaperCache.at(row);
+    return createIndex(row, column, &data);
 }
 
 auto NewestPacksModel::columnCount(const QModelIndex &) const -> int
@@ -87,7 +84,7 @@ auto NewestPacksModel::parent(const QModelIndex &) const -> QModelIndex
 
 auto NewestPacksModel::setData(const QModelIndex &, const QVariant &, int) -> bool
 {
-    return true;
+    return false;
 }
 
 auto NewestPacksModel::state() const -> NewestPacksModel::State
@@ -130,4 +127,32 @@ auto NewestPacksModel::setErrorString(const QString &errorString) -> void
 
     m_errorString = errorString;
     emit errorStringChanged();
+}
+
+auto NewestPacksModel::resultsPerPage() const -> qint64
+{
+    return m_resultsPerPage;
+}
+
+auto NewestPacksModel::setResultsPerPage(qint64 resultsPerPage) -> void
+{
+    if (m_resultsPerPage == resultsPerPage)
+        return;
+
+    m_resultsPerPage = resultsPerPage;
+    emit resultsPerPageChanged();
+}
+
+qint64 NewestPacksModel::page() const
+{
+    return m_page;
+}
+
+void NewestPacksModel::setPage(qint64 page)
+{
+    if (m_page == page)
+        return;
+
+    m_page = page;
+    emit pageChanged();
 }

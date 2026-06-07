@@ -1,3 +1,21 @@
+/*
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2026 @DigitalArtifex
+ *  https://digitalartifex.dev - https://github.com/DigitalArtifex
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>
+ */
 #ifndef NEWESTPACKSMODEL_H
 #define NEWESTPACKSMODEL_H
 #include <QObject>
@@ -19,7 +37,6 @@
 #include <QEventLoop>
 
 #include "paginators/newestpackspaginator.h"
-#include "common/wallpapercache.h"
 
 class KOMPLEX_EXPORT NewestPacksModel : public QAbstractListModel
 {
@@ -81,12 +98,19 @@ public:
     auto errorString() const -> QString;
     auto setErrorString(const QString &errorString) -> void;
 
+    auto resultsPerPage() const -> qint64;
+    auto setResultsPerPage(qint64 resultsPerPage) -> void;
+
+    qint64 page() const;
+    void setPage(qint64 page);
+
 signals:
     auto installedWallpapersChanged() -> void;
-
     auto stateChanged() -> void;
-
     auto errorStringChanged() -> void;
+    auto resultsPerPageChanged() -> void;
+
+    void pageChanged();
 
 private:
     static inline const QHash<int, QByteArray> m_dataRoles =
@@ -147,6 +171,8 @@ private:
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
+    Q_PROPERTY(qint64 resultsPerPage READ resultsPerPage WRITE setResultsPerPage NOTIFY resultsPerPageChanged FINAL)
+    Q_PROPERTY(qint64 page READ page WRITE setPage NOTIFY pageChanged FINAL)
 };
 Q_DECLARE_METATYPE(NewestPacksModel)
 

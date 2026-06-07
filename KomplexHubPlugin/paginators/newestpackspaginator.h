@@ -1,3 +1,21 @@
+/*
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2026 @DigitalArtifex
+ *  https://digitalartifex.dev - https://github.com/DigitalArtifex
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>
+ */
 #ifndef NEWESTPACKSPAGINATOR_H
 #define NEWESTPACKSPAGINATOR_H
 
@@ -20,7 +38,13 @@ class KOMPLEX_EXPORT NewestPacksPaginator : public Paginator<WallpaperCache>
 {
 
 public:
-    explicit NewestPacksPaginator();
+    explicit NewestPacksPaginator() : Paginator<WallpaperCache>()
+    {
+        SlidingCacheController<WallpaperCache> *controller = this->controller();
+        controller->setFetch(
+            std::bind(&NewestPacksPaginator::fetch, this, std::placeholders::_1, std::placeholders::_2)
+        );
+    }
 
 protected:
     /**
@@ -38,7 +62,7 @@ protected:
     ) const -> FetchResult<WallpaperCache>
     {
         QUrl url(
-            "https://www.digitalartifex.dev/v2/packs/newest/"
+            QString::fromUtf8("%1/v2/packs/newest/").arg(KOMPLEX_API_HOST)
         );
 
         QNetworkRequest request(url);
@@ -73,7 +97,7 @@ protected:
         QJsonObject rootObject = document.object();
         const QJsonArray resultsArray = rootObject.value(QString::fromUtf8("results")).toArray();
 
-        QList<WallpaperCache*> fetchedResults;
+        QList<WallpaperCache> fetchedResults;
 
         for(const auto result : resultsArray)
         {
@@ -85,7 +109,6 @@ protected:
             QJsonObject resultObject = result.toObject();
 
             fetchedResults.append(
-                new WallpaperCache
                 {
                     resultObject.value(QString::fromUtf8("uri")).toString(),
                     resultObject.value(QString::fromUtf8("name")).toString(),
@@ -95,11 +118,15 @@ protected:
                     resultObject.value(QString::fromUtf8("thumbnail")).toString(),
                     QDateTime::fromString(
                         resultObject.value(QString::fromUtf8("createdDate")).toString()
-                        ),
+                    ),
                     resultObject.value(QString::fromUtf8("price")).toDouble(),
                     resultObject.value(QString::fromUtf8("currency")).toString(),
-                    static_cast<quint64>(resultObject.value(QString::fromUtf8("downloadCount")).toInteger()),
-                    static_cast<qint8>(resultObject.value(QString::fromUtf8("description")).toInt()),
+                    static_cast<quint64>(
+                        resultObject.value(QString::fromUtf8("downloadCount")
+                    ).toInteger()),
+                    static_cast<qint8>(
+                        resultObject.value(QString::fromUtf8("description")
+                    ).toInt()),
                 }
             );
         }
@@ -121,7 +148,16 @@ protected:
     auto getNetworkReply(const QNetworkRequest &request) const -> QNetworkReply*
     {
         QEventLoop loop;
-        QNetworkAccessManager *manager = CoreServices::networkAccessManager();
+        QWeakPointer<QNetworkAccessManager> managerReference = CoreServices::networkAccessManager();
+
+        QSharedPointer<QNetworkAccessManager> manager = managerReference.toStrongRef();
+
+        LOG_ERROR_X(!manager,
+            "NewestPacksPaginator::getNetworkReply",
+            "Network manager reference has already been deleted",
+            nullptr
+        );
+
         QNetworkReply *reply = manager->post(request, nullptr);
         QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         QObject::connect(reply, &QNetworkReply::errorOccurred, &loop,
