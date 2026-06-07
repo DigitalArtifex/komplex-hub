@@ -1,4 +1,4 @@
-#include "InstalledPackManager.h"
+#include "installedpackmanager.h"
 
 InstalledPackManager::InstalledPackManager(QObject *parent)
     : QAbstractListModel{parent}
@@ -100,7 +100,7 @@ auto InstalledPackManager::setData(const QModelIndex &index, const QVariant &val
     return true;
 }
 
-auto InstalledPackManager::installedWallpapers() const -> QList<WallpaperMetaData>
+auto InstalledPackManager::installedWallpapers() const -> QList<WallpaperInstallData>
 {
     return m_installedWallpapers;
 }
@@ -159,7 +159,7 @@ auto InstalledPackManager::rescan() -> void
 
         QFileInfo packFileInfo(packFile);
 
-        WallpaperMetaData data
+        WallpaperInstallData data
         {
             packDirectory.absoluteFilePath(QString("pack.json")),
             rootObject["name"].toString(),

@@ -15,7 +15,7 @@
 #include <QAbstractListModel>
 #include <QProcess>
 
-#include "WallpaperMetaData.h"
+#include "common/wallpapercache.h"
 
 class InstalledPackManager : public QAbstractListModel
 {
@@ -64,7 +64,7 @@ public:
         int role = Qt::EditRole
     ) -> bool override;
 
-    auto installedWallpapers() const -> QList<WallpaperMetaData>;
+    auto installedWallpapers() const -> QList<WallpaperInstallData>;
 
     auto resetInstalledWallpapers() -> void;
     Q_INVOKABLE auto rescan() -> void;
@@ -118,9 +118,9 @@ private:
     QString m_errorString = QString();
 
     QString m_installDirectoryUri;
-    QList<WallpaperMetaData> m_installedWallpapers;
+    QList<WallpaperInstallData> m_installedWallpapers;
 
-    Q_PROPERTY(QList<WallpaperMetaData> installedWallpapers READ installedWallpapers RESET resetInstalledWallpapers NOTIFY installedWallpapersChanged FINAL)
+    Q_PROPERTY(QList<WallpaperInstallData> installedWallpapers READ installedWallpapers RESET resetInstalledWallpapers NOTIFY installedWallpapersChanged FINAL)
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
 };
