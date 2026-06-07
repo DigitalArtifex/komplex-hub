@@ -19,15 +19,15 @@ qt_add_qml_module(
         newestpacksmodel.cpp
         common/komplex_global.h
         common/slidingcachecontroller.h
-        common/slidingcachecontroller.cpp
+
         common/paginator.h
-        common/paginator.cpp
+
         common/coreservices.h
         common/coreservices.cpp
         common/logging.h
         common/fetchresult.h
         paginators/newestpackspaginator.h
-        paginators/newestpackspaginator.cpp
+
 )
 
 target_compile_definitions(

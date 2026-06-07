@@ -1,18 +1,52 @@
 #include "coreservices.h"
 #include "logging.h"
 
-QNetworkAccessManager *CoreServices::m_networkAccessManager = new QNetworkAccessManager();
+QNetworkAccessManager *CoreServices::s_networkAccessManager = new QNetworkAccessManager();
+QMutex CoreServices::s_networkAccessMutex;
+QSharedPointer<QNetworkAccessManager> CoreServices::s_networkAccessPointer;
 
-auto CoreServices::networkAccessManager() -> QNetworkAccessManager *
+auto CoreServices::networkAccessManager() -> QWeakPointer<QNetworkAccessManager>
 {
-    return m_networkAccessManager;
+    QMutexLocker locker(&s_networkAccessMutex);
+
+    if(!s_networkAccessPointer)
+    {
+        s_networkAccessManager = new QNetworkAccessManager;
+
+        QObject::connect(
+            s_networkAccessManager,
+            &QNetworkAccessManager::sslErrors,
+            s_networkAccessManager,
+            [] (QNetworkReply *reply, const QList<QSslError> &errors)
+            {
+                for(const auto &error : errors)
+                {
+                    LOG_ERROR(
+                        "CoreServices::networkAccessManager",
+                        error.errorString().toStdString().c_str()
+                    );
+                }
+
+#ifdef KOMPLEX_LOCAL_DEV
+                reply->ignoreSslErrors();
+#endif
+            }
+        );
+
+        s_networkAccessPointer = QSharedPointer<QNetworkAccessManager>(
+            s_networkAccessManager,
+            &QNetworkAccessManager::deleteLater
+        );
+    }
+
+    return s_networkAccessPointer.toWeakRef();
 }
 
 auto CoreServices::sessionToken() -> QByteArray
 {
     LOG_ERROR_X(true,
         "CoreServices::sessionToken",
-        "User services not yet implements",
+        "User services not yet implemented",
         {}
     );
 }
