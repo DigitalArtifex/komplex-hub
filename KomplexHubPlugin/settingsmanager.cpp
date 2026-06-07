@@ -1,4 +1,4 @@
-#include "SettingsManager.h"
+#include "settingsmanager.h"
 #include <qassert.h>
 #include <qcontainerfwd.h>
 #include <qjsondocument.h>

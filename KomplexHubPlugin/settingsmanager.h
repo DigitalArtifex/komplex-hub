@@ -23,7 +23,7 @@
 
 #ifndef SETTINGSMANAGER_H
 #define SETTINGSMANAGER_H
-#include "Komplex_global.h"
+#include "common/komplex_global.h"
 
 #include <QVariant>
 #include <QObject>
