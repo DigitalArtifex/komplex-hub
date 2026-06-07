@@ -1,3 +1,21 @@
+/*
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2026 @DigitalArtifex
+ *  https://digitalartifex.dev - https://github.com/DigitalArtifex
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>
+ */
 #ifndef SLIDINGCACHECONTROLLER_H
 #define SLIDINGCACHECONTROLLER_H
 
@@ -7,8 +25,26 @@
 #include "fetchresult.h"
 #include "komplex_global.h"
 
+/**
+ * @brief The SlidingCacheControllerNotifier class
+ *
+ * Qt does not support templated QObjects. Pushing it to a notifier class
+ * that the template can inherit fixes this
+ */
+class KOMPLEX_EXPORT SlidingCacheControllerNotifier : public QObject
+{
+    Q_OBJECT
+signals:
+    auto countChanged() -> void;
+};
+
+/**
+ * @brief The SlidingCacheController class is a type and endpoint agnostic sliding window
+ * cache controller. It pre-fetches a larger data set that a paginator works on top of.
+ * This minimizes the number of API calls required to serve paged data
+ */
 template <typename T>
-class KOMPLEX_EXPORT SlidingCacheController
+class KOMPLEX_EXPORT SlidingCacheController : public SlidingCacheControllerNotifier
 {
 public:
 
@@ -127,14 +163,23 @@ public:
      */
     auto clear() -> void
     {
-        while(!m_cache.isEmpty())
-        {
-            T *object = m_cache.takeFirst();
-            delete object;
-        }
+        m_cache.clear();
     }
 
-signals:
+protected:
+    /**
+     * @brief setCount
+     * Sets the total count and notifies countChanged
+     * @param count
+     */
+    auto setCount(qsizetype count) -> void
+    {
+        if(count == m_totalCount)
+            return;
+
+        m_totalCount = count;
+        Q_EMIT static_cast<SlidingCacheControllerNotifier*>(this)->countChanged();
+    }
 
 private:
     /**
@@ -144,6 +189,12 @@ private:
      */
     auto slideForward() -> bool
     {
+        LOG_ERROR_X(!m_fetch,
+            "SlidingCacheController::slideBackward",
+            "Fetch function not set",
+            false
+        );
+
         qsizetype movementSize = SLIDING_CACHE_WINDOW_SIZE;
 
         //after initial inflation we should only arrive here when the prefetch threshold is reached
@@ -154,35 +205,42 @@ private:
 
         m_windowOffset += movementSize;
 
-        QList<T*> newCache = m_fetch(
+        FetchResult<T> result = m_fetch(
             m_windowOffset,
             movementSize
-            );
+        );
 
-        if(newCache.isEmpty())
+        if(result.count == 0)
+        {
+            m_windowOffset += movementSize;
+            return false;
+        }
+
+        setCount(result.total);
+
+        if(result.data.isEmpty())
         {
             m_windowOffset -= movementSize;
             return false;
         }
 
-        while(!newCache.isEmpty() && !m_cache.isEmpty())
+        while(!result.data.isEmpty() && !m_cache.isEmpty())
         {
-            T *object = newCache.takeFirst();
-            T *oldObject = m_cache.takeFirst();
+            T object = result.data.takeFirst();
+            m_cache.removeFirst();
 
-            delete oldObject;
-            m_cache.append(object);
+            m_cache.append(std::move(object));
         }
 
-        if(!newCache.isEmpty())
+        if(!result.data.isEmpty())
         {
-            LOG_ERROR_X((newCache.count() + m_cache.count()) > SLIDING_CACHE_WINDOW_SIZE,
-                        "SlidingCacheController::slideForward",
-                        "Cache size imbalance",
-                        false
-                        );
+            LOG_ERROR_X((result.data.count() + m_cache.count()) > SLIDING_CACHE_WINDOW_SIZE,
+                "SlidingCacheController::slideForward",
+                "Cache size imbalance",
+                false
+            );
 
-            m_cache.append(newCache);
+            m_cache.append(std::move(result.data));
         }
 
         return true;
@@ -196,10 +254,10 @@ private:
     auto slideBackward() -> bool
     {
         LOG_ERROR_X(!m_fetch,
-                    "SlidingCacheController::slideBackward",
-                    "Fetch function not set",
-                    false
-                    );
+            "SlidingCacheController::slideBackward",
+            "Fetch function not set",
+            false
+        );
 
         qsizetype movementSize = SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD;
         m_windowOffset -= movementSize;
@@ -212,7 +270,7 @@ private:
         FetchResult<T> result = m_fetch(
             m_windowOffset,
             movementSize
-            );
+        );
 
         if(result.count == 0)
         {
@@ -220,22 +278,23 @@ private:
             return false;
         }
 
+        setCount(result.total);
+
         while(!result.data.isEmpty() && !m_cache.isEmpty())
         {
-            T *object = result.data.takeLast();
-            T *oldObject = m_cache.takeLast();
+            T object = result.data.takeLast();
+            m_cache.removeLast();
 
-            delete oldObject;
-            m_cache.push_front(object);
+            m_cache.push_front(std::move(object));
         }
 
         if(!result.results.isEmpty())
         {
             LOG_ERROR_X((result.count + m_cache.count()) > SLIDING_CACHE_WINDOW_SIZE,
-                        "SlidingCacheController::slideBackward",
-                        "Cache size imbalance",
-                        false
-                        );
+                "SlidingCacheController::slideBackward",
+                "Cache size imbalance",
+                false
+            );
 
             m_cache.push_front(std::move(result.data));
         }
@@ -278,7 +337,7 @@ private:
      * @brief m_cache
      * The working cache
      */
-    QVector<T*> m_cache;
+    QVector<T> m_cache;
 };
 
 #endif // SLIDINGCACHECONTROLLER_H
