@@ -98,7 +98,7 @@ public:
             return {};
         }
 
-        qsizetype internalIndex = internalIndex(index);
+        qsizetype internalIndex = this->internalIndex(index);
 
         if(!internalBoundaryCheck(index))
         {
