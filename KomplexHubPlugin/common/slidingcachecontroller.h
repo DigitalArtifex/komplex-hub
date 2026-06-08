@@ -21,6 +21,9 @@
 
 #include <QObject>
 #include <QList>
+#include <QMutex>
+#include <QMutexLocker>
+
 #include <functional>
 #include "fetchresult.h"
 #include "komplex_global.h"
@@ -81,14 +84,21 @@ public:
      * @return CacheObject* or nullptr
      */
     [[nodiscard]]
-    auto at(qsizetype index) const -> T
+    auto at(qsizetype index) -> T
     {
+        QMutexLocker cacheLocker(&m_cacheMutex);
+
+        if(!externalBoundaryCheck(index))
+        {
+            return {};
+        }
+
         if(!slideWindow(index))
         {
             return {};
         }
 
-        qsizetype internalIndex = trueIndex(index);
+        qsizetype internalIndex = internalIndex(index);
 
         if(!internalBoundaryCheck(index))
         {
@@ -109,9 +119,28 @@ public:
     [[nodiscard]]
     auto chunk(qsizetype index, qsizetype count) -> QList<T>
     {
+        QMutexLocker cacheLocker(&m_cacheMutex);
+
         if(!externalBoundaryCheck(index))
         {
             return {};
+        }
+
+        if(!slideWindow(index))
+        {
+            return {};
+        }
+
+        qsizetype internalIndex = this->internalIndex(index);
+
+        if(!internalBoundaryCheck(index))
+        {
+            return {};
+        }
+
+        if(!internalBoundaryCheck(count - 1))
+        {
+            count = m_cache.count() - index;
         }
 
         QList<T> dataChunk;
@@ -130,13 +159,18 @@ public:
     }
 
     /**
-     * @brief count
+     * @brief totalCount
      *
      * @return The total number of results available
      */
     [[nodiscard]]
-    auto count() const -> qsizetype
+    auto totalCount() const -> qsizetype
     {
+        if(m_totalCount == std::numeric_limits<qsizetype>::infinity())
+        {
+            return 0;
+        }
+
         return m_totalCount;
     }
 
@@ -146,16 +180,32 @@ public:
      */
     auto clear() -> void
     {
+        QMutexLocker cacheLocker(&m_cacheMutex);
+
         m_cache.clear();
+        setTotalCount(std::numeric_limits<qsizetype>::infinity());
+    }
+
+    /**
+     * @brief reset
+     * Resets the current cache model
+     */
+    auto reset() -> void
+    {
+        QMutexLocker cacheLocker(&m_cacheMutex);
+
+        m_cache.clear();
+        setTotalCount(std::numeric_limits<qsizetype>::infinity());
+        m_windowOffset = 0;
     }
 
 protected:
     /**
-     * @brief setCount
+     * @brief setTotalCount
      * Sets the total count and notifies countChanged
      * @param count
      */
-    auto setCount(qsizetype count) -> void
+    auto setTotalCount(qsizetype count) -> void
     {
         if(count == m_totalCount)
             return;
@@ -354,12 +404,12 @@ private:
     }
 
     /**
-     * @brief trueIndex
+     * @brief internalIndex
      * Translates the global object index to the current cache index
      * @param index Global object index
      * @return
      */
-    auto trueIndex(qsizetype index) -> qsizetype
+    auto internalIndex(qsizetype index) -> qsizetype
     {
         return index - m_windowOffset;
     }
@@ -389,6 +439,11 @@ private:
      * The working cache
      */
     QVector<T> m_cache;
+
+    /**
+     * @brief m_cacheMutex
+     */
+    QMutex m_cacheMutex;
 };
 
 #endif // SLIDINGCACHECONTROLLER_H
