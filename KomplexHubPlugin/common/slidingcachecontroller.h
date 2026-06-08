@@ -176,11 +176,11 @@ private:
      */
     auto externalBoundaryCheck(qsizetype index) -> bool
     {
-        return !(
-            index < 0 ||
+        return (
+            index > 0 &&
             (
-                m_totalCount != std::numeric_limits<qsizetype>::infinity() &&
-                index >= m_totalCount
+                m_totalCount == std::numeric_limits<qsizetype>::infinity() ||
+                index < m_totalCount
             )
         );
     }
