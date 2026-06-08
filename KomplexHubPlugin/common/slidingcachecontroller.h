@@ -26,12 +26,12 @@
 #include "komplex_global.h"
 
 /**
- * @brief The SlidingCacheControllerNotifier class
+ * @brief The SlidingCacheNotifier class
  *
  * Qt does not support templated QObjects. Pushing it to a notifier class
  * that the template can inherit fixes this
  */
-class KOMPLEX_EXPORT SlidingCacheControllerNotifier : public QObject
+class KOMPLEX_EXPORT SlidingCacheNotifier : public QObject
 {
     Q_OBJECT
 signals:
@@ -44,11 +44,11 @@ signals:
  * This minimizes the number of API calls required to serve paged data
  */
 template <typename T>
-class KOMPLEX_EXPORT SlidingCacheController : public SlidingCacheControllerNotifier
+class KOMPLEX_EXPORT SlidingCacheController : public SlidingCacheNotifier
 {
 public:
 
-    explicit SlidingCacheController()
+    explicit SlidingCacheController() : SlidingCacheNotifier{}
     {
         m_cache.reserve(SLIDING_CACHE_WINDOW_SIZE);
     }
@@ -60,15 +60,15 @@ public:
 
     /**
      * @brief setFetch
+     *
      * Used to set the fetch method for the cache controller. Method should return a QList
      * of CacheObjects based on the offset and limit provided. CacheObject must derive from
      * QObject
-     *
      * @param fetch
      */
     auto setFetch(
         const std::function<FetchResult<T> (qsizetype offset, qsizetype limit)> &fetch
-        ) -> void
+    ) -> void
     {
         m_fetch = std::move(fetch);
     }
@@ -81,38 +81,18 @@ public:
      * @return CacheObject* or nullptr
      */
     [[nodiscard]]
-    auto at(qsizetype index) const -> T*
+    auto at(qsizetype index) const -> T
     {
-        //OOB check for expected index
-        if (index < 0 ||
-            (m_totalCount != std::numeric_limits<qsizetype>::infinity() &&
-             index >= m_totalCount))
+        if(!slideWindow(index))
         {
-            return nullptr;
+            return {};
         }
 
-        while (index >= m_windowOffset + (SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD))
-        {
-            if(!slideForward())
-            {
-                break;
-            }
-        }
+        qsizetype internalIndex = trueIndex(index);
 
-        while (index <= m_windowOffset - (SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD))
+        if(!internalBoundaryCheck(index))
         {
-            if(!slideBackward())
-            {
-                break;
-            }
-        }
-
-        index = trueIndex(index);
-
-        //OOB check for actual index
-        if(index < 0 || index >= m_cache.count())
-        {
-            return nullptr;
+            return {};
         }
 
         return m_cache.at(index);
@@ -127,20 +107,23 @@ public:
      * @return
      */
     [[nodiscard]]
-    auto chunk(qsizetype index, qsizetype count) -> QList<T*>
+    auto chunk(qsizetype index, qsizetype count) -> QList<T>
     {
-        QList<T*> dataChunk;
+        if(!externalBoundaryCheck(index))
+        {
+            return {};
+        }
+
+        QList<T> dataChunk;
 
         for(qsizetype i = index; i < count; ++i)
         {
-            T* data = at(i);
+            T data = at(i);
 
-            if(data == nullptr)
+            if(data != T{})
             {
-                break;
+                dataChunk.append(data);
             }
-
-            dataChunk.append(data);
         }
 
         return dataChunk;
@@ -178,10 +161,78 @@ protected:
             return;
 
         m_totalCount = count;
-        Q_EMIT static_cast<SlidingCacheControllerNotifier*>(this)->countChanged();
+        Q_EMIT static_cast<SlidingCacheNotifier*>(this)->countChanged();
     }
 
 private:
+    /**
+     * @brief externalBoundaryCheck
+     *
+     * Checks if the index is within the known bounds of the external
+     * dataset
+     * @param index
+     * @return True if index is within the external dataset boundary
+     * OR an initial fetch has not been performed.
+     */
+    auto externalBoundaryCheck(qsizetype index) -> bool
+    {
+        return !(
+            index < 0 ||
+            (
+                m_totalCount != std::numeric_limits<qsizetype>::infinity() &&
+                index >= m_totalCount
+            )
+        );
+    }
+
+    /**
+     * @brief internalBoundaryCheck
+     *
+     * Checks if the index is within the currently cached dataset
+     * @param index
+     * @return True if index is within the internal dataset boundary
+     */
+    auto internalBoundaryCheck(qsizetype index) -> bool
+    {
+        return (
+            index > 0 &&
+            index < m_cache.count()
+        );
+    }
+
+    /**
+     * @brief slideWindow
+     *
+     * Slides the current data window to the provided index
+     * @param index
+     * @return
+     */
+    auto slideWindow(qsizetype index) -> bool
+    {
+        if (!externalBoundaryCheck(index))
+        {
+            return false;
+        }
+
+        while (index >= m_windowOffset + (SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD))
+        {
+            if(!slideForward())
+            {
+                return false;
+            }
+        }
+
+        while (index <= m_windowOffset - (SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD))
+        {
+            if(!slideBackward())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @brief slideForward
      * Attempts to slide the cache window forward
