@@ -27,6 +27,7 @@
 #include <functional>
 #include "fetchresult.h"
 #include "komplex_global.h"
+#include "logging.h"
 
 /**
  * @brief The SlidingCacheNotifier class
@@ -84,7 +85,7 @@ public:
      * @return CacheObject* or nullptr
      */
     [[nodiscard]]
-    auto at(qsizetype index) -> T
+    auto at(qsizetype index) const -> T
     {
         QMutexLocker cacheLocker(&m_cacheMutex);
 
@@ -117,7 +118,7 @@ public:
      * @return
      */
     [[nodiscard]]
-    auto chunk(qsizetype index, qsizetype count) -> QList<T>
+    auto chunk(qsizetype index, qsizetype count) const -> QList<T>
     {
         QMutexLocker cacheLocker(&m_cacheMutex);
 
@@ -317,7 +318,7 @@ private:
             return false;
         }
 
-        setCount(result.total);
+        setTotalCount(result.total);
 
         if(result.data.isEmpty())
         {
@@ -379,7 +380,7 @@ private:
             return false;
         }
 
-        setCount(result.total);
+        setTotalCount(result.total);
 
         while(!result.data.isEmpty() && !m_cache.isEmpty())
         {
@@ -389,7 +390,7 @@ private:
             m_cache.push_front(std::move(object));
         }
 
-        if(!result.results.isEmpty())
+        if(!result.data.isEmpty())
         {
             LOG_ERROR_X((result.count + m_cache.count()) > SLIDING_CACHE_WINDOW_SIZE,
                 "SlidingCacheController::slideBackward",
@@ -397,7 +398,11 @@ private:
                 false
             );
 
-            m_cache.push_front(std::move(result.data));
+            while(!result.data.isEmpty())
+            {
+                T object = result.data.takeLast();
+                m_cache.push_front(std::move(object));
+            }
         }
 
         return true;
@@ -443,7 +448,7 @@ private:
     /**
      * @brief m_cacheMutex
      */
-    QMutex m_cacheMutex;
+    mutable QMutex m_cacheMutex;
 };
 
 #endif // SLIDINGCACHECONTROLLER_H
