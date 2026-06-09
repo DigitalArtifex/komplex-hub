@@ -50,6 +50,28 @@ struct KOMPLEX_EXPORT WallpaperCache
     QString currency;
     quint64 downloadCount = 0;
     qint8 type = -1;
+
+    auto operator == (const WallpaperCache &other) const -> bool
+    {
+        return (
+            other.uri == uri &&
+            other.name == name &&
+            other.author == author &&
+            other.authorId == authorId &&
+            other.description == description &&
+            other.thumbnail == thumbnail &&
+            other.createdDate == createdDate &&
+            other.price == price &&
+            other.currency == currency &&
+            other.downloadCount == downloadCount &&
+            other.type == type
+        );
+    }
+
+    auto operator != (const WallpaperCache &other) const -> bool
+    {
+        return !(other == *this);
+    }
 };
 Q_DECLARE_METATYPE(WallpaperCache)
 
