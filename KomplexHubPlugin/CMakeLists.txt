@@ -27,6 +27,18 @@ qt_add_qml_module(
         common/logging.h
         common/fetchresult.h
         paginators/newestpackspaginator.h
+        SOURCES paginators/featuredpackspaginator.h
+        SOURCES paginators/featuredimagespaginator.h
+        SOURCES paginators/wallpaperpaginator.h
+        SOURCES paginators/searchpackspaginator.h
+        SOURCES paginators/searchimagespaginator.h
+        SOURCES paginators/newestshaderspaginator.h
+        SOURCES paginators/newestcubemapspaginator.h
+        SOURCES paginators/featuredshaderspaginator.h
+        SOURCES paginators/featuredcubemapspaginator.h
+        SOURCES paginators/searchshaderspaginator.h
+        SOURCES paginators/searchcubemapspaginator.h
+        SOURCES paginators/searchvideospaginator.h
 
 )
 

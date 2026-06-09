@@ -20,19 +20,23 @@
 #define PAGINATOR_H
 
 #include <QObject>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "komplex_global.h"
 #include "slidingcachecontroller.h"
 
 /**
- * @brief The PaginatorNotifier class
+ * @brief The PaginationNotifier class
  *
  * Qt does not support templated QObjects. Pushing it to a notifier class
  * that the template can inherit fixes this
  */
-class KOMPLEX_EXPORT PaginatorNotifier : public QObject
+class KOMPLEX_EXPORT PaginationNotifier : public QObject
 {
     Q_OBJECT
+protected:
+    explicit PaginationNotifier(QObject *parent = nullptr) : QObject(parent) {}
 signals:
     auto dataChanged() -> void;
     auto resultsPerPageChanged() -> void;
@@ -47,9 +51,14 @@ signals:
  * the SlidingCacheController as it's backend
  */
 template<typename T>
-class KOMPLEX_EXPORT Paginator : public PaginatorNotifier
+class KOMPLEX_EXPORT Paginator : public PaginationNotifier
 {
 public:
+    explicit Paginator(QObject *parent = nullptr) : PaginationNotifier(parent)
+    {
+
+    }
+
     /**
      * @brief next
      *
@@ -58,7 +67,6 @@ public:
     auto next() const -> void
     {
         setOffset(m_offset + m_resultsPerPage);
-        Q_EMIT static_cast<PaginatorNotifier*>(this)->pageChanged();
     }
 
     /**
@@ -69,7 +77,6 @@ public:
     auto previous() const -> void
     {
         setOffset(m_offset - m_resultsPerPage);
-        Q_EMIT static_cast<PaginatorNotifier*>(this)->pageChanged();
     }
 
     /**
@@ -87,16 +94,23 @@ public:
      */
     auto setResultsPerPage(qsizetype resultsPerPage) -> void
     {
+        QMutexLocker dataLocker(&m_dataMutex);
+
+        if(resultsPerPage == m_resultsPerPage)
+        {
+            return;
+        }
+
         m_resultsPerPage = resultsPerPage;
-        Q_EMIT static_cast<PaginatorNotifier*>(this)->resultsPerPageChanged();
+        Q_EMIT static_cast<PaginationNotifier*>(this)->resultsPerPageChanged();
 
         m_data = m_cacheController.chunk(m_offset, m_resultsPerPage);
-        Q_EMIT static_cast<PaginatorNotifier*>(this)->dataChanged();
+        Q_EMIT static_cast<PaginationNotifier*>(this)->dataChanged();
     }
 
     /**
      * @brief data
-     * @return a copy of the list of pointers
+     * @return
      */
     auto data() const -> QList<T>
     {
@@ -119,6 +133,8 @@ public:
      */
     auto at(qsizetype index) const -> T
     {
+        QMutexLocker dataLocker(&m_dataMutex);
+
         if(index < 0 || index >= m_data.count())
         {
             return {};
@@ -135,11 +151,12 @@ public:
      */
     auto totalResults() -> qsizetype
     {
-        return m_cacheController.count();
+        return m_cacheController.totalCount();
     }
 
     /**
      * @brief page
+     * Calculates the current page
      * @return
      */
     auto page() const -> qsizetype
@@ -151,6 +168,7 @@ public:
 
     /**
      * @brief totalPages
+     * Calculates the total number of pages available
      * @return
      */
     auto totalPages() const -> qsizetype
@@ -162,18 +180,33 @@ public:
 
 protected:
 
+    /**
+     * @brief controller
+     * Reference to the underlying cache controller
+     * @return
+     */
     auto controller() -> SlidingCacheController<T>*
     {
         return &m_cacheController;
     }
 
+    /**
+     * @brief setOffset
+     * Sets the dataset to the specified offset
+     * @param offset
+     */
     auto setOffset(qsizetype offset) -> void
     {
+        if(offset == m_offset)
+        {
+            return;
+        }
+
         m_offset = offset;
 
-        if(m_offset >= m_totalResults)
+        if(m_offset >= totalResults())
         {
-            m_offset = m_totalResults - m_resultsPerPage;
+            m_offset = totalResults() - m_resultsPerPage;
         }
 
         if(m_offset < 0)
@@ -181,28 +214,89 @@ protected:
             m_offset = 0;
         }
 
-        m_data = m_cacheController.chunk(m_offset, m_resultsPerPage);
-        Q_EMIT this->countChanged();
-        Q_EMIT this->dataChanged();
+        QList<T> data = m_cacheController.chunk(m_offset, m_resultsPerPage);
+        setData(data);
+
         Q_EMIT this->pageChanged();
-        Q_EMIT this->totalPagesChanged();
     }
 
+    /**
+     * @brief setData
+     * @param data
+     */
+    auto setData(const QList<T> &data)
+    {
+        m_dataMutex.lock();
+
+        m_data.clear();
+        m_data.append(std::move(data));
+        m_dataMutex.unlock();
+
+        Q_EMIT this->countChanged();
+        Q_EMIT this->dataChanged();
+    }
+
+    /**
+     * @brief onControllerTotalResultsChanged
+     * Slot used to forward totalResultsChanged signal
+     */
     auto onControllerTotalResultsChanged() -> void
     {
         Q_EMIT this->totalResultsChanged();
     }
 
+    /**
+     * @brief reset
+     * Resets the paginator and underlying controller
+     */
+    auto reset() -> void
+    {
+        m_dataMutex.lock();
+
+        m_offset = std::numeric_limits<qsizetype>::infinity();
+        m_data.clear();
+        controller()->reset();
+        m_dataMutex.unlock();
+
+        Q_EMIT totalPagesChanged();
+        Q_EMIT dataChanged();
+        Q_EMIT pageChanged();
+    }
+
 private:
-    qsizetype m_page = 0;
-    qsizetype m_totalPages = 0;
 
-    qsizetype m_offset = 0;
+    /**
+     * @brief m_offset
+     * Current absolute offset. Used in fetch operations
+     */
+    qsizetype m_offset = std::numeric_limits<qsizetype>::infinity();
+
+    /**
+     * @brief m_resultsPerPage
+     * Results per page to use when calculating current and total pages.
+     * Needs to be set by the view
+     */
     qsizetype m_resultsPerPage = 0;
-    qsizetype m_totalResults = 0;
 
+    /**
+     * @brief m_cacheController
+     * Internal cache controller.
+     *
+     * TODO: make the cache controller generic so it can be used in other projects
+     * and with other cache methods
+     */
     SlidingCacheController<T> m_cacheController;
+
+    /**
+     * @brief m_data
+     * Internal data copy
+     */
     QList<T> m_data;
+
+    /**
+     * @brief m_dataMutex
+     */
+    mutable QMutex m_dataMutex;
 };
 
 #endif // PAGINATOR_H
