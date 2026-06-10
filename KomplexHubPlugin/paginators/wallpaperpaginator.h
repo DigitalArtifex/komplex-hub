@@ -43,7 +43,7 @@ class KOMPLEX_EXPORT WallpaperPaginator : public Paginator<WallpaperCache>
 {
     Q_OBJECT
 public:
-    explicit WallpaperPaginator() : Paginator<WallpaperCache>()
+    explicit WallpaperPaginator(QObject *parent = nullptr) : Paginator<WallpaperCache>(parent)
     {
         SlidingCacheController<WallpaperCache> *controller = this->controller();
         controller->setFetch(
