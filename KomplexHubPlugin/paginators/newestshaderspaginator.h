@@ -34,7 +34,7 @@
 class KOMPLEX_EXPORT NewestShadersPaginator : public WallpaperPaginator
 {
 public:
-    explicit NewestShadersPaginator() : WallpaperPaginator()
+    explicit NewestShadersPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_SHADERS_NEWEST)

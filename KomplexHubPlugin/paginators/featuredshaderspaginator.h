@@ -34,7 +34,7 @@
 class KOMPLEX_EXPORT FeaturedShadersPaginator : public WallpaperPaginator
 {
 public:
-    explicit FeaturedShadersPaginator() : WallpaperPaginator()
+    explicit FeaturedShadersPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_SHADERS_FEATURED)

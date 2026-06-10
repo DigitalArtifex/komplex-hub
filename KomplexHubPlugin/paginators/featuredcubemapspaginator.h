@@ -34,7 +34,7 @@
 class KOMPLEX_EXPORT FeaturedCubemapsPaginator : public WallpaperPaginator
 {
 public:
-    explicit FeaturedCubemapsPaginator() : WallpaperPaginator()
+    explicit FeaturedCubemapsPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_CUBEMAPS_FEATURED)

@@ -34,7 +34,7 @@
 class KOMPLEX_EXPORT SearchPacksPaginator : public WallpaperPaginator
 {
 public:
-    explicit SearchPacksPaginator() : WallpaperPaginator()
+    explicit SearchPacksPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_PACKS_SEARCH)

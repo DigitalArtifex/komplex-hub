@@ -34,7 +34,7 @@
 class KOMPLEX_EXPORT SearchCubemapsPaginator : public WallpaperPaginator
 {
 public:
-    explicit SearchCubemapsPaginator() : WallpaperPaginator()
+    explicit SearchCubemapsPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_CUBEMAPS_SEARCH)

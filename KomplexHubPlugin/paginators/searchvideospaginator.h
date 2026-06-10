@@ -34,7 +34,7 @@
 class KOMPLEX_EXPORT SearchVideosPaginator : public WallpaperPaginator
 {
 public:
-    explicit SearchVideosPaginator() : WallpaperPaginator()
+    explicit SearchVideosPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_VIDEOS_SEARCH)
