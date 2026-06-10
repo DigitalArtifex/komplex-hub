@@ -39,7 +39,7 @@ Q_DECLARE_METATYPE(WallpaperInstallData)
 
 struct KOMPLEX_EXPORT WallpaperCache
 {
-    QString uri;
+    QString uuid;
     QString name;
     QString author;
     QString authorId;
@@ -54,7 +54,7 @@ struct KOMPLEX_EXPORT WallpaperCache
     auto operator == (const WallpaperCache &other) const -> bool
     {
         return (
-            other.uri == uri &&
+            other.uuid == uuid &&
             other.name == name &&
             other.author == author &&
             other.authorId == authorId &&
