@@ -31,9 +31,33 @@
 #define NETWORK_TIMEOUT 10000
 
 #ifdef KOMPLEX_LOCAL_DEV
-#define KOMPLEX_API_HOST "https://komplex.net.hlab"
+#define KOMPLEX_API_HOST                        "https://komplexapi.hlab"
 #else
-#define KOMPLEX_API_HOST "https://digitalartifex.dev"
+#define KOMPLEX_API_HOST                        "https://komplex.digitalartifex.dev"
 #endif
+
+#define KOMPLEX_API_VERSION                     "v2"
+
+#define KOMPLEX_ENDPOINT_IMAGES_SEARCH          "images/search"
+#define KOMPLEX_ENDPOINT_IMAGES_FEATURED        "images/featured"
+#define KOMPLEX_ENDPOINT_IMAGES_ITEM            "images/item"
+
+#define KOMPLEX_ENDPOINT_VIDEOS_SEARCH          "videos/search"
+#define KOMPLEX_ENDPOINT_VIDEOS_ITEM            "videos/item"
+
+#define KOMPLEX_ENDPOINT_SHADERS_SEARCH         "shaders/search"
+#define KOMPLEX_ENDPOINT_SHADERS_FEATURED       "shaders/featured"
+#define KOMPLEX_ENDPOINT_SHADERS_ITEM           "shaders/item"
+#define KOMPLEX_ENDPOINT_SHADERS_NEWEST         "shaders/newest"
+
+#define KOMPLEX_ENDPOINT_CUBEMAPS_SEARCH        "cubemaps/search"
+#define KOMPLEX_ENDPOINT_CUBEMAPS_FEATURED      "cubemaps/featured"
+#define KOMPLEX_ENDPOINT_CUBEMAPS_ITEM          "cubemaps/item"
+#define KOMPLEX_ENDPOINT_CUBEMAPS_NEWEST        "cubemaps/newest"
+
+#define KOMPLEX_ENDPOINT_PACKS_SEARCH           "packs/search"
+#define KOMPLEX_ENDPOINT_PACKS_FEATURED         "packs/featured"
+#define KOMPLEX_ENDPOINT_PACKS_ITEM             "packs/item"
+#define KOMPLEX_ENDPOINT_PACKS_NEWEST           "packs/newest"
 
 #endif // KOMPLEX_GLOBAL_H
