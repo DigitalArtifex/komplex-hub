@@ -37,7 +37,7 @@ public:
     explicit NewestPacksPaginator() : WallpaperPaginator()
     {
         setUri(
-            QString::fromUtf8("%1/v2/packs/newest/").arg(KOMPLEX_API_HOST)
+            QString::fromUtf8(KOMPLEX_ENDPOINT_PACKS_NEWEST)
         );
     }
 };

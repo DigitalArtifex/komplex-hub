@@ -37,7 +37,7 @@ public:
     explicit SearchShadersPaginator() : WallpaperPaginator()
     {
         setUri(
-            QString::fromUtf8("%1/v2/shaders/search/").arg(KOMPLEX_API_HOST)
+            QString::fromUtf8(KOMPLEX_ENDPOINT_SHADERS_SEARCH)
         );
     }
 };

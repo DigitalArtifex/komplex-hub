@@ -37,7 +37,7 @@ public:
     explicit FeaturedImagesPaginator() : WallpaperPaginator()
     {
         setUri(
-            QString::fromUtf8("%1/v2/images/featured/").arg(KOMPLEX_API_HOST)
+            QString::fromUtf8(KOMPLEX_ENDPOINT_IMAGES_FEATURED)
         );
     }
 };

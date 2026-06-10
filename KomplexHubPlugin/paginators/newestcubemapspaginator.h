@@ -37,7 +37,7 @@ public:
     explicit NewestCubemapsPaginator() : WallpaperPaginator()
     {
         setUri(
-            QString::fromUtf8("%1/v2/cubemaps/newest/").arg(KOMPLEX_API_HOST)
+            QString::fromUtf8(KOMPLEX_ENDPOINT_CUBEMAPS_NEWEST)
         );
     }
 };

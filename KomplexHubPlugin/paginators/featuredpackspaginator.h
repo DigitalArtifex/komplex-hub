@@ -37,7 +37,7 @@ public:
     explicit FeaturedPacksPaginator() : WallpaperPaginator()
     {
         setUri(
-            QString::fromUtf8("%1/v2/packs/featured/").arg(KOMPLEX_API_HOST)
+            QString::fromUtf8(KOMPLEX_ENDPOINT_PACKS_FEATURED)
         );
     }
 };

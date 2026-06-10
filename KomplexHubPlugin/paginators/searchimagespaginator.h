@@ -31,13 +31,15 @@
 
 #include "wallpaperpaginator.h"
 
+#include "common/komplex_global.h"
+
 class KOMPLEX_EXPORT SearchImagesPaginator : public WallpaperPaginator
 {
 public:
     explicit SearchImagesPaginator() : WallpaperPaginator()
     {
         setUri(
-            QString::fromUtf8("%1/v2/images/search/").arg(KOMPLEX_API_HOST)
+            QString::fromUtf8(KOMPLEX_ENDPOINT_IMAGES_SEARCH)
         );
     }
 };
