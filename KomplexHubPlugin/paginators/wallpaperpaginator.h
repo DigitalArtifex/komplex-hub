@@ -125,7 +125,13 @@ protected:
             {}
         );
 
-        QUrl url(m_uri);
+        QUrl url(
+            QString::fromUtf8("%1/%2/%3").arg(
+                KOMPLEX_API_HOST,
+                KOMPLEX_API_VERSION,
+                m_uri
+            )
+        );
 
         QNetworkRequest request(url);
         request.setHeaders(
