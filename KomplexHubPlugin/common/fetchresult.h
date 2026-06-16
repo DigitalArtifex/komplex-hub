@@ -41,6 +41,13 @@ struct FetchResult
      * Results list
      */
     QList<T> data;
+
+    auto operator=(const FetchResult<T> &other) -> FetchResult<T>
+    {
+        total = other.total;
+        count = other.count;
+        data = other.data;
+    }
 };
 
 #endif // FETCHRESULT_H
