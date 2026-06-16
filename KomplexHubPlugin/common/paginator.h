@@ -64,7 +64,7 @@ public:
      *
      * Attempts to get the next page and notifies pageChanged
      */
-    auto next() const -> void
+    auto next() -> void
     {
         setOffset(m_offset + m_resultsPerPage);
     }
@@ -74,7 +74,7 @@ public:
      *
      * Attempts to get the previous page and notifies pageChanged
      */
-    auto previous() const -> void
+    auto previous() -> void
     {
         setOffset(m_offset - m_resultsPerPage);
     }
@@ -149,7 +149,7 @@ public:
      * The total number of results as reported by the controller
      * @return
      */
-    auto totalResults() -> qsizetype
+    auto totalResults() const -> qsizetype
     {
         return m_cacheController.totalCount();
     }
