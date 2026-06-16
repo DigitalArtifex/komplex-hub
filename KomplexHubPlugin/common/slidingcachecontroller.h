@@ -94,7 +94,7 @@ public:
             return {};
         }
 
-        if(!slideWindow(index))
+        if(!const_cast<SlidingCacheController*>(this)->slideWindow(index))
         {
             return {};
         }
@@ -127,7 +127,7 @@ public:
             return {};
         }
 
-        if(!slideWindow(index))
+        if(!const_cast<SlidingCacheController*>(this)->slideWindow(index))
         {
             return {};
         }
@@ -148,7 +148,7 @@ public:
 
         for(qsizetype i = index; i < count; ++i)
         {
-            T data = at(i);
+            T data = m_cache.at(i);
 
             if(data != T{})
             {
@@ -184,7 +184,6 @@ public:
         QMutexLocker cacheLocker(&m_cacheMutex);
 
         m_cache.clear();
-        setTotalCount(std::numeric_limits<qsizetype>::infinity());
     }
 
     /**
@@ -225,10 +224,10 @@ private:
      * @return True if index is within the external dataset boundary
      * OR an initial fetch has not been performed.
      */
-    auto externalBoundaryCheck(qsizetype index) -> bool
+    auto externalBoundaryCheck(qsizetype index) const -> bool
     {
         return (
-            index > 0 &&
+            index >= 0 &&
             (
                 m_totalCount == std::numeric_limits<qsizetype>::infinity() ||
                 index < m_totalCount
@@ -243,10 +242,10 @@ private:
      * @param index
      * @return True if index is within the internal dataset boundary
      */
-    auto internalBoundaryCheck(qsizetype index) -> bool
+    auto internalBoundaryCheck(qsizetype index) const -> bool
     {
         return (
-            index > 0 &&
+            index >= 0 &&
             index < m_cache.count()
         );
     }
@@ -281,6 +280,14 @@ private:
             }
         }
 
+        if(m_totalCount == std::numeric_limits<qsizetype>::infinity())
+        {
+            if(!slideForward())
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -305,7 +312,14 @@ private:
             movementSize -= SLIDING_CACHE_PREFETCH_THRESHOLD;
         }
 
-        m_windowOffset += movementSize;
+        if(m_totalCount != std::numeric_limits<qsizetype>::infinity())
+        {
+            m_windowOffset += movementSize;
+        }
+        else
+        {
+            m_windowOffset = 0;
+        }
 
         FetchResult<T> result = m_fetch(
             m_windowOffset,
@@ -414,7 +428,7 @@ private:
      * @param index Global object index
      * @return
      */
-    auto internalIndex(qsizetype index) -> qsizetype
+    auto internalIndex(qsizetype index) const -> qsizetype
     {
         return index - m_windowOffset;
     }
