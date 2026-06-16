@@ -46,6 +46,7 @@ target_compile_definitions(
     KomplexHubPlugin
     PUBLIC
         KOMPLEX_PLUGIN
+        KOMPLEX_LOCAL_DEV
 )
 
 if(ENABLE_ASAN)
