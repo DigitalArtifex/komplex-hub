@@ -182,14 +182,15 @@ protected:
 
             fetchedResults.append(
                 {
-                    resultObject.value(QString::fromUtf8("uri")).toString(),
+                    resultObject.value(QString::fromUtf8("uuid")).toString(),
                     resultObject.value(QString::fromUtf8("name")).toString(),
                     resultObject.value(QString::fromUtf8("author")).toString(),
-                    resultObject.value(QString::fromUtf8("authorId")).toString(),
+                    resultObject.value(QString::fromUtf8("author_id")).toString(),
                     resultObject.value(QString::fromUtf8("description")).toString(),
                     resultObject.value(QString::fromUtf8("thumbnail")).toString(),
                     QDateTime::fromString(
-                        resultObject.value(QString::fromUtf8("createdDate")).toString()
+                        resultObject.value(QString::fromUtf8("creation")).toString(),
+                        QString::fromUtf8("yyyy-MM-dd HH:mm:ss")
                     ),
                     resultObject.value(QString::fromUtf8("price")).toDouble(),
                     resultObject.value(QString::fromUtf8("currency")).toString(),
@@ -203,12 +204,14 @@ protected:
             );
         }
 
-        return
+        FetchResult<WallpaperCache> result
         {
             static_cast<qsizetype>(rootObject.value(QString::fromUtf8("total_results")).toInteger()),
             fetchedResults.count(),
             std::move(fetchedResults)
         };
+
+        return std::move(result);
     }
 
     /**
