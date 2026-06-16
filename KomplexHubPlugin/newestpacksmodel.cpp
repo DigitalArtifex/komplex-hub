@@ -1,33 +1,72 @@
 #include "newestpacksmodel.h"
-#include "common/coreservices.h"
-#include "common/logging.h"
 #include "common/wallpapercache.h"
 
 NewestPacksModel::NewestPacksModel(QObject *parent) : QAbstractListModel{parent}
 {
+    m_paginator = new NewestPacksPaginator(this);
+    PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::resultsPerPageChanged,
+        this,
+        &NewestPacksModel::resultsPerPageChanged
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::totalResultsChanged,
+        this,
+        &NewestPacksModel::totalResultsChanged
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::totalPagesChanged,
+        this,
+        &NewestPacksModel::totalPagesChanged
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::pageChanged,
+        this,
+        &NewestPacksModel::pageChanged
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::dataChanged,
+        this,
+        &NewestPacksModel::restDataModel
+    );
 }
 
 auto NewestPacksModel::rowCount(const QModelIndex &) const -> int
 {
-    return m_wallpaperCache.count();
+    if(m_paginator != nullptr)
+    {
+        return m_paginator->count();
+    }
+
+    return 0;
 }
 
 auto NewestPacksModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(index.row() < 0)
+    if(index.row() < 0 || m_paginator == nullptr)
     {
         return {};
     }
 
-    WallpaperCache dataPoint = m_wallpaperCache.at(index.row());
+    WallpaperCache dataPoint = m_data.at(index.row());
 
     QVariant data;
 
     switch(static_cast<DataRole>(role))
     {
-        case UriRole:
-            data = dataPoint.uri;
+        case UuidRole:
+            data = dataPoint.uuid;
             break;
         case AuthorRole:
             data = dataPoint.author;
@@ -68,8 +107,10 @@ auto NewestPacksModel::index(int row, int column, const QModelIndex &parent) con
 {
     Q_UNUSED(parent)
 
-    WallpaperCache data = m_wallpaperCache.at(row);
-    return createIndex(row, column, &data);
+    if(row < 0 || row >= m_data.count())
+        return {};
+
+    return createIndex(row, column, &m_data[row]);
 }
 
 auto NewestPacksModel::columnCount(const QModelIndex &) const -> int
@@ -108,6 +149,25 @@ auto NewestPacksModel::resetState() -> void
     setState(Idle);
 }
 
+auto NewestPacksModel::restDataModel() -> void
+{
+    //invalidate previous model data
+    beginRemoveRows(QModelIndex(), 0, m_data.count());
+    m_data.clear();
+    endRemoveRows();
+
+    //signal new data
+    beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
+    auto dataset = m_paginator->data();
+
+    for(const WallpaperCache& data : std::as_const(dataset))
+    {
+        m_data.append(data);
+    }
+
+    endInsertRows();
+}
+
 auto NewestPacksModel::roleNames() const -> QHash<int, QByteArray>
 {
     return m_dataRoles;
@@ -129,30 +189,66 @@ auto NewestPacksModel::setErrorString(const QString &errorString) -> void
     emit errorStringChanged();
 }
 
-auto NewestPacksModel::resultsPerPage() const -> qint64
+auto NewestPacksModel::resultsPerPage() const -> qsizetype
 {
-    return m_resultsPerPage;
+    if(m_paginator != nullptr)
+    {
+        return m_paginator->resultsPerPage();
+    }
+
+    return 0;
 }
 
-auto NewestPacksModel::setResultsPerPage(qint64 resultsPerPage) -> void
+auto NewestPacksModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
-    if (m_resultsPerPage == resultsPerPage)
-        return;
-
-    m_resultsPerPage = resultsPerPage;
-    emit resultsPerPageChanged();
+    if(m_paginator != nullptr)
+    {
+        m_paginator->setResultsPerPage(resultsPerPage);
+    }
 }
 
-qint64 NewestPacksModel::page() const
+auto NewestPacksModel::totalResults() const -> qsizetype
 {
-    return m_page;
+    if(m_paginator != nullptr)
+    {
+        return m_paginator->totalResults();
+    }
+
+    return 0;
 }
 
-void NewestPacksModel::setPage(qint64 page)
+auto NewestPacksModel::nextPage() const -> void
 {
-    if (m_page == page)
-        return;
+    if(m_paginator != nullptr)
+    {
+        m_paginator->next();
+    }
+}
 
-    m_page = page;
-    emit pageChanged();
+auto NewestPacksModel::previousPage() const -> void
+{
+    if(m_paginator != nullptr)
+    {
+        m_paginator->previous();
+    }
+}
+
+qsizetype NewestPacksModel::page() const
+{
+    if(m_paginator != nullptr)
+    {
+        return m_paginator->page();
+    }
+
+    return 0;
+}
+
+auto NewestPacksModel::totalPages() const -> qsizetype
+{
+    if(m_paginator != nullptr)
+    {
+        return m_paginator->totalPages();
+    }
+
+    return 0;
 }

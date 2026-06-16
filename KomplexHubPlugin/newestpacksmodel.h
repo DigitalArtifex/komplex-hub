@@ -38,12 +38,18 @@
 
 #include "paginators/newestpackspaginator.h"
 
+/**
+ * @brief The NewestPacksModel class
+ */
 class KOMPLEX_EXPORT NewestPacksModel : public QAbstractListModel
 {
     Q_OBJECT
     QML_ELEMENT
-
 public:
+
+    /**
+     * @brief Used to control the UI state
+     */
     enum State
     {
         Idle,
@@ -52,8 +58,11 @@ public:
     };
     Q_ENUM(State)
 
+    /**
+     * @brief Data roles used by the view to request data
+     */
     enum DataRole {
-        UriRole = Qt::UserRole + 1,
+        UuidRole = Qt::UserRole + 1,
         AuthorRole,
         AuthorIdRole,
         DescriptionRole,
@@ -70,58 +79,138 @@ public:
     explicit NewestPacksModel(QObject *parent = nullptr);
 
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
-    auto data(const QModelIndex &index, int role = Qt::DisplayRole) const -> QVariant override;
 
+    /**
+     * @brief data
+     * Used by the view to pull data from the model.
+     * Required by QAbstractListModel
+     * @param index
+     * @param role
+     * @return
+     */
+    auto data(
+        const QModelIndex &index,
+        int role = Qt::DisplayRole
+    ) const -> QVariant override;
+
+    /**
+     * @brief index
+     * Used by the view to create an index for the data point.
+     * Required by QAbstractListModel
+     * @param row
+     * @param column
+     * @param parent
+     * @return
+     */
     auto index(
         int row,
         int column,
         const QModelIndex &parent = QModelIndex()
     ) const -> QModelIndex override;
 
+    /**
+     * @brief columnCount
+     * Required by QAbstractListModel, but just returns 0
+     * since we dont use cols
+     * @param parent
+     * @return
+     */
     auto columnCount(
         const QModelIndex &parent = QModelIndex()
     ) const -> int override;
 
+    /**
+     * @brief parent
+     * @param index
+     * @return
+     */
     auto parent(const QModelIndex &index) const -> QModelIndex override;
 
+    /**
+     * @brief setData
+     * Required by QAbstractListModel but not used
+     * @param index
+     * @param value
+     * @param role
+     * @return true always
+     */
     auto setData(
         const QModelIndex &index,
         const QVariant &value,
         int role = Qt::EditRole
     ) -> bool override;
 
+    /**
+     * @brief state
+     * Current Model State
+     * @return
+     */
     auto state() const -> State;
-    auto setState(State state) -> void;
-    auto resetState() -> void;
+
+    /**
+     * @brief roleNames
+     * Used to tell the view what data roles are available
+     * and their QML friendly names
+     * @return
+     */
     auto roleNames() const -> QHash<int, QByteArray> override;
 
     auto errorString() const -> QString;
+
+    auto resultsPerPage() const -> qsizetype;
+    auto setResultsPerPage(qsizetype resultsPerPage) -> void;
+
+    auto totalResults() const -> qsizetype;
+
+    auto page() const -> qsizetype;
+    auto totalPages() const -> qsizetype;
+
+    Q_INVOKABLE auto nextPage() const -> void;
+    Q_INVOKABLE auto previousPage() const -> void;
+
+protected:
+    /**
+     * @brief setErrorString
+     * @param errorString
+     */
     auto setErrorString(const QString &errorString) -> void;
 
-    auto resultsPerPage() const -> qint64;
-    auto setResultsPerPage(qint64 resultsPerPage) -> void;
+    /**
+     * @brief setState
+     * @param state
+     */
+    auto setState(State state) -> void;
 
-    qint64 page() const;
-    void setPage(qint64 page);
+    /**
+     * @brief resetState
+     */
+    auto resetState() -> void;
+
+    auto restDataModel() -> void;
 
 signals:
-    auto installedWallpapersChanged() -> void;
     auto stateChanged() -> void;
     auto errorStringChanged() -> void;
     auto resultsPerPageChanged() -> void;
 
-    void pageChanged();
+    auto pageChanged() -> void;
+    auto totalResultsChanged() -> void;
+    auto totalPagesChanged() -> void;
 
 private:
     static inline const QHash<int, QByteArray> m_dataRoles =
     {
         {
-            static_cast<int>(UriRole),
-            QByteArray("uri")
+            static_cast<int>(UuidRole),
+            QByteArray("uuid")
         },
         {
             static_cast<int>(AuthorRole),
             QByteArray("author")
+        },
+        {
+            static_cast<int>(AuthorIdRole),
+            QByteArray("authorId")
         },
         {
             static_cast<int>(DescriptionRole),
@@ -156,23 +245,20 @@ private:
             QByteArray("type")
         }
     };
-
-    static inline const QString m_endpointUri = QString("");
     State m_state = Idle;
 
     QString m_errorString = QString();
 
-    QString m_installDirectoryUri;
+    NewestPacksPaginator *m_paginator = nullptr;
 
-    qint64 m_page = 0;
-    qint64 m_resultsPerPage = 0;
-
-    NewestPacksPaginator m_wallpaperCache;
+    mutable QList<WallpaperCache> m_data;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
-    Q_PROPERTY(qint64 resultsPerPage READ resultsPerPage WRITE setResultsPerPage NOTIFY resultsPerPageChanged FINAL)
-    Q_PROPERTY(qint64 page READ page WRITE setPage NOTIFY pageChanged FINAL)
+    Q_PROPERTY(qsizetype resultsPerPage READ resultsPerPage WRITE setResultsPerPage NOTIFY resultsPerPageChanged FINAL)
+    Q_PROPERTY(qsizetype totalResults READ totalResults NOTIFY totalResultsChanged FINAL)
+    Q_PROPERTY(qsizetype totalPages READ totalPages NOTIFY totalPagesChanged FINAL)
+    Q_PROPERTY(qsizetype page READ page NOTIFY pageChanged FINAL)
 };
 Q_DECLARE_METATYPE(NewestPacksModel)
 
