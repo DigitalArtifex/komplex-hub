@@ -43,6 +43,7 @@
 #define KOMPLEX_ENDPOINT_IMAGES_ITEM            "images/item"
 
 #define KOMPLEX_ENDPOINT_VIDEOS_SEARCH          "videos/search"
+#define KOMPLEX_ENDPOINT_VIDEOS_FEATURED        "videos/featured"
 #define KOMPLEX_ENDPOINT_VIDEOS_ITEM            "videos/item"
 
 #define KOMPLEX_ENDPOINT_SHADERS_SEARCH         "shaders/search"
