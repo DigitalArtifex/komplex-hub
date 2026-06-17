@@ -7,7 +7,6 @@ Item {
     property string description: "This is a description of the search result item"
     property string title: "Wallpaper Title"
     property string thumbnail: ""
-    property string url: ""
     property string uuid: ""
     property bool selected: false
 
@@ -18,7 +17,8 @@ Item {
     height: 256
     clip: true
 
-    Rectangle {
+    Rectangle
+    {
         id: searchResultItemContainer
         anchors.fill: parent
 
@@ -26,10 +26,12 @@ Item {
 
         color: palette.alternateBase.lighter(1.25)
 
-        ColumnLayout {
+        ColumnLayout
+        {
             anchors.fill: parent
 
-            Rectangle {
+            Rectangle
+            {
                 Layout.preferredWidth: 250
                 Layout.preferredHeight: 141
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
@@ -38,6 +40,14 @@ Item {
                 border.color: palette.alternateBase.lighter(1.75)
 
                 color: palette.base.lighter(1.25)
+
+                Image
+                {
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectCrop
+                    id: thumnailImage
+                    source: searchResultItemRoot.thumbnail
+                }
             }
 
             Text {
@@ -63,14 +73,19 @@ Item {
             }
 
             Text {
+                clip: true
                 color: palette.text
                 font.pixelSize: 12
                 text: searchResultItemRoot.description
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-
+                textFormat: Text.PlainText
+                Layout.maximumHeight: 32
+                Layout.preferredHeight: 32
+                elide: Text.ElideRight
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                 Layout.preferredWidth: 236
+                Layout.maximumWidth: 236
                 Layout.bottomMargin: 3
             }
         }
