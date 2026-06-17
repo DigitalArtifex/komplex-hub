@@ -39,11 +39,11 @@
 #define KOMPLEX_API_VERSION                     "v2"
 
 #define KOMPLEX_ENDPOINT_IMAGES_SEARCH          "images/search"
-#define KOMPLEX_ENDPOINT_IMAGES_FEATURED        "images/featured"
+#define KOMPLEX_ENDPOINT_IMAGES_FEATURED        "featured/images"
 #define KOMPLEX_ENDPOINT_IMAGES_ITEM            "images/item"
 
 #define KOMPLEX_ENDPOINT_VIDEOS_SEARCH          "videos/search"
-#define KOMPLEX_ENDPOINT_VIDEOS_FEATURED        "videos/featured"
+#define KOMPLEX_ENDPOINT_VIDEOS_FEATURED        "featured/videos"
 #define KOMPLEX_ENDPOINT_VIDEOS_ITEM            "videos/item"
 
 #define KOMPLEX_ENDPOINT_SHADERS_SEARCH         "shaders/search"
