@@ -78,6 +78,12 @@ public:
 
     explicit NewestPacksModel(QObject *parent = nullptr);
 
+    /**
+     * @brief rowCount
+     * @param parent
+     * @return
+     */
+    [[nodiscard]]
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
 
     /**
@@ -88,6 +94,7 @@ public:
      * @param role
      * @return
      */
+    [[nodiscard]]
     auto data(
         const QModelIndex &index,
         int role = Qt::DisplayRole
@@ -102,6 +109,7 @@ public:
      * @param parent
      * @return
      */
+    [[nodiscard]]
     auto index(
         int row,
         int column,
@@ -115,6 +123,7 @@ public:
      * @param parent
      * @return
      */
+    [[nodiscard]]
     auto columnCount(
         const QModelIndex &parent = QModelIndex()
     ) const -> int override;
@@ -124,6 +133,7 @@ public:
      * @param index
      * @return
      */
+    [[nodiscard]]
     auto parent(const QModelIndex &index) const -> QModelIndex override;
 
     /**
@@ -153,19 +163,54 @@ public:
      * and their QML friendly names
      * @return
      */
+    [[nodiscard]]
     auto roleNames() const -> QHash<int, QByteArray> override;
 
+    /**
+     * @brief errorString
+     * @return
+     */
+    [[nodiscard]]
     auto errorString() const -> QString;
 
+    /**
+     * @brief resultsPerPage
+     * @return
+     */
     auto resultsPerPage() const -> qsizetype;
+
+    /**
+     * @brief setResultsPerPage
+     * @param resultsPerPage
+     */
     auto setResultsPerPage(qsizetype resultsPerPage) -> void;
 
+    /**
+     * @brief totalResults
+     * @return
+     */
     auto totalResults() const -> qsizetype;
 
+    /**
+     * @brief page
+     * @return
+     */
     auto page() const -> qsizetype;
+
+    /**
+     * @brief totalPages
+     * @return
+     */
     auto totalPages() const -> qsizetype;
 
+    /**
+     * @brief nextPage
+     */
     Q_INVOKABLE auto nextPage() const -> void;
+
+    /**
+     * @brief previousPage
+     */
     Q_INVOKABLE auto previousPage() const -> void;
 
 protected:
@@ -186,7 +231,10 @@ protected:
      */
     auto resetState() -> void;
 
-    auto restDataModel() -> void;
+    /**
+     * @brief resetDataModel
+     */
+    auto resetDataModel() -> void;
 
 signals:
     auto stateChanged() -> void;

@@ -38,7 +38,7 @@ NewestPacksModel::NewestPacksModel(QObject *parent) : QAbstractListModel{parent}
         notifier,
         &PaginationNotifier::dataChanged,
         this,
-        &NewestPacksModel::restDataModel
+        &NewestPacksModel::resetDataModel
     );
 }
 
@@ -149,7 +149,7 @@ auto NewestPacksModel::resetState() -> void
     setState(Idle);
 }
 
-auto NewestPacksModel::restDataModel() -> void
+auto NewestPacksModel::resetDataModel() -> void
 {
     //invalidate previous model data
     beginRemoveRows(QModelIndex(), 0, m_data.count());
