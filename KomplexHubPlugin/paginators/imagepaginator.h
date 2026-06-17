@@ -202,7 +202,7 @@ protected:
                     resultObject.value(QString::fromUtf8("photographer")).toString(),
                     resultObject.value(QString::fromUtf8("photographer_url")).toString(),
                     resultObject.value(QString::fromUtf8("photographer_id")).toInteger(),
-                    sourceMap,
+                    std::move(sourceMap),
                     resultObject.value(QString::fromUtf8("url")).toString()
                 }
             );
