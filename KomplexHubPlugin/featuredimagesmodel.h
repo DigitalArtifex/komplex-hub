@@ -65,14 +65,16 @@ public:
         UuidRole = Qt::UserRole + 1,
         AuthorRole,
         AuthorIdRole,
+        AuthorUrlRole,
         DescriptionRole,
-        NameRole,
         ThumbnailRole,
-        CreatedDateRole,
-        PriceRole,
-        CurrencyRole,
-        DownloadCountRole,
-        TypeRole
+        PortraitUrlRole,
+        LandscapeUrlRole,
+        SmallUrlRole,
+        OriginalUrlRole,
+        MediumUrlRole,
+        LargeUrlRole,
+        ExtraLargeUrlRole
     };
     Q_ENUM(DataRole)
 
@@ -251,36 +253,44 @@ private:
             QByteArray("authorId")
         },
         {
-            static_cast<int>(DescriptionRole),
-            QByteArray("description")
+            static_cast<int>(AuthorUrlRole),
+            QByteArray("authorUrl")
         },
         {
-            static_cast<int>(NameRole),
-            QByteArray("name")
+            static_cast<int>(DescriptionRole),
+            QByteArray("description")
         },
         {
             static_cast<int>(ThumbnailRole),
             QByteArray("thumbnail")
         },
         {
-            static_cast<int>(CreatedDateRole),
-            QByteArray("createdDate")
+            static_cast<int>(PortraitUrlRole),
+            QByteArray("portrait")
         },
         {
-            static_cast<int>(PriceRole),
-            QByteArray("price")
+            static_cast<int>(LandscapeUrlRole),
+            QByteArray("landscape")
         },
         {
-            static_cast<int>(CurrencyRole),
-            QByteArray("currency")
+            static_cast<int>(SmallUrlRole),
+            QByteArray("small")
         },
         {
-            static_cast<int>(DownloadCountRole),
-            QByteArray("downloadCount")
+            static_cast<int>(OriginalUrlRole),
+            QByteArray("original")
         },
         {
-            static_cast<int>(TypeRole),
-            QByteArray("type")
+            static_cast<int>(MediumUrlRole),
+            QByteArray("medium")
+        },
+        {
+            static_cast<int>(LargeUrlRole),
+            QByteArray("large")
+        },
+        {
+            static_cast<int>(ExtraLargeUrlRole),
+            QByteArray("extraLarge")
         }
     };
     State m_state = Idle;
@@ -289,7 +299,7 @@ private:
 
     FeaturedImagesPaginator *m_paginator = nullptr;
 
-    mutable QList<WallpaperCache> m_data;
+    mutable QList<ImageCache> m_data;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)

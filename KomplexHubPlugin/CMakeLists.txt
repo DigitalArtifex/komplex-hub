@@ -46,6 +46,8 @@ qt_add_qml_module(
         SOURCES featuredvideosmodel.h
         SOURCES featuredvideosmodel.cpp
         SOURCES paginators/featuredvideospaginator.h
+        SOURCES common/imagecache.h
+        SOURCES paginators/imagepaginator.h
 
 )
 

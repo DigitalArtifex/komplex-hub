@@ -59,45 +59,51 @@ auto FeaturedImagesModel::data(const QModelIndex &index, int role) const -> QVar
         return {};
     }
 
-    WallpaperCache dataPoint = m_data.at(index.row());
+    ImageCache dataPoint = m_data.at(index.row());
 
     QVariant data;
 
     switch(static_cast<DataRole>(role))
     {
-        case UuidRole:
-            data = dataPoint.uuid;
-            break;
-        case AuthorRole:
-            data = dataPoint.author;
-            break;
-        case DescriptionRole:
-            data = dataPoint.description;
-            break;
-        case NameRole:
-            data = dataPoint.name;
-            break;
-        case ThumbnailRole:
-            data = dataPoint.thumbnail;
-            break;
-        case CreatedDateRole:
-            data = dataPoint.createdDate;
-            break;
-        case AuthorIdRole:
-            data = dataPoint.authorId;
-            break;
-        case PriceRole:
-            data = dataPoint.price;
-            break;
-        case CurrencyRole:
-            data = dataPoint.currency;
-            break;
-        case DownloadCountRole:
-            data = dataPoint.downloadCount;
-            break;
-        case TypeRole:
-            data = dataPoint.type;
-            break;
+    case UuidRole:
+        data = dataPoint.id;
+        break;
+    case AuthorRole:
+        data = dataPoint.photographer;
+        break;
+    case AuthorIdRole:
+        data = dataPoint.photographerId;
+        break;
+    case AuthorUrlRole:
+        data = dataPoint.photographerUrl;
+        break;
+    case DescriptionRole:
+        data = dataPoint.altText;
+        break;
+    case ThumbnailRole:
+        data = dataPoint.sources.value(QString::fromUtf8("tiny"));
+        break;
+    case PortraitUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("portrait"));
+        break;
+    case LandscapeUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("landscape"));
+        break;
+    case SmallUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("small"));
+        break;
+    case OriginalUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("original"));
+        break;
+    case MediumUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("medium"));
+        break;
+    case LargeUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("large"));
+        break;
+    case ExtraLargeUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("large2x"));
+        break;
     }
 
     return data;
@@ -160,7 +166,7 @@ auto FeaturedImagesModel::resetDataModel() -> void
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
     auto dataset = m_paginator->data();
 
-    for(const WallpaperCache& data : std::as_const(dataset))
+    for(const ImageCache& data : std::as_const(dataset))
     {
         m_data.append(data);
     }

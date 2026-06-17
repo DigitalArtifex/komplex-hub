@@ -120,7 +120,6 @@ Item {
                             delegate: Item {
                                 width: 256
                                 height: 256
-                                required property string name
                                 required property string author
                                 required property string description
                                 required property string uuid
@@ -130,8 +129,8 @@ Item {
                                 SearchResultItem
                                 {
                                     anchors.fill: parent
-                                    title: parent.name
-                                    author: parent.author
+                                    title: parent.author
+                                    author: qsTr("Pexels Images")
                                     description: parent.description
                                     thumbnail: parent.thumbnail
                                     uuid: parent.uuid
@@ -176,17 +175,18 @@ Item {
                             delegate: Item {
                                 width: 256
                                 height: 256
-                                required property string name
-                                required property string author
-                                required property string description
                                 required property string uuid
-                                required property string thumbnail
+                                required property string author
                                 required property string authorId
+                                required property string authorUrl
+                                required property string description
+                                required property string thumbnail
+                                required property string original
 
                                 SearchResultItem
                                 {
                                     anchors.fill: parent
-                                    title: parent.name
+                                    title: "Pexels Photo"
                                     author: parent.author
                                     description: parent.description
                                     thumbnail: parent.thumbnail

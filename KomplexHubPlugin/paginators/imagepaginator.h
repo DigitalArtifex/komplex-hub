@@ -16,8 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
-#ifndef WALLPAPERPAGINATOR_H
-#define WALLPAPERPAGINATOR_H
+#ifndef IMAGEPAGINATOR_H
+#define IMAGEPAGINATOR_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -31,23 +31,23 @@
 
 #include "common/logging.h"
 #include "common/paginator.h"
-#include "common/wallpapercache.h"
+#include "common/imagecache.h"
 #include "common/coreservices.h"
 
 /**
- * @brief The WallpaperPaginator class
+ * @brief The ImagePaginator class
  * Most of the media endpoints for the Komplex API have the same data structure so
  * child classes can make use of this generic controller where possible
  */
-class KOMPLEX_EXPORT WallpaperPaginator : public Paginator<WallpaperCache>
+class KOMPLEX_EXPORT ImagePaginator : public Paginator<ImageCache>
 {
     Q_OBJECT
 public:
-    explicit WallpaperPaginator(QObject *parent = nullptr) : Paginator<WallpaperCache>(parent)
+    explicit ImagePaginator(QObject *parent = nullptr) : Paginator<ImageCache>(parent)
     {
-        SlidingCacheController<WallpaperCache> *controller = this->controller();
+        SlidingCacheController<ImageCache> *controller = this->controller();
         controller->setFetch(
-            std::bind(&WallpaperPaginator::fetch, this, std::placeholders::_1, std::placeholders::_2)
+            std::bind(&ImagePaginator::fetch, this, std::placeholders::_1, std::placeholders::_2)
         );
     }
 
@@ -111,16 +111,16 @@ protected:
      * to the Cache Controller not meant to be called directly.
      * @param offset Offset index to start the results from
      * @param limit Number of results to attempt to fetch
-     * @return FetchResult<WallpaperCache>
+     * @return FetchResult<ImageCache>
      */
     [[nodiscard]]
     auto fetch(
         qsizetype offset,
         qsizetype limit
-    ) const -> FetchResult<WallpaperCache>
+    ) const -> FetchResult<ImageCache>
     {
         LOG_ERROR_X(m_uri.isEmpty(),
-            "WallpaperPaginator::fetch",
+            "ImagePaginator::fetch",
             "Uri not set",
             {}
         );
@@ -167,9 +167,9 @@ protected:
         QJsonDocument document = getDocument(reply);
 
         QJsonObject rootObject = document.object();
-        const QJsonArray resultsArray = rootObject.value(QString::fromUtf8("results")).toArray();
+        const QJsonArray resultsArray = rootObject.value(QString::fromUtf8("photos")).toArray();
 
-        QList<WallpaperCache> fetchedResults;
+        QList<ImageCache> fetchedResults;
 
         for(const auto result : resultsArray)
         {
@@ -180,31 +180,35 @@ protected:
 
             QJsonObject resultObject = result.toObject();
 
+            const QVariantMap sources = resultObject.value(QString::fromUtf8("src")).toObject().toVariantMap();
+            QMap<QString, QString> sourceMap;
+
+            QMapIterator<QString,QVariant> sourceIterator(sources);
+
+            while(sourceIterator.hasNext())
+            {
+                sourceIterator.next();
+                sourceMap.insert(sourceIterator.key(), sourceIterator.value().toString());
+            }
+
             fetchedResults.append(
                 {
-                    resultObject.value(QString::fromUtf8("uuid")).toString(),
-                    resultObject.value(QString::fromUtf8("title")).toString(),
-                    resultObject.value(QString::fromUtf8("author")).toString(),
-                    resultObject.value(QString::fromUtf8("author_id")).toString(),
-                    resultObject.value(QString::fromUtf8("description")).toString(),
-                    resultObject.value(QString::fromUtf8("thumbnail")).toString(),
-                    QDateTime::fromString(
-                        resultObject.value(QString::fromUtf8("creation")).toString(),
-                        QString::fromUtf8("yyyy-MM-dd HH:mm:ss")
-                    ),
-                    resultObject.value(QString::fromUtf8("price")).toDouble(),
-                    resultObject.value(QString::fromUtf8("currency")).toString(),
-                    static_cast<quint64>(
-                        resultObject.value(QString::fromUtf8("downloadCount")
-                    ).toInteger()),
-                    static_cast<qint8>(
-                        resultObject.value(QString::fromUtf8("description")
-                    ).toInt()),
+                    resultObject.value(QString::fromUtf8("alt")).toString(),
+                    resultObject.value(QString::fromUtf8("avg_color")).toString().toUtf8(),
+                    resultObject.value(QString::fromUtf8("height")).toInteger(),
+                    resultObject.value(QString::fromUtf8("width")).toInteger(),
+                    resultObject.value(QString::fromUtf8("id")).toInteger(),
+                    resultObject.value(QString::fromUtf8("liked")).toBool(),
+                    resultObject.value(QString::fromUtf8("photographer")).toString(),
+                    resultObject.value(QString::fromUtf8("photographer_url")).toString(),
+                    resultObject.value(QString::fromUtf8("photographer_id")).toInteger(),
+                    sourceMap,
+                    resultObject.value(QString::fromUtf8("url")).toString()
                 }
             );
         }
 
-        FetchResult<WallpaperCache> result
+        FetchResult<ImageCache> result
         {
             static_cast<qsizetype>(rootObject.value(QString::fromUtf8("total_results")).toInteger()),
             fetchedResults.count(),
@@ -310,4 +314,4 @@ private:
     QString m_query;
 };
 
-#endif // WALLPAPERPAGINATOR_H
+#endif // IMAGEPAGINATOR_H

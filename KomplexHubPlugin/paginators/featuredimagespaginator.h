@@ -29,12 +29,12 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-#include "wallpaperpaginator.h"
+#include "imagepaginator.h"
 
-class KOMPLEX_EXPORT FeaturedImagesPaginator : public WallpaperPaginator
+class KOMPLEX_EXPORT FeaturedImagesPaginator : public ImagePaginator
 {
 public:
-    explicit FeaturedImagesPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
+    explicit FeaturedImagesPaginator(QObject *parent = nullptr) : ImagePaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_IMAGES_FEATURED)
