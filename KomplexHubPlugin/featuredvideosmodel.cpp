@@ -1,5 +1,5 @@
 #include "featuredvideosmodel.h"
-#include "common/wallpapercache.h"
+#include "common/videocache.h"
 
 FeaturedVideosModel::FeaturedVideosModel(QObject *parent) : QAbstractListModel{parent}
 {
@@ -59,46 +59,40 @@ auto FeaturedVideosModel::data(const QModelIndex &index, int role) const -> QVar
         return {};
     }
 
-    WallpaperCache dataPoint = m_data.at(index.row());
+    VideoCache dataPoint = m_data.at(index.row());
 
     QVariant data;
 
     switch(static_cast<DataRole>(role))
     {
         case UuidRole:
-            data = dataPoint.uuid;
+            data = dataPoint.id;
             break;
         case AuthorRole:
             data = dataPoint.author;
             break;
-        case DescriptionRole:
-            data = dataPoint.description;
+        case AuthorIdRole:
+            data = dataPoint.authorId;
             break;
-        case NameRole:
-            data = dataPoint.name;
+        case AuthorUrlRole:
+            data = dataPoint.authorUrl;
+            break;
+        case DurationRole:
+            data = dataPoint.duration;
             break;
         case ThumbnailRole:
             data = dataPoint.thumbnail;
             break;
-        case CreatedDateRole:
-            data = dataPoint.createdDate;
+        case UrlRole:
+            data = dataPoint.url;
             break;
-        case AuthorIdRole:
-            data = dataPoint.authorId;
+        case HeightRole:
+            data = dataPoint.height;
             break;
-        case PriceRole:
-            data = dataPoint.price;
+        case WidthRole:
+            data = dataPoint.width;
             break;
-        case CurrencyRole:
-            data = dataPoint.currency;
-            break;
-        case DownloadCountRole:
-            data = dataPoint.downloadCount;
-            break;
-        case TypeRole:
-            data = dataPoint.type;
-            break;
-    }
+        }
 
     return data;
 }
@@ -160,7 +154,7 @@ auto FeaturedVideosModel::resetDataModel() -> void
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
     auto dataset = m_paginator->data();
 
-    for(const WallpaperCache& data : std::as_const(dataset))
+    for(const VideoCache& data : std::as_const(dataset))
     {
         m_data.append(data);
     }

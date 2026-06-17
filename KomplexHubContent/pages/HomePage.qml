@@ -179,16 +179,14 @@ Item {
                                 required property string author
                                 required property string authorId
                                 required property string authorUrl
-                                required property string description
                                 required property string thumbnail
-                                required property string original
 
                                 SearchResultItem
                                 {
                                     anchors.fill: parent
-                                    title: "Pexels Photo"
+                                    title: parent.author
                                     author: parent.author
-                                    description: parent.description
+                                    description: "Video provided by Pexels"
                                     thumbnail: parent.thumbnail
                                     uuid: parent.uuid
                                 }
