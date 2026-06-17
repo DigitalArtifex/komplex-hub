@@ -4,12 +4,31 @@ import QtQuick.Layouts
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
+import KomplexHubPlugin
 
 Item {
     readonly property bool searchable: false
     property int resultsPerRow: (homePageRoot.width - (64 + Constants.largeMargin)) / (256 + Constants.largeMargin)
 
     id: homePageRoot
+
+    NewestPacksModel
+    {
+        id: newestPacksModel
+        resultsPerPage: homePageRoot.resultsPerRow
+    }
+
+    FeaturedImagesModel
+    {
+        id: featuredImagesModel
+        resultsPerPage: homePageRoot.resultsPerRow
+    }
+
+    FeaturedVideosModel
+    {
+        id: featuredVideosModel
+        resultsPerPage: homePageRoot.resultsPerRow
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -30,7 +49,7 @@ Item {
                     Text {
                         color: palette.text
                         font.pixelSize: Constants.largeFont.pixelSize
-                        text: "Featured"
+                        text: "Newest Wallpaper Packs"
                     }
 
                     RowLayout {
@@ -40,10 +59,27 @@ Item {
                         Layout.alignment: Qt.AlignHCenter
 
                         Repeater {
-                            model: resultsPerRow
+                            model: newestPacksModel
 
-                            delegate: SearchResultItem {
+                            delegate: Item {
+                                width: 256
+                                height: 256
+                                required property string name
+                                required property string author
+                                required property string description
+                                required property string uuid
+                                required property string thumbnail
+                                required property string authorId
 
+                                SearchResultItem
+                                {
+                                    anchors.fill: parent
+                                    title: parent.name
+                                    author: parent.author
+                                    description: parent.description
+                                    thumbnail: parent.thumbnail
+                                    uuid: parent.uuid
+                                }
                             }
                         }
 
@@ -69,7 +105,7 @@ Item {
                     Text {
                         color: palette.text
                         font.pixelSize: Constants.largeFont.pixelSize
-                        text: "Newest"
+                        text: "Featured Images"
                     }
 
                     RowLayout {
@@ -79,10 +115,27 @@ Item {
                         Layout.alignment: Qt.AlignHCenter
 
                         Repeater {
-                            model: resultsPerRow
+                            model: featuredImagesModel
 
-                            delegate: SearchResultItem {
+                            delegate: Item {
+                                width: 256
+                                height: 256
+                                required property string name
+                                required property string author
+                                required property string description
+                                required property string uuid
+                                required property string thumbnail
+                                required property string authorId
 
+                                SearchResultItem
+                                {
+                                    anchors.fill: parent
+                                    title: parent.name
+                                    author: parent.author
+                                    description: parent.description
+                                    thumbnail: parent.thumbnail
+                                    uuid: parent.uuid
+                                }
                             }
                         }
 
@@ -108,7 +161,7 @@ Item {
                     Text {
                         color: palette.text
                         font.pixelSize: Constants.largeFont.pixelSize
-                        text: "Popular"
+                        text: "Featured Videos"
                     }
 
                     RowLayout {
@@ -118,10 +171,27 @@ Item {
                         Layout.alignment: Qt.AlignHCenter
 
                         Repeater {
-                            model: resultsPerRow
+                            model: featuredVideosModel
 
-                            delegate: SearchResultItem {
+                            delegate: Item {
+                                width: 256
+                                height: 256
+                                required property string name
+                                required property string author
+                                required property string description
+                                required property string uuid
+                                required property string thumbnail
+                                required property string authorId
 
+                                SearchResultItem
+                                {
+                                    anchors.fill: parent
+                                    title: parent.name
+                                    author: parent.author
+                                    description: parent.description
+                                    thumbnail: parent.thumbnail
+                                    uuid: parent.uuid
+                                }
                             }
                         }
 
