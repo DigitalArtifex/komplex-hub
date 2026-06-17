@@ -39,6 +39,13 @@ qt_add_qml_module(
         SOURCES paginators/searchshaderspaginator.h
         SOURCES paginators/searchcubemapspaginator.h
         SOURCES paginators/searchvideospaginator.h
+        SOURCES featuredpacksmodel.h
+        SOURCES featuredpacksmodel.cpp
+        SOURCES featuredimagesmodel.h
+        SOURCES featuredimagesmodel.cpp
+        SOURCES featuredvideosmodel.h
+        SOURCES featuredvideosmodel.cpp
+        SOURCES paginators/featuredvideospaginator.h
 
 )
 
