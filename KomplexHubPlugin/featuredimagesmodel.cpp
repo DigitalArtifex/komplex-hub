@@ -1,8 +1,9 @@
 #include "featuredimagesmodel.h"
-#include "common/wallpapercache.h"
 
 FeaturedImagesModel::FeaturedImagesModel(QObject *parent) : QAbstractListModel{parent}
 {
+    setState(Loading);
+
     m_paginator = new FeaturedImagesPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -157,6 +158,8 @@ auto FeaturedImagesModel::resetState() -> void
 
 auto FeaturedImagesModel::resetDataModel() -> void
 {
+    setState(Loading);
+
     //invalidate previous model data
     beginRemoveRows(QModelIndex(), 0, m_data.count());
     m_data.clear();
@@ -172,6 +175,8 @@ auto FeaturedImagesModel::resetDataModel() -> void
     }
 
     endInsertRows();
+
+    setState(Idle);
 }
 
 auto FeaturedImagesModel::roleNames() const -> QHash<int, QByteArray>

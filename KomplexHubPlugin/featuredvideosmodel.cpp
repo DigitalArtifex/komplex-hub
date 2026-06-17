@@ -3,6 +3,8 @@
 
 FeaturedVideosModel::FeaturedVideosModel(QObject *parent) : QAbstractListModel{parent}
 {
+    setState(Loading);
+
     m_paginator = new FeaturedVideosPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -145,6 +147,8 @@ auto FeaturedVideosModel::resetState() -> void
 
 auto FeaturedVideosModel::resetDataModel() -> void
 {
+    setState(Loading);
+
     //invalidate previous model data
     beginRemoveRows(QModelIndex(), 0, m_data.count());
     m_data.clear();
@@ -160,6 +164,8 @@ auto FeaturedVideosModel::resetDataModel() -> void
     }
 
     endInsertRows();
+
+    setState(Idle);
 }
 
 auto FeaturedVideosModel::roleNames() const -> QHash<int, QByteArray>

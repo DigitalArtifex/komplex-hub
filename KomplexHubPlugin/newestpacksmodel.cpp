@@ -3,6 +3,8 @@
 
 NewestPacksModel::NewestPacksModel(QObject *parent) : QAbstractListModel{parent}
 {
+    setState(Loading);
+
     m_paginator = new NewestPacksPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -151,6 +153,7 @@ auto NewestPacksModel::resetState() -> void
 
 auto NewestPacksModel::resetDataModel() -> void
 {
+    setState(Loading);
     //invalidate previous model data
     beginRemoveRows(QModelIndex(), 0, m_data.count());
     m_data.clear();
@@ -166,6 +169,7 @@ auto NewestPacksModel::resetDataModel() -> void
     }
 
     endInsertRows();
+    setState(Idle);
 }
 
 auto NewestPacksModel::roleNames() const -> QHash<int, QByteArray>
