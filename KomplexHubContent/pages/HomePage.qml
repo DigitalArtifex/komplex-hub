@@ -206,4 +206,32 @@ Item {
             }
         }
     }
+
+    KeroLoadingAnimation
+    {
+        id: loadingAnimation
+        anchors.fill: parent
+
+        OpacityAnimator on opacity {
+            duration: 150
+        }
+
+        visible: opacity > 0
+        opacity: 0
+    }
+
+    states: [
+        State {
+            name: "loading"
+            when: newestPacksModel.state == NewestPacksModel.Loading ||
+                  featuredImagesModel.state == FeaturedImagesModel.Loading ||
+                  featuredVideosModel.state == FeaturedVideosModel.Loading;
+
+            PropertyChanges {
+                target: loadingAnimation
+                opacity: 1
+            }
+        }
+
+    ]
 }
