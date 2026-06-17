@@ -183,7 +183,7 @@ protected:
             fetchedResults.append(
                 {
                     resultObject.value(QString::fromUtf8("uuid")).toString(),
-                    resultObject.value(QString::fromUtf8("name")).toString(),
+                    resultObject.value(QString::fromUtf8("title")).toString(),
                     resultObject.value(QString::fromUtf8("author")).toString(),
                     resultObject.value(QString::fromUtf8("author_id")).toString(),
                     resultObject.value(QString::fromUtf8("description")).toString(),
