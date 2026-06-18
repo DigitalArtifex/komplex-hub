@@ -52,6 +52,8 @@ Item {
                 icon.source: searchBarRootItem.icon
                 icon.width: 16
                 icon.height: 16
+
+                onTriggered: () => searchBarRootItem.searchTerm = searchEdit.text
             }
         }
     }
