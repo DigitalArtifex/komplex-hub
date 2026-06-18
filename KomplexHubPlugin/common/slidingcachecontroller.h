@@ -146,7 +146,7 @@ public:
 
         QList<T> dataChunk;
 
-        for(qsizetype i = index; i < count; ++i)
+        for(qsizetype i = index; (i - index) < count; ++i)
         {
             T data = m_cache.at(i);
 
