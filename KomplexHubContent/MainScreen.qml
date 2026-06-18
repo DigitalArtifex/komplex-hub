@@ -10,6 +10,7 @@ import QtQuick.Layouts
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
+import KomplexHubContent
 
 Rectangle {
     property MenuButton currentMenuButton
@@ -78,6 +79,7 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 50
+                        // searchContainer.searchTerm = (pageLoader.page as ImageSearchPage).query
                     }
                 }
 
@@ -99,6 +101,7 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 50
+                        // searchContainer.searchTerm = pageLoader.page.query
                     }
                 }
 
@@ -176,6 +179,10 @@ Rectangle {
 
                     icon: "qrc:/images/icons/icons8-search.svg"
 
+                    onSearchTermChanged: () => {
+                        pageLoader.setSearchTerm()
+                    }
+
                     Behavior on preferredHeight {
                         NumberAnimation { duration: Constants.normalAnimationDuration }
                     }
@@ -212,34 +219,72 @@ Rectangle {
 
                             onFinished: () => {
                                 if(pageLoader.loading && pageLoader.opacity === 0)
+                                {
                                     pageLoader.loadPage()
+                                }
                                 else if(pageLoader.loading && pageLoader.opacity === 1)
+                                {
                                     pageLoader.loading = false
+                                    pageLoader.updateSearchTerm();
+                                }
                             }
                         }
 
-                        function fadeOutPage() {
+                        function fadeOutPage()
+                        {
                             pageLoaderAnimation.from = 1
                             pageLoaderAnimation.to = 0
                             pageLoaderAnimation.start()
                         }
 
-                        function fadeInPage() {
+                        function fadeInPage()
+                        {
                             if(pageLoader.sourceComponent.status != Component.Ready)
+                            {
                                 return
+                            }
 
                             pageLoaderAnimation.from = 0
                             pageLoaderAnimation.to = 1
                             pageLoaderAnimation.start()
                         }
 
-                        function loadPage() {
+                        function loadPage()
+                        {
                             sourceComponent = Qt.createComponent(page)
 
-                            if(pageLoader.sourceComponent.status == Component.Ready)
+                            if(sourceComponent.status == Component.Ready)
+                            {
                                 fadeInPage()
+                            }
                             else
+                            {
                                 statusChanged.connect(fadeInPage)
+                            }
+                        }
+
+                        function updateSearchTerm()
+                        {
+                            if(isSearchPage())
+                            {
+                                searchContainer.searchTerm = pageLoader.item.query
+                            }
+                        }
+
+                        function setSearchTerm()
+                        {
+                            if(isSearchPage())
+                            {
+                                pageLoader.item.query = searchContainer.searchTerm
+                            }
+                        }
+
+                        function isSearchPage()
+                        {
+                            return (
+                                pageLoader.item instanceof ImageSearchPage ||
+                                pageLoader.item instanceof LiveSearchPage
+                            );
                         }
                     }
                 }

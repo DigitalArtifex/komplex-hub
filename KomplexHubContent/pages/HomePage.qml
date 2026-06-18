@@ -48,7 +48,8 @@ Item {
 
                     Text {
                         color: palette.text
-                        font.pixelSize: Constants.largeFont.pixelSize
+                        font.pixelSize: Constants.h3Font.pixelSize
+                        font.bold: true
                         text: "Newest Wallpaper Packs"
                     }
 
@@ -57,6 +58,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 256
                         Layout.alignment: Qt.AlignHCenter
+                        Layout.leftMargin: Constants.largeMargin
 
                         Repeater {
                             model: newestPacksModel
@@ -104,7 +106,8 @@ Item {
 
                     Text {
                         color: palette.text
-                        font.pixelSize: Constants.largeFont.pixelSize
+                        font.pixelSize: Constants.h3Font.pixelSize
+                        font.bold: true
                         text: "Featured Images"
                     }
 
@@ -113,6 +116,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 256
                         Layout.alignment: Qt.AlignHCenter
+                        Layout.leftMargin: Constants.largeMargin
 
                         Repeater {
                             model: featuredImagesModel
@@ -159,7 +163,8 @@ Item {
 
                     Text {
                         color: palette.text
-                        font.pixelSize: Constants.largeFont.pixelSize
+                        font.pixelSize: Constants.h3Font.pixelSize
+                        font.bold: true
                         text: "Featured Videos"
                     }
 
@@ -168,6 +173,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 256
                         Layout.alignment: Qt.AlignHCenter
+                        Layout.leftMargin: Constants.largeMargin
 
                         Repeater {
                             model: featuredVideosModel
