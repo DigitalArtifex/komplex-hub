@@ -9,7 +9,7 @@
 
 SettingsManager::SettingsManager(QObject *parent) : QObject(parent)
 {
-    m_homeLocation = QStandardPaths::writableLocation(QStandardPaths::HomeLocation).at(0);
+    m_homeLocation = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 
     m_shaderPackLocation = m_homeLocation + QString("/.local/share/komplex/packs");
     m_configLocation = m_homeLocation + QString("/.config/plasma-org.kde.plasma.desktop-appletsrc");
