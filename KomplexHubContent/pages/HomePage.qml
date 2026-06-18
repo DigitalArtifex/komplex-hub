@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
+
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
@@ -8,7 +10,9 @@ import KomplexHubPlugin
 
 Item {
     readonly property bool searchable: false
-    property int resultsPerRow: (homePageRoot.width - (64 + Constants.largeMargin)) / (256 + Constants.largeMargin)
+    property int resultsPerRow: (homePageRoot.width - (64 + Constants.largeMargin)) / (resultWidth + Constants.largeMargin) + 1
+    property int resultWidth: 256
+    property int resultHeight: 256
 
     id: homePageRoot
 
@@ -30,68 +34,117 @@ Item {
         resultsPerPage: homePageRoot.resultsPerRow
     }
 
-    Rectangle {
+    Rectangle
+    {
         anchors.fill: parent
         color: palette.base
 
-        ScrollView {
+        ScrollView
+        {
+            id: newPacksView
             anchors.fill: parent
             anchors.margins: Constants.largeMargin
 
-            ColumnLayout {
-                width: homePageRoot.width
+            ColumnLayout
+            {
+                width: newPacksView.width
 
-                // Featured Results
-                ColumnLayout {
+                ColumnLayout
+                {
                     width: parent.width
                     height: 420
 
-                    Text {
+                    Text
+                    {
                         color: palette.text
-                        font.pixelSize: Constants.h3Font.pixelSize
+                        font.pixelSize: Constants.h2Font.pixelSize
                         font.bold: true
-                        text: "Newest Wallpaper Packs"
+                        text: qsTr("Newest Wallpaper Packs")
                     }
 
-                    RowLayout {
-
+                    RowLayout
+                    {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 256
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.leftMargin: Constants.largeMargin
 
-                        Repeater {
-                            model: newestPacksModel
+                        Rectangle
+                        {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
 
-                            delegate: Item {
-                                width: 256
-                                height: 256
-                                required property string name
-                                required property string author
-                                required property string description
-                                required property string uuid
-                                required property string thumbnail
-                                required property string authorId
+                            color: "transparent"
 
-                                SearchResultItem
+                            clip: true
+                            Row
+                            {
+                                clip: true
+                                spacing: Constants.mediumMargin
+
+                                anchors.top: parent.top
+                                anchors.left: parent.left
+                                anchors.bottom: parent.bottom
+                                anchors.right: newPacksMoreButton.left
+                                anchors.leftMargin: Constants.largeMargin
+                                anchors.rightMargin: Constants.largeMargin
+
+                                Repeater
                                 {
-                                    anchors.fill: parent
-                                    title: parent.name
-                                    author: parent.author
-                                    description: parent.description
-                                    thumbnail: parent.thumbnail
-                                    uuid: parent.uuid
+                                    model: newestPacksModel
+
+                                    delegate: Item {
+                                        width: resultWidth
+                                        height: resultHeight
+
+                                        required property string name
+                                        required property string author
+                                        required property string description
+                                        required property string uuid
+                                        required property string thumbnail
+                                        required property string authorId
+
+                                        SearchResultItem
+                                        {
+                                            anchors.fill: parent
+                                            title: parent.name
+                                            author: parent.author
+                                            description: parent.description
+                                            thumbnail: parent.thumbnail
+                                            uuid: parent.uuid
+                                        }
+                                    }
                                 }
                             }
-                        }
 
-                        SquareButton {
-                            Layout.fillHeight: true
-                            Layout.preferredWidth: 64
+                            Rectangle
+                            {
+                                id: newestGradientMap
+                                anchors.top: parent.top
+                                anchors.right: newPacksMoreButton.left
+                                height: resultHeight
+                                width: resultWidth / 4
 
-                            icon.source: "qrc:/images/icons/icons8-forward.svg"
-                            icon.height: 24
-                            icon.width: 24
+                                gradient: Gradient
+                                {
+                                    orientation: Gradient.Horizontal
+                                    GradientStop { position: 0.0; color: "transparent" }
+                                    GradientStop { position: 1.0; color: palette.light }
+                                }
+                                opacity: 0.5
+                            }
+
+                            SquareButton
+                            {
+                                id: newPacksMoreButton
+                                anchors.top: parent.top
+                                anchors.right: parent.right
+                                height: resultHeight
+
+                                width: 64
+
+                                icon.source: "qrc:/images/icons/icons8-forward.svg"
+                                icon.height: 24
+                                icon.width: 24
+                            }
                         }
                     }
                 }
@@ -100,55 +153,101 @@ Item {
                     height: Constants.largeMargin
                 }
 
-                ColumnLayout {
+                ColumnLayout
+                {
                     width: parent.width
                     height: 420
 
-                    Text {
+                    Text
+                    {
                         color: palette.text
-                        font.pixelSize: Constants.h3Font.pixelSize
+                        font.pixelSize: Constants.h2Font.pixelSize
                         font.bold: true
-                        text: "Featured Images"
+                        text: qsTr("Featured Images")
                     }
 
-                    RowLayout {
-
+                    RowLayout
+                    {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 256
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.leftMargin: Constants.largeMargin
 
-                        Repeater {
-                            model: featuredImagesModel
+                        Rectangle
+                        {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
 
-                            delegate: Item {
-                                width: 256
-                                height: 256
-                                required property string author
-                                required property string description
-                                required property string uuid
-                                required property string thumbnail
-                                required property string authorId
+                            color: "transparent"
 
-                                SearchResultItem
+                            clip: true
+                            Row
+                            {
+                                clip: true
+                                spacing: Constants.mediumMargin
+
+                                anchors.top: parent.top
+                                anchors.left: parent.left
+                                anchors.bottom: parent.bottom
+                                anchors.right: featuredImagesMoreButton.left
+                                anchors.leftMargin: Constants.largeMargin
+                                anchors.rightMargin: Constants.largeMargin
+
+                                Repeater
                                 {
-                                    anchors.fill: parent
-                                    title: parent.author
-                                    author: qsTr("Pexels Images")
-                                    description: parent.description
-                                    thumbnail: parent.thumbnail
-                                    uuid: parent.uuid
+                                    model: featuredImagesModel
+
+                                    delegate: Item
+                                    {
+                                        width: resultWidth
+                                        height: resultHeight
+
+                                        required property string author
+                                        required property string description
+                                        required property string uuid
+                                        required property string thumbnail
+                                        required property string authorId
+
+                                        SearchResultItem
+                                        {
+                                            anchors.fill: parent
+                                            title: parent.author
+                                            author: qsTr("Pexels Images")
+                                            description: parent.description
+                                            thumbnail: parent.thumbnail
+                                            uuid: parent.uuid
+                                        }
+                                    }
                                 }
                             }
-                        }
 
-                        SquareButton {
-                            Layout.fillHeight: true
-                            Layout.preferredWidth: 64
+                            Rectangle
+                            {
+                                anchors.top: parent.top
+                                anchors.right: featuredImagesMoreButton.left
+                                height: resultHeight
+                                width: resultWidth / 4
 
-                            icon.source: "qrc:/images/icons/icons8-forward.svg"
-                            icon.height: 24
-                            icon.width: 24
+                                gradient: Gradient
+                                {
+                                    orientation: Gradient.Horizontal
+                                    GradientStop { position: 0.0; color: "transparent" }
+                                    GradientStop { position: 1.0; color: palette.light }
+                                }
+                                opacity: 0.5
+                            }
+
+                            SquareButton
+                            {
+                                id: featuredImagesMoreButton
+                                anchors.top: parent.top
+                                anchors.right: parent.right
+                                height: resultHeight
+
+                                width: 64
+
+                                icon.source: "qrc:/images/icons/icons8-forward.svg"
+                                icon.height: 24
+                                icon.width: 24
+                            }
                         }
                     }
                 }
@@ -157,55 +256,100 @@ Item {
                     height: Constants.largeMargin
                 }
 
-                ColumnLayout {
+                ColumnLayout
+                {
                     width: parent.width
                     height: 420
 
-                    Text {
+                    Text
+                    {
                         color: palette.text
-                        font.pixelSize: Constants.h3Font.pixelSize
+                        font.pixelSize: Constants.h2Font.pixelSize
                         font.bold: true
-                        text: "Featured Videos"
+                        text: qsTr("Featured Videos")
                     }
 
-                    RowLayout {
-
+                    RowLayout
+                    {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 256
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.leftMargin: Constants.largeMargin
 
-                        Repeater {
-                            model: featuredVideosModel
+                        Rectangle
+                        {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
 
-                            delegate: Item {
-                                width: 256
-                                height: 256
-                                required property string uuid
-                                required property string author
-                                required property string authorId
-                                required property string authorUrl
-                                required property string thumbnail
+                            color: "transparent"
 
-                                SearchResultItem
+                            clip: true
+                            Row
+                            {
+                                clip: true
+                                spacing: Constants.mediumMargin
+
+                                anchors.top: parent.top
+                                anchors.left: parent.left
+                                anchors.bottom: parent.bottom
+                                anchors.right: featuredVideosMoreButton.left
+                                anchors.leftMargin: Constants.largeMargin
+                                anchors.rightMargin: Constants.largeMargin
+
+                                Repeater
                                 {
-                                    anchors.fill: parent
-                                    title: parent.author
-                                    author: parent.author
-                                    description: "Video provided by Pexels"
-                                    thumbnail: parent.thumbnail
-                                    uuid: parent.uuid
+                                    model: featuredVideosModel
+
+                                    delegate: Item {
+                                        width: resultWidth
+                                        height: resultHeight
+
+                                        required property string uuid
+                                        required property string author
+                                        required property string authorId
+                                        required property string authorUrl
+                                        required property string thumbnail
+
+                                        SearchResultItem
+                                        {
+                                            anchors.fill: parent
+                                            title: parent.author
+                                            author: parent.author
+                                            description: "Video provided by Pexels"
+                                            thumbnail: parent.thumbnail
+                                            uuid: parent.uuid
+                                        }
+                                    }
                                 }
                             }
-                        }
 
-                        SquareButton {
-                            Layout.fillHeight: true
-                            Layout.preferredWidth: 64
+                            Rectangle
+                            {
+                                anchors.top: parent.top
+                                anchors.right: featuredVideosMoreButton.left
+                                height: resultHeight
+                                width: resultWidth / 4
 
-                            icon.source: "qrc:/images/icons/icons8-forward.svg"
-                            icon.height: 24
-                            icon.width: 24
+                                gradient: Gradient
+                                {
+                                    orientation: Gradient.Horizontal
+                                    GradientStop { position: 0.0; color: "transparent" }
+                                    GradientStop { position: 1.0; color: palette.light }
+                                }
+                                opacity: 0.5
+                            }
+
+                            SquareButton
+                            {
+                                id: featuredVideosMoreButton
+                                anchors.top: parent.top
+                                anchors.right: parent.right
+                                height: resultHeight
+
+                                width: 64
+
+                                icon.source: "qrc:/images/icons/icons8-forward.svg"
+                                icon.height: 24
+                                icon.width: 24
+                            }
                         }
                     }
                 }

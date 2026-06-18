@@ -54,7 +54,11 @@ Rectangle {
                     onTriggered: () => {
                         pageLoader.page = "pages/HomePage.qml"
 
-                        currentMenuButton.selected = false
+                        if(currentMenuButton !== null)
+                        {
+                            currentMenuButton.selected = false
+                        }
+
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 0

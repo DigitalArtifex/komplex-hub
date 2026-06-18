@@ -11,9 +11,12 @@ Item
 {
     property string query
     readonly property bool searchable: true
-    property int resultsPerRow: (resultsView.width - (64 + Constants.largeMargin)) / (256 + Constants.largeMargin)
-    property int rows: (resultsView.height - (Constants.largeMargin * 2) / (256 + Constants.largeMargin))
+    property int resultsPerRow: (resultsContainer.width - (Constants.largeMargin * 2)) / (resultWidth + Constants.mediumMargin)
+    property int rows: ((resultsContainer.height - (Constants.largeMargin * 2)) / (resultHeight + Constants.mediumMargin))
     property int resultsPerPage: resultsPerRow * rows
+    property int emptyWidth: (resultsContainer.width - (Constants.largeMargin * 2)) - (resultsPerRow * (resultWidth + Constants.mediumMargin))
+    property int resultWidth: 256
+    property int resultHeight: 245
 
     id: imageSearchPageRoot
 
@@ -29,58 +32,87 @@ Item
         anchors.fill: parent
         color: palette.base
 
-        ScrollView
+        Rectangle
         {
-            id: resultsView
+            id: resultsContainer
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: buttonBoxLayout.top
 
-            GridLayout {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.top: parent.top
+            color: "transparent"
 
-                anchors.margins: Constants.largeMargin
-                columns: imageSearchPageRoot.resultsPerRow
+            ScrollView
+            {
+                id: resultsView
+                anchors.fill: parent
 
-                Repeater {
-                    model: searchModel
+                RowLayout
+                {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.top: parent.top
+                    anchors.margins: Constants.largeMargin
 
-                    delegate: Item {
-                        width: 256
-                        height: 256
-                        required property string author
-                        required property string description
-                        required property string uuid
-                        required property string thumbnail
-                        required property string authorId
+                    Item
+                    {
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: emptyWidth / 2
+                        Layout.maximumWidth: emptyWidth / 2
+                    }
 
-                        SearchResultItem
+                    GridLayout
+                    {
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+
+                        columns: imageSearchPageRoot.resultsPerRow
+                        columnSpacing: Constants.mediumMargin
+                        rowSpacing: Constants.mediumMargin
+
+                        Repeater
                         {
-                            anchors.fill: parent
-                            title: parent.author
-                            author: qsTr("Pexels Images")
-                            description: parent.description
-                            thumbnail: parent.thumbnail
-                            uuid: parent.uuid
+                            model: searchModel
+
+                            delegate: Item
+                            {
+                                width: 256
+                                height: 245
+                                required property string author
+                                required property string description
+                                required property string uuid
+                                required property string thumbnail
+                                required property string authorId
+
+                                SearchResultItem
+                                {
+                                    anchors.fill: parent
+                                    title: parent.author
+                                    author: qsTr("Pexels Images")
+                                    description: parent.description
+                                    thumbnail: parent.thumbnail
+                                    uuid: parent.uuid
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        RowLayout {
+        RowLayout
+        {
             id: buttonBoxLayout
-            height: 50
+            height: 35
 
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
+            anchors.margins: Constants.largeMargin
 
-            SquareButton {
+            SquareButton
+            {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 128
 
@@ -89,11 +121,14 @@ Item
                 icon.width: 16
                 text: qsTr("Previous")
                 enabled: searchModel.hasPreviousPage
+
+                onTriggered: () => searchModel.previousPage()
             }
 
             Item { Layout.fillWidth: true }
 
-            SquareButton {
+            SquareButton
+            {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 128
 
@@ -102,25 +137,30 @@ Item
                 icon.width: 16
                 text: qsTr("Next")
                 enabled: searchModel.hasNextPage
+
+                onTriggered: () => searchModel.nextPage()
             }
         }
     }
 
-    KeroErrorAvatar {
+    KeroErrorAvatar
+    {
         id: errorOverlay
 
         anchors.fill: parent
         opacity: 0
     }
 
-    KeroNoResultsAvatar {
+    KeroNoResultsAvatar
+    {
         id: noResultsOverlay
 
         anchors.fill: parent
         opacity: 0
     }
 
-    KeroLoadingAnimation {
+    KeroLoadingAnimation
+    {
         id: loadingOverlay
 
         anchors.fill: parent
@@ -128,7 +168,8 @@ Item
     }
 
     states: [
-        State {
+        State
+        {
             name: "loading"
             when: searchModel.state == ImageSearchModel.Loading
 
@@ -143,7 +184,8 @@ Item
                 opacity: 0
             }
         },
-        State {
+        State
+        {
             name: "empty"
             when: searchModel.totalResults === 0
 
@@ -157,12 +199,14 @@ Item
                 target: resultsView
                 opacity: 0
             }
-            PropertyChanges {
+            PropertyChanges
+            {
                 target: buttonBoxLayout
                 visible: false
             }
         },
-        State {
+        State
+        {
             name: "error"
             when: searchModel.state == ImageSearchModel.Error
 
