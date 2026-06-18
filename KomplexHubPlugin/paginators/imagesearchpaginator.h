@@ -16,8 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
-#ifndef SEARCHIMAGESPAGINATOR_H
-#define SEARCHIMAGESPAGINATOR_H
+#ifndef IMAGESEARCHPAGINATOR_H
+#define IMAGESEARCHPAGINATOR_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -29,14 +29,14 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-#include "wallpaperpaginator.h"
+#include "imagepaginator.h"
 
 #include "common/komplex_global.h"
 
-class KOMPLEX_EXPORT SearchImagesPaginator : public WallpaperPaginator
+class KOMPLEX_EXPORT ImageSearchPaginator : public ImagePaginator
 {
 public:
-    explicit SearchImagesPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
+    explicit ImageSearchPaginator(QObject *parent = nullptr) : ImagePaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_IMAGES_SEARCH)
@@ -44,4 +44,4 @@ public:
     }
 };
 
-#endif // SEARCHIMAGESPAGINATOR_H
+#endif // IMAGESEARCHPAGINATOR_H
