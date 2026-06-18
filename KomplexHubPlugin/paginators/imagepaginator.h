@@ -89,7 +89,6 @@ public:
         Q_EMIT queryChanged();
 
         reset();
-        setOffset(0);
     }
 
 signals:

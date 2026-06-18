@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMutex>
 #include <QMutexLocker>
+#include <qdebug.h>
 
 #include "komplex_global.h"
 #include "slidingcachecontroller.h"
@@ -197,9 +198,14 @@ protected:
      */
     auto setOffset(qsizetype offset) -> void
     {
-        if(offset == m_offset)
+        if(offset == m_offset && offset != std::numeric_limits<qsizetype>::infinity())
         {
             return;
+        }
+
+        if(offset == std::numeric_limits<qsizetype>::infinity())
+        {
+            offset = 0;
         }
 
         m_offset = offset;
@@ -253,7 +259,6 @@ protected:
     {
         m_dataMutex.lock();
 
-        m_offset = std::numeric_limits<qsizetype>::infinity();
         m_data.clear();
         controller()->reset();
         m_dataMutex.unlock();
@@ -261,6 +266,8 @@ protected:
         Q_EMIT totalPagesChanged();
         Q_EMIT dataChanged();
         Q_EMIT pageChanged();
+
+        setOffset(std::numeric_limits<qsizetype>::infinity());
     }
 
 private:
