@@ -38,7 +38,7 @@ qt_add_qml_module(
         SOURCES paginators/featuredcubemapspaginator.h
         SOURCES paginators/searchshaderspaginator.h
         SOURCES paginators/searchcubemapspaginator.h
-        SOURCES paginators/searchvideospaginator.h
+        SOURCES paginators/videosearchpaginator.h
         SOURCES featuredpacksmodel.h
         SOURCES featuredpacksmodel.cpp
         SOURCES featuredimagesmodel.h
@@ -52,6 +52,8 @@ qt_add_qml_module(
         SOURCES paginators/videopaginator.h
         SOURCES imagesearchmodel.cpp
         SOURCES imagesearchmodel.h
+        SOURCES videosearchmodel.h
+        SOURCES videosearchmodel.cpp
 
 )
 

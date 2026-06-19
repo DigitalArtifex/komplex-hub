@@ -94,7 +94,7 @@ auto FeaturedVideosModel::data(const QModelIndex &index, int role) const -> QVar
         case WidthRole:
             data = dataPoint.width;
             break;
-        }
+    }
 
     return data;
 }

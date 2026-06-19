@@ -83,7 +83,27 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 50
-                        // searchContainer.searchTerm = (pageLoader.page as ImageSearchPage).query
+                    }
+                }
+
+                MenuButton {
+                    Layout.alignment: Qt.AlignTop
+
+                    height: 64
+                    width: 100
+                    text: "Videos"
+
+                    icon.height: 32
+                    icon.width: 32
+                    icon.url: "qrc:/images/icons/icons8-video.svg"
+
+                    onTriggered: () => {
+                        pageLoader.page = "pages/VideoSearchPage.qml"
+
+                        currentMenuButton.selected = false
+                        currentMenuButton = this
+
+                        searchContainer.preferredHeight = 50
                     }
                 }
 
@@ -287,7 +307,8 @@ Rectangle {
                         {
                             return (
                                 pageLoader.item instanceof ImageSearchPage ||
-                                pageLoader.item instanceof LiveSearchPage
+                                pageLoader.item instanceof LiveSearchPage  ||
+                                pageLoader.item instanceof VideoSearchPage
                             );
                         }
                     }
