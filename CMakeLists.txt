@@ -25,7 +25,9 @@ qt_standard_project_setup()
 
 qt_add_executable(${CMAKE_PROJECT_NAME}
   README.md
-  LICENSE)
+  LICENSE
+  images/icons/icons8-video.svg
+)
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"
     FILES
@@ -56,6 +58,7 @@ qt_add_resources(${CMAKE_PROJECT_NAME} "app_images"
         "images/icons/icons8-store.svg"
         "images/icons/icons8-user-account.svg"
         "images/icons/icons8-view-more.svg"
+        "images/icons/icons8-video.svg"
         "images/kero/kero_build_1.png"
         "images/kero/kero_build_2.png"
         "images/kero/kero_build_3.png"
