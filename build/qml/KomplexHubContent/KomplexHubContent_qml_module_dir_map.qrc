@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="/qt/qml/KomplexHubContent">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/KomplexHubContent</file>
-
-  </qresource>
-</RCC>

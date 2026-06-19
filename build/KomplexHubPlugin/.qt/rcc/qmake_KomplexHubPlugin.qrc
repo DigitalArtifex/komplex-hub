@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/KomplexHubPlugin">
-    <file alias="qmldir">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/KomplexHubPlugin/qmldir</file>
-  </qresource>
-</RCC>
-

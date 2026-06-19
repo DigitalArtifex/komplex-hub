@@ -1,2 +1,0 @@
-/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/designeffects/.qsb/shaders/opacityMask.frag.qsb: \
-  /home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/designeffects/shaders/opacityMask.frag

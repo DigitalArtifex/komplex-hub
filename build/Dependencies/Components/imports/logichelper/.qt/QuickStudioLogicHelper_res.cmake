@@ -1,7 +1,0 @@
-
-set(target "QuickStudioLogicHelper")
-set(working_dir "/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/logichelper")
-set(src_and_dest_list
-
-)
-set(timestamp_file "/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/logichelper/.qt/QuickStudioLogicHelper_res.txt")

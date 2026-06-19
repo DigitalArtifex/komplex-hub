@@ -1,7 +1,0 @@
-module KomplexHubPlugin
-linktarget KomplexHubPluginplugin
-optional plugin KomplexHubPluginplugin
-classname KomplexHubPluginPlugin
-typeinfo KomplexHubPlugin.qmltypes
-prefer :/KomplexHubPlugin/
-

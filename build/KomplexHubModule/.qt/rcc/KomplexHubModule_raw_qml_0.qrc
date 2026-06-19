@@ -1,9 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/KomplexHub/">
-    <file alias="Constants.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/Constants.qml</file>
-    <file alias="EventListModel.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/EventListModel.qml</file>
-    <file alias="EventListSimulator.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/EventListSimulator.qml</file>
-    <file alias="WallpaperModelData.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/KomplexHubModule/WallpaperModelData.qml</file>
-  </qresource>
-</RCC>
-

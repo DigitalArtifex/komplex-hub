@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt-project.org/imports/QtQuickUltralite/Studio/Components/">
-    <file alias="ArcItem.qml">/home/parametheus/Projects/QtDesigner/KomplexHub/Dependencies/Components/imports/compat/Components/ArcItem.qml</file>
-  </qresource>
-</RCC>
-

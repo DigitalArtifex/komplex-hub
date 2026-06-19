@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt-project.org/imports/QtQuick/Studio/DesignEffects">
-    <file alias="qmldir">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/QtQuick/Studio/DesignEffects/qmldir</file>
-  </qresource>
-</RCC>
-

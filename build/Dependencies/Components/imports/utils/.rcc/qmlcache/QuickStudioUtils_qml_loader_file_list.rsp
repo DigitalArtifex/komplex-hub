@@ -1,7 +1,0 @@
---resource
-/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/utils/.qt/rcc/qmake_QtQuick_Studio_Utils.qrc
---resource
-/home/parametheus/Projects/QtDesigner/KomplexHub/build/Dependencies/Components/imports/utils/.qt/rcc/QuickStudioUtils_raw_qml_0.qrc
-/qt-project.org/imports/QtQuick/Studio/Utils/JsonListModel.qml
-/qt-project.org/imports/QtQuick/Studio/Utils/JsonBackend.qml
-/qt-project.org/imports/QtQuick/Studio/Utils/ChildListModel.qml

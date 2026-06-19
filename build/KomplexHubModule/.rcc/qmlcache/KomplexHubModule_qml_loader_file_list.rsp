@@ -1,8 +1,0 @@
---resource
-/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/.qt/rcc/qmake_KomplexHub.qrc
---resource
-/home/parametheus/Projects/QtDesigner/KomplexHub/build/KomplexHubModule/.qt/rcc/KomplexHubModule_raw_qml_0.qrc
-/qt/qml/KomplexHub/Constants.qml
-/qt/qml/KomplexHub/EventListModel.qml
-/qt/qml/KomplexHub/EventListSimulator.qml
-/qt/qml/KomplexHub/WallpaperModelData.qml

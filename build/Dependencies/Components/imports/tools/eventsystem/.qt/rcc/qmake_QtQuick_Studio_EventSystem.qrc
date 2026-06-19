@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt-project.org/imports/QtQuick/Studio/EventSystem">
-    <file alias="qmldir">/home/parametheus/Projects/QtDesigner/KomplexHub/build/qml/QtQuick/Studio/EventSystem/qmldir</file>
-  </qresource>
-</RCC>
-
