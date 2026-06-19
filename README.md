@@ -2,8 +2,6 @@
 
 > Media Hub and Settings Manager for the Komplex Wallpaper Plugin
 
-Most of the development of Komplex and it's associated apps will now happen here, instead of Github.
-
 <table width="100%">
     <tr>
         <td colspan="2">
@@ -36,10 +34,42 @@ Most of the development of Komplex and it's associated apps will now happen here
     </tr>
 </table>
 
+Most of the development of Komplex and it's associated apps will now happen here, instead of Github.
+
 ## Installation
 
-Requirements
+#### Requirements
 
-- Qt 6.10+
+- Qt 6.10+ -- May work with previous versions, but currently untested
+- - Qt6 Core
+- - Qt6 Networking
+- - Qt6 Quick
+- - Qt6 Quick Effects
+- - Qt6 Quick Controls
+- - Qt6 Shader Tools
+- CMake
+- clang
 
-This app is currently under development and is pre-alpha
+#### Build
+```console
+$ git clone gitea@git.digitalartifex.dev:digitalartifex/komplex-hub.git
+$ mkdir build
+$ cmake -S ./ -B ./build/
+$ cmake --build ./build
+```
+
+#### Install
+```console
+$ cmake --install ./build
+```
+
+## Accounts
+
+Accounts are not an integral part of Komplex. They do not enable any "pro" benefits, they do not cost anything and will not be required to use the millions of free wallpaper, image and video offerings available.
+
+Accounts ***will*** be required to view any content that gets flagged as ***Not Safe For Work*** and any content submitted by an artist for sale.
+Content purchases will be processed through the website using Paypal as will artist payouts.
+
+## Status
+
+This app is currently under development and is pre-alpha. During this phase, the new API is only hosted locally and not yet available on digitalartifex.dev
