@@ -6,7 +6,7 @@ Most of the development of Komplex and it's associated apps will now happen here
 
 <table width="100%">
     <tr>
-        <td>
+        <td colspan="2">
             <img src="https://git.digitalartifex.dev/digitalartifex/komplex-hub/raw/branch/main/images/screenshots/screenshot_01_home.png" />
         </td>
     </tr>
