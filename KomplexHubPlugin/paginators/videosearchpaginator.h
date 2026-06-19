@@ -16,8 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
-#ifndef SEARCHVIDEOSPAGINATOR_H
-#define SEARCHVIDEOSPAGINATOR_H
+#ifndef VIDEOSEARCHPAGINATOR_H
+#define VIDEOSEARCHPAGINATOR_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -29,12 +29,12 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-#include "wallpaperpaginator.h"
+#include "videopaginator.h"
 
-class KOMPLEX_EXPORT SearchVideosPaginator : public WallpaperPaginator
+class KOMPLEX_EXPORT VideoSearchPaginator : public VideoPaginator
 {
 public:
-    explicit SearchVideosPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
+    explicit VideoSearchPaginator(QObject *parent = nullptr) : VideoPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_VIDEOS_SEARCH)
@@ -42,4 +42,4 @@ public:
     }
 };
 
-#endif // SEARCHVIDEOSPAGINATOR_H
+#endif // VIDEOSEARCHPAGINATOR_H
