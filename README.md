@@ -41,12 +41,14 @@ Most of the development of Komplex and it's associated apps will now happen here
 #### Requirements
 
 - Qt 6.10+ -- May work with previous versions, but currently untested
-- - Qt6 Core
-- - Qt6 Networking
-- - Qt6 Quick
-- - Qt6 Quick Effects
-- - Qt6 Quick Controls
-- - Qt6 Shader Tools
+  - Qt6 Core
+  - Qt6 Gui
+  - Qt6 Widgets
+  - Qt6 Networking
+  - Qt6 Quick
+  - Qt6 Quick Effects
+  - Qt6 Quick Controls
+  - Qt6 Shader Tools
 - CMake
 - clang
 
