@@ -1,4 +1,4 @@
-import QtQuick
+import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
@@ -20,18 +20,54 @@ Item {
     {
         id: newestPacksModel
         resultsPerPage: homePageRoot.resultsPerRow
+
+        onStateChanged: () =>
+                        {
+                            if(state == NewestPacksModel.Loading)
+                            {
+                                console.log("Newest packs loading")
+                            }
+                            else if(state == NewestPacksModel.Idle)
+                            {
+                                console.log("Newest packs finished")
+                            }
+                        }
     }
 
     FeaturedImagesModel
     {
         id: featuredImagesModel
         resultsPerPage: homePageRoot.resultsPerRow
+
+        onStateChanged: () =>
+                        {
+                            if(state == FeaturedImagesModel.Loading)
+                            {
+                                console.log("Featured Images loading")
+                            }
+                            else if(state == FeaturedImagesModel.Idle)
+                            {
+                                console.log("Featured Images finished")
+                            }
+                        }
     }
 
     FeaturedVideosModel
     {
         id: featuredVideosModel
         resultsPerPage: homePageRoot.resultsPerRow
+
+        onStateChanged: () =>
+                        {
+                            if(state == FeaturedVideosModel.Loading)
+                            {
+                                console.log("Featured Videos loading")
+                            }
+                            else if(state == FeaturedVideosModel.Idle)
+                            {
+                                console.log("Featured Videos finished")
+                            }
+                        }
     }
 
     Rectangle
@@ -210,10 +246,11 @@ Item {
                                         {
                                             anchors.fill: parent
                                             title: parent.author
-                                            author: qsTr("Pexels Images")
                                             description: parent.description
                                             thumbnail: parent.thumbnail
                                             uuid: parent.uuid
+
+                                            pexels: true
                                         }
                                     }
                                 }
@@ -312,10 +349,9 @@ Item {
                                         {
                                             anchors.fill: parent
                                             title: parent.author
-                                            author: parent.author
-                                            description: "Video provided by Pexels"
                                             thumbnail: parent.thumbnail
                                             uuid: parent.uuid
+                                            pexels: true
                                         }
                                     }
                                 }
@@ -355,6 +391,13 @@ Item {
                 }
             }
         }
+    }
+
+    Component.onCompleted: () =>
+    {
+        featuredImagesModel.nextPage()
+        featuredVideosModel.nextPage()
+        newestPacksModel.nextPage()
     }
 
     KeroLoadingAnimation

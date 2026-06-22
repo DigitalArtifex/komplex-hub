@@ -19,9 +19,7 @@ qt_add_qml_module(
         newestpacksmodel.cpp
         common/komplex_global.h
         common/slidingcachecontroller.h
-
         common/paginator.h
-
         common/coreservices.h
         common/coreservices.cpp
         common/logging.h
@@ -30,7 +28,7 @@ qt_add_qml_module(
         SOURCES paginators/featuredpackspaginator.h
         SOURCES paginators/featuredimagespaginator.h
         SOURCES paginators/wallpaperpaginator.h
-        SOURCES paginators/searchpackspaginator.h
+        SOURCES paginators/packsearchpaginator.h
         SOURCES paginators/imagesearchpaginator.h
         SOURCES paginators/newestshaderspaginator.h
         SOURCES paginators/newestcubemapspaginator.h
@@ -54,6 +52,10 @@ qt_add_qml_module(
         SOURCES imagesearchmodel.h
         SOURCES videosearchmodel.h
         SOURCES videosearchmodel.cpp
+        SOURCES
+        SOURCES
+        SOURCES packsearchmodel.cpp
+        SOURCES packsearchmodel.h
 
 )
 

@@ -16,8 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
-#ifndef FEATUREDPACKSMODEL_H
-#define FEATUREDPACKSMODEL_H
+#ifndef PackSearchModel_H
+#define PackSearchModel_H
 #include <QObject>
 #include <QQmlEngine>
 #include <QList>
@@ -37,12 +37,12 @@
 #include <QEventLoop>
 #include <QtConcurrent/QtConcurrentRun>
 
-#include "paginators/featuredpackspaginator.h"
+#include "paginators/packsearchpaginator.h"
 
 /**
- * @brief The FeaturedPacksModel class
+ * @brief The PackSearchModel class
  */
-class KOMPLEX_EXPORT FeaturedPacksModel : public QAbstractListModel
+class KOMPLEX_EXPORT PackSearchModel : public QAbstractListModel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -77,7 +77,7 @@ public:
     };
     Q_ENUM(DataRole)
 
-    explicit FeaturedPacksModel(QObject *parent = nullptr);
+    explicit PackSearchModel(QObject *parent = nullptr);
 
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
 
@@ -207,7 +207,43 @@ public:
      */
     Q_INVOKABLE auto previousPage() -> void;
 
+    /**
+     * @brief query
+     * Current search query
+     * @return
+     */
+    auto query() const -> QString;
+
+    /**
+     * @brief setQuery
+     * Sets the current search query
+     * @param query
+     */
+    auto setQuery(const QString &query) -> void;
+
+    /**
+     * @brief hasNextPage
+     * Calculates if there are more pages based on the current page calculation
+     * @return
+     */
+    auto hasNextPage() const -> bool;
+
+    /**
+     * @brief hasPreviousPage
+     * If page is greater than 1, returns true
+     * @return
+     */
+    auto hasPreviousPage() const -> bool;
+
 protected:
+
+    /**
+     * @brief onPaginatorFetching
+     * Sets current state to loading. Triggered when paginator's cache controller
+     * needs to fetch data from the remote endpoint.
+     */
+    auto onPaginatorFetching() -> void;
+
     /**
      * @brief setErrorString
      * @param errorString
@@ -225,23 +261,58 @@ protected:
      */
     auto resetState() -> void;
 
+    /**
+     * @brief resetDataModel
+     * Clears the data model and creates a new one if data exists
+     */
     auto resetDataModel() -> void;
 
-    auto onPaginatorFetching() -> void;
-
 signals:
+    /**
+     * @brief stateChanged
+     * Signaled when reported state changes
+     */
     auto stateChanged() -> void;
+
+    /**
+     * @brief errorStringChanged
+     * Signaled when reported error message changes
+     */
     auto errorStringChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto resultsPerPageChanged() -> void;
 
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto pageChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto totalResultsChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto totalPagesChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
+    auto queryChanged() -> void;
 
 private:
     /**
-     * @brief m_dataRoles
-     * Data role map that connects ImageSearchModel::DataRole to it's QML accessor name
+     * Data role map that connects PackSearchModel::DataRole to it's QML accessor name
      */
     static inline const QHash<int, QByteArray> m_dataRoles =
     {
@@ -290,11 +361,12 @@ private:
             QByteArray("type")
         }
     };
+
     State m_state = Idle;
 
     QString m_errorString = QString();
 
-    FeaturedPacksPaginator *m_paginator = nullptr;
+    PackSearchPaginator *m_paginator = nullptr;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
@@ -302,7 +374,10 @@ private:
     Q_PROPERTY(qsizetype totalResults READ totalResults NOTIFY totalResultsChanged FINAL)
     Q_PROPERTY(qsizetype totalPages READ totalPages NOTIFY totalPagesChanged FINAL)
     Q_PROPERTY(qsizetype page READ page NOTIFY pageChanged FINAL)
+    Q_PROPERTY(bool hasNextPage READ hasNextPage NOTIFY pageChanged FINAL)
+    Q_PROPERTY(bool hasPreviousPage READ hasPreviousPage NOTIFY pageChanged FINAL)
+    Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged FINAL)
 };
-Q_DECLARE_METATYPE(FeaturedPacksModel)
+Q_DECLARE_METATYPE(PackSearchModel)
 
-#endif // FEATUREDPACKSMODEL_H
+#endif // PackSearchModel_H

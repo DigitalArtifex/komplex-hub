@@ -16,8 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
-#ifndef SEARCHPACKSPAGINATOR_H
-#define SEARCHPACKSPAGINATOR_H
+#ifndef PACKSEARCHPAGINATOR_H
+#define PACKSEARCHPAGINATOR_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -31,15 +31,17 @@
 
 #include "wallpaperpaginator.h"
 
-class KOMPLEX_EXPORT SearchPacksPaginator : public WallpaperPaginator
+class KOMPLEX_EXPORT PackSearchPaginator : public WallpaperPaginator
 {
 public:
-    explicit SearchPacksPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
+    explicit PackSearchPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_PACKS_SEARCH)
         );
+
+        setQueryable(true);
     }
 };
 
-#endif // SEARCHPACKSPAGINATOR_H
+#endif // PACKSEARCHPAGINATOR_H

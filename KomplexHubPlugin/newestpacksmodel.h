@@ -35,6 +35,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QEventLoop>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "paginators/newestpackspaginator.h"
 
@@ -236,6 +237,8 @@ protected:
      */
     auto resetDataModel() -> void;
 
+    auto onPaginatorFetching() -> void;
+
 signals:
     auto stateChanged() -> void;
     auto errorStringChanged() -> void;
@@ -298,8 +301,6 @@ private:
     QString m_errorString = QString();
 
     NewestPacksPaginator *m_paginator = nullptr;
-
-    mutable QList<WallpaperCache> m_data;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)

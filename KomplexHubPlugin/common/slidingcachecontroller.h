@@ -23,6 +23,7 @@
 #include <QList>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QThread>
 
 #include <functional>
 #include "fetchresult.h"
@@ -40,6 +41,9 @@ class KOMPLEX_EXPORT SlidingCacheNotifier : public QObject
     Q_OBJECT
 signals:
     auto countChanged() -> void;
+    auto fetching() -> void;
+    auto fetchComplete() -> void;
+    auto windowSizeChanged() -> void;
 };
 
 /**
@@ -50,6 +54,12 @@ signals:
 template <typename T>
 class KOMPLEX_EXPORT SlidingCacheController : public SlidingCacheNotifier
 {
+    /**
+     * @brief FetchFunction
+     * Convenience def used by setFetch
+     */
+    typedef std::function<FetchResult<T> (qsizetype offset, qsizetype limit)> FetchFunction;
+
 public:
 
     explicit SlidingCacheController() : SlidingCacheNotifier{}
@@ -70,9 +80,7 @@ public:
      * QObject
      * @param fetch
      */
-    auto setFetch(
-        const std::function<FetchResult<T> (qsizetype offset, qsizetype limit)> &fetch
-    ) -> void
+    auto setFetch(const FetchFunction &fetch) -> void
     {
         m_fetch = std::move(fetch);
     }
@@ -85,25 +93,26 @@ public:
      * @return CacheObject* or nullptr
      */
     [[nodiscard]]
-    auto at(qsizetype index) const -> T
+    auto at(qsizetype index) const -> const T&
     {
         QMutexLocker cacheLocker(&m_cacheMutex);
+        T defaultValue;
 
         if(!externalBoundaryCheck(index))
         {
-            return {};
+            return defaultValue;
         }
 
         if(!const_cast<SlidingCacheController*>(this)->slideWindow(index))
         {
-            return {};
+            return defaultValue;
         }
 
         qsizetype internalIndex = this->internalIndex(index);
 
         if(!internalBoundaryCheck(index))
         {
-            return {};
+            return defaultValue;
         }
 
         return m_cache.at(index);
@@ -144,19 +153,7 @@ public:
             count = m_cache.count() - index;
         }
 
-        QList<T> dataChunk;
-
-        for(qsizetype i = index; (i - index) < count; ++i)
-        {
-            T data = m_cache.at(i);
-
-            if(data != T{})
-            {
-                dataChunk.append(data);
-            }
-        }
-
-        return dataChunk;
+        return m_cache.mid(index, count);
     }
 
     /**
@@ -167,7 +164,7 @@ public:
     [[nodiscard]]
     auto totalCount() const -> qsizetype
     {
-        if(m_totalCount == std::numeric_limits<qsizetype>::infinity())
+        if(m_totalCount == nullsize)
         {
             return 0;
         }
@@ -195,8 +192,51 @@ public:
         QMutexLocker cacheLocker(&m_cacheMutex);
 
         m_cache.clear();
-        setTotalCount(std::numeric_limits<qsizetype>::infinity());
+        setTotalCount(nullsize);
         m_windowOffset = 0;
+    }
+
+    auto focus(qsizetype index, qsizetype count) -> void
+    {
+        if(inFocus(index, count) || !externalBoundaryCheck(index))
+        {
+            return;
+        }
+
+        if(!externalBoundaryCheck(index + count))
+        {
+            slideWindow(index);
+        }
+    }
+
+    auto init() -> bool
+    {
+        if(m_totalCount != nullsize)
+        {
+            return false;
+        }
+
+        return slideForward();
+    }
+
+    auto windowSize() const -> qsizetype
+    {
+        if(m_windowSize == nullsize)
+        {
+            return SLIDING_CACHE_WINDOW_SIZE;
+        }
+
+        return m_windowSize;
+    }
+
+    auto setWindowSize(qsizetype windowSize) -> void
+    {
+        if(windowSize == m_windowSize)
+        {
+            return;
+        }
+
+
     }
 
 protected:
@@ -215,6 +255,16 @@ protected:
     }
 
 private:
+    auto inFocus(qsizetype index, qsizetype count) -> bool
+    {
+        qsizetype internalIndex = this->internalIndex(index);
+
+        return
+        (
+            internalBoundaryCheck(internalIndex, internalIndex + count)
+        );
+    }
+
     /**
      * @brief externalBoundaryCheck
      *
@@ -224,12 +274,29 @@ private:
      * @return True if index is within the external dataset boundary
      * OR an initial fetch has not been performed.
      */
-    auto externalBoundaryCheck(qsizetype index) const -> bool
+    template<typename... Ts>
+    auto externalBoundaryCheck(Ts... index) const -> bool
     {
-        return (
+        static_assert
+        (
+            (std::is_same_v<Ts, qsizetype> && ...),
+            "All arguments must be qsizetype"
+        );
+
+        bool safe = false;
+
+        ((safe = externalBoundaryCheckHelper(index)),...);
+
+        return safe;
+    }
+
+    auto externalBoundaryCheckHelper(qsizetype index) const -> bool
+    {
+        return
+        (
             index >= 0 &&
             (
-                m_totalCount == std::numeric_limits<qsizetype>::infinity() ||
+                m_totalCount == nullsize ||
                 index < m_totalCount
             )
         );
@@ -242,12 +309,18 @@ private:
      * @param index
      * @return True if index is within the internal dataset boundary
      */
-    auto internalBoundaryCheck(qsizetype index) const -> bool
+    template<typename... Ts>
+    auto internalBoundaryCheck(Ts... index) const -> bool
     {
-        return (
-            index >= 0 &&
-            index < m_cache.count()
+        static_assert
+        (
+            (std::is_same_v<Ts, qsizetype> && ...),
+            "All arguments must be qsizetype"
         );
+
+        bool safe = false;
+        ((safe = index >= 0 && index < m_cache.count()), ...);
+        return safe;
     }
 
     /**
@@ -280,14 +353,6 @@ private:
             }
         }
 
-        if(m_totalCount == std::numeric_limits<qsizetype>::infinity())
-        {
-            if(!slideForward())
-            {
-                return false;
-            }
-        }
-
         return true;
     }
 
@@ -299,20 +364,41 @@ private:
     auto slideForward() -> bool
     {
         LOG_ERROR_X(!m_fetch,
-            "SlidingCacheController::slideBackward",
+            "SlidingCacheController::slideForward",
             "Fetch function not set",
             false
         );
 
+        Q_EMIT fetching();
+
         qsizetype movementSize = SLIDING_CACHE_WINDOW_SIZE;
+        qsizetype prefetchThreshold = SLIDING_CACHE_PREFETCH_THRESHOLD;
+
+        if(m_windowSize != nullsize)
+        {
+            movementSize = m_windowSize;
+
+            if(prefetchThreshold >= m_windowSize)
+            {
+                prefetchThreshold = std::floor(
+                    static_cast<qreal>(movementSize) * 0.8
+                );
+            }
+        }
+
+        LOG_ERROR_X(movementSize <= 0 || prefetchThreshold <= 0,
+            "SlidingCacheController::slideForward",
+            "Invalid movement size",
+            false
+        );
 
         //after initial inflation we should only arrive here when the prefetch threshold is reached
         if(!m_cache.isEmpty())
         {
-            movementSize -= SLIDING_CACHE_PREFETCH_THRESHOLD;
+            movementSize -= prefetchThreshold;
         }
 
-        if(m_totalCount != std::numeric_limits<qsizetype>::infinity())
+        if(m_totalCount != nullsize)
         {
             m_windowOffset += movementSize;
         }
@@ -320,6 +406,8 @@ private:
         {
             m_windowOffset = 0;
         }
+
+        QThread::sleep(KOMPLEX_RATE_LIMIT);
 
         FetchResult<T> result = m_fetch(
             m_windowOffset,
@@ -337,6 +425,8 @@ private:
         if(result.data.isEmpty())
         {
             m_windowOffset -= movementSize;
+
+            Q_EMIT fetchComplete();
             return false;
         }
 
@@ -359,6 +449,8 @@ private:
             m_cache.append(std::move(result.data));
         }
 
+        Q_EMIT fetchComplete();
+
         return true;
     }
 
@@ -375,7 +467,31 @@ private:
             false
         );
 
-        qsizetype movementSize = SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD;
+        Q_EMIT fetching();
+
+        qsizetype movementSize = SLIDING_CACHE_WINDOW_SIZE;
+        qsizetype prefetchThreshold = SLIDING_CACHE_PREFETCH_THRESHOLD;
+
+        if(m_windowSize != nullsize)
+        {
+            movementSize = m_windowSize;
+
+            if(prefetchThreshold >= m_windowSize)
+            {
+                prefetchThreshold = std::floor(
+                    static_cast<qreal>(movementSize) * 0.8
+                );
+            }
+        }
+
+        LOG_ERROR_X(movementSize <= 0 || prefetchThreshold <= 0,
+            "SlidingCacheController::slideBackward",
+            "Invalid movement size",
+            false
+        );
+
+        QThread::sleep(KOMPLEX_RATE_LIMIT);
+
         m_windowOffset -= movementSize;
 
         if(m_windowOffset < 0)
@@ -391,6 +507,8 @@ private:
         if(result.count == 0)
         {
             m_windowOffset += movementSize;
+
+            Q_EMIT fetchComplete();
             return false;
         }
 
@@ -419,6 +537,8 @@ private:
             }
         }
 
+        Q_EMIT fetchComplete();
+
         return true;
     }
 
@@ -444,7 +564,7 @@ private:
      * Total number of results available. Data comes from the return data of
      * m_fetch
      */
-    qsizetype m_totalCount = std::numeric_limits<qsizetype>::infinity();
+    qsizetype m_totalCount = nullsize;
 
     /**
      * @brief m_fetch
@@ -463,6 +583,12 @@ private:
      * @brief m_cacheMutex
      */
     mutable QMutex m_cacheMutex;
+
+    /**
+     * @brief m_windowSize
+     * Override for window size
+     */
+    qsizetype m_windowSize = nullsize;
 };
 
 #endif // SLIDINGCACHECONTROLLER_H

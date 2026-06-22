@@ -36,9 +36,23 @@ FeaturedPacksModel::FeaturedPacksModel(QObject *parent) : QAbstractListModel{par
 
     QObject::connect(
         notifier,
-        &PaginationNotifier::dataChanged,
+        &PaginationNotifier::pageChanged,
         this,
         &FeaturedPacksModel::resetDataModel
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetchComplete,
+        this,
+        &FeaturedPacksModel::resetState
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetching,
+        this,
+        &FeaturedPacksModel::onPaginatorFetching
     );
 }
 
@@ -54,12 +68,12 @@ auto FeaturedPacksModel::rowCount(const QModelIndex &) const -> int
 
 auto FeaturedPacksModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(index.row() < 0 || m_paginator == nullptr)
+    if(index.row() < 0 || m_paginator == nullptr || index.row() >= m_paginator->count())
     {
         return {};
     }
 
-    WallpaperCache dataPoint = m_data.at(index.row());
+    WallpaperCache dataPoint = m_paginator->at(index.row());
 
     QVariant data;
 
@@ -107,10 +121,12 @@ auto FeaturedPacksModel::index(int row, int column, const QModelIndex &parent) c
 {
     Q_UNUSED(parent)
 
-    if(row < 0 || row >= m_data.count())
+    if(row < 0 || row >= m_paginator->count())
+    {
         return {};
+    }
 
-    return createIndex(row, column, &m_data[row]);
+    return createIndex(row, column, &m_paginator[row]);
 }
 
 auto FeaturedPacksModel::columnCount(const QModelIndex &) const -> int
@@ -141,7 +157,7 @@ auto FeaturedPacksModel::setState(State state) -> void
     }
 
     m_state = state;
-    emit stateChanged();
+    Q_EMIT stateChanged();
 }
 
 auto FeaturedPacksModel::resetState() -> void
@@ -152,20 +168,17 @@ auto FeaturedPacksModel::resetState() -> void
 auto FeaturedPacksModel::resetDataModel() -> void
 {
     //invalidate previous model data
-    beginRemoveRows(QModelIndex(), 0, m_data.count());
-    m_data.clear();
+    beginRemoveRows(QModelIndex(), 0, m_paginator->count());
     endRemoveRows();
 
     //signal new data
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
-    auto dataset = m_paginator->data();
-
-    for(const WallpaperCache& data : std::as_const(dataset))
-    {
-        m_data.append(data);
-    }
-
     endInsertRows();
+}
+
+auto FeaturedPacksModel::onPaginatorFetching() -> void
+{
+    setState(Loading);
 }
 
 auto FeaturedPacksModel::roleNames() const -> QHash<int, QByteArray>
@@ -186,7 +199,7 @@ auto FeaturedPacksModel::setErrorString(const QString &errorString) -> void
     }
 
     m_errorString = errorString;
-    emit errorStringChanged();
+    Q_EMIT errorStringChanged();
 }
 
 auto FeaturedPacksModel::resultsPerPage() const -> qsizetype
@@ -203,7 +216,13 @@ auto FeaturedPacksModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->setResultsPerPage(resultsPerPage);
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this, resultsPerPage]
+            {
+                m_paginator->setResultsPerPage(resultsPerPage);
+            }
+        );
     }
 }
 
@@ -217,19 +236,31 @@ auto FeaturedPacksModel::totalResults() const -> qsizetype
     return 0;
 }
 
-auto FeaturedPacksModel::nextPage() const -> void
+auto FeaturedPacksModel::nextPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->next();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->next();
+            }
+        );
     }
 }
 
-auto FeaturedPacksModel::previousPage() const -> void
+auto FeaturedPacksModel::previousPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->previous();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->previous();
+            }
+        );
     }
 }
 

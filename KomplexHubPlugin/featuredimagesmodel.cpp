@@ -2,8 +2,6 @@
 
 FeaturedImagesModel::FeaturedImagesModel(QObject *parent) : QAbstractListModel{parent}
 {
-    setState(Loading);
-
     m_paginator = new FeaturedImagesPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -37,9 +35,23 @@ FeaturedImagesModel::FeaturedImagesModel(QObject *parent) : QAbstractListModel{p
 
     QObject::connect(
         notifier,
-        &PaginationNotifier::dataChanged,
+        &PaginationNotifier::pageChanged,
         this,
         &FeaturedImagesModel::resetDataModel
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetchComplete,
+        this,
+        &FeaturedImagesModel::resetState
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetching,
+        this,
+        &FeaturedImagesModel::onPaginatorFetching
     );
 }
 
@@ -55,12 +67,12 @@ auto FeaturedImagesModel::rowCount(const QModelIndex &) const -> int
 
 auto FeaturedImagesModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(index.row() < 0 || m_paginator == nullptr)
+    if(!boundaryCheck(index.row()))
     {
         return {};
     }
 
-    ImageCache dataPoint = m_data.at(index.row());
+    ImageCache dataPoint = m_paginator->at(index.row());
 
     QVariant data;
 
@@ -114,10 +126,12 @@ auto FeaturedImagesModel::index(int row, int column, const QModelIndex &parent) 
 {
     Q_UNUSED(parent)
 
-    if(row < 0 || row >= m_data.count())
+    if(!boundaryCheck(row))
+    {
         return {};
+    }
 
-    return createIndex(row, column, &m_data[row]);
+    return createIndex(row, column, &m_paginator[row]);
 }
 
 auto FeaturedImagesModel::columnCount(const QModelIndex &) const -> int
@@ -158,25 +172,28 @@ auto FeaturedImagesModel::resetState() -> void
 
 auto FeaturedImagesModel::resetDataModel() -> void
 {
-    setState(Loading);
-
     //invalidate previous model data
-    beginRemoveRows(QModelIndex(), 0, m_data.count());
-    m_data.clear();
+    beginRemoveRows(QModelIndex(), 0, m_paginator->count());
     endRemoveRows();
 
     //signal new data
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
-    auto dataset = m_paginator->data();
+    endInsertRows();
+}
 
-    for(const ImageCache& data : std::as_const(dataset))
+auto FeaturedImagesModel::onPaginatorFetching() -> void
+{
+    setState(Loading);
+}
+
+auto FeaturedImagesModel::boundaryCheck(qsizetype index) const -> bool
+{
+    if(index < 0 || m_paginator == nullptr || index >= m_paginator->count())
     {
-        m_data.append(data);
+        return false;
     }
 
-    endInsertRows();
-
-    setState(Idle);
+    return true;
 }
 
 auto FeaturedImagesModel::roleNames() const -> QHash<int, QByteArray>
@@ -214,7 +231,13 @@ auto FeaturedImagesModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->setResultsPerPage(resultsPerPage);
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this, resultsPerPage]
+            {
+                m_paginator->setResultsPerPage(resultsPerPage);
+            }
+        );
     }
 }
 
@@ -228,19 +251,31 @@ auto FeaturedImagesModel::totalResults() const -> qsizetype
     return 0;
 }
 
-auto FeaturedImagesModel::nextPage() const -> void
+auto FeaturedImagesModel::nextPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->next();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->next();
+            }
+        );
     }
 }
 
-auto FeaturedImagesModel::previousPage() const -> void
+auto FeaturedImagesModel::previousPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->previous();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->previous();
+            }
+        );
     }
 }
 

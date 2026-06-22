@@ -39,12 +39,14 @@ class KOMPLEX_EXPORT PaginationNotifier : public QObject
 protected:
     explicit PaginationNotifier(QObject *parent = nullptr) : QObject(parent) {}
 signals:
-    auto dataChanged() -> void;
+    auto fetchComplete() -> void;
+    auto fetching() -> void;
     auto resultsPerPageChanged() -> void;
     auto totalResultsChanged() -> void;
     auto totalPagesChanged() -> void;
     auto pageChanged() -> void;
     auto countChanged() -> void;
+    auto queryChanged() -> void;
 };
 
 /**
@@ -57,7 +59,21 @@ class KOMPLEX_EXPORT Paginator : public PaginationNotifier
 public:
     explicit Paginator(QObject *parent = nullptr) : PaginationNotifier(parent)
     {
+        QObject::connect
+        (
+            &m_cacheController,
+            &SlidingCacheNotifier::fetchComplete,
+            this,
+            &PaginationNotifier::fetchComplete
+        );
 
+        QObject::connect
+        (
+            &m_cacheController,
+            &SlidingCacheNotifier::fetching,
+            this,
+            &PaginationNotifier::fetching
+        );
     }
 
     /**
@@ -67,7 +83,15 @@ public:
      */
     auto next() -> void
     {
-        setOffset(m_offset + m_resultsPerPage);
+        if(m_offset != nullsize)
+        {
+            setOffset(m_offset + m_resultsPerPage);
+        }
+        else
+        {
+            controller()->init();
+            setOffset(0);
+        }
     }
 
     /**
@@ -77,7 +101,15 @@ public:
      */
     auto previous() -> void
     {
-        setOffset(m_offset - m_resultsPerPage);
+        if(m_offset != nullsize && m_offset > m_resultsPerPage)
+        {
+            setOffset(m_offset - m_resultsPerPage);
+        }
+        else
+        {
+            controller()->init();
+            setOffset(0);
+        }
     }
 
     /**
@@ -95,8 +127,6 @@ public:
      */
     auto setResultsPerPage(qsizetype resultsPerPage) -> void
     {
-        QMutexLocker dataLocker(&m_dataMutex);
-
         if(resultsPerPage == m_resultsPerPage)
         {
             return;
@@ -104,18 +134,53 @@ public:
 
         m_resultsPerPage = resultsPerPage;
         Q_EMIT static_cast<PaginationNotifier*>(this)->resultsPerPageChanged();
+    }
 
-        m_data = m_cacheController.chunk(m_offset, m_resultsPerPage);
-        Q_EMIT static_cast<PaginationNotifier*>(this)->dataChanged();
+    /**
+     * @brief query
+     * Current query string, if the API Endpoint supports queries
+     * @return
+     */
+    [[nodiscard]]
+    auto query() const -> QString
+    {
+        return m_query;
+    }
+
+    /**
+     * @brief setQuery
+     * Sets the new query string and updates the controller
+     * @param query
+     */
+    auto setQuery(const QString &query) -> void
+    {
+        if(query == m_query)
+        {
+            return;
+        }
+
+        reset();
+
+        m_query = query;
+        Q_EMIT queryChanged();
+
+        controller()->init();
+        setOffset(0);
     }
 
     /**
      * @brief data
      * @return
      */
-    auto data() const -> QList<T>
+    auto data() const -> const QList<T>
     {
-        return m_data;
+        if(boundaryCheck(m_resultsPerPage))
+        {
+            return m_cacheController.chunk(m_offset, m_resultsPerPage);
+        }
+
+        qsizetype count = (m_cacheController.totalCount() - m_offset);
+        return m_cacheController.chunk(m_offset, count);
     }
 
     /**
@@ -124,7 +189,18 @@ public:
      */
     auto count() const -> qsizetype
     {
-        return m_data.count();
+        if(m_offset == nullsize)
+        {
+            return 0;
+        }
+
+        if(boundaryCheck(m_resultsPerPage))
+        {
+            return m_resultsPerPage;
+        }
+
+        qsizetype count = (m_cacheController.totalCount() - m_offset);
+        return count;
     }
 
     /**
@@ -132,16 +208,9 @@ public:
      * @param index
      * @return
      */
-    auto at(qsizetype index) const -> T
+    auto at(qsizetype index) const -> const T&
     {
-        QMutexLocker dataLocker(&m_dataMutex);
-
-        if(index < 0 || index >= m_data.count())
-        {
-            return {};
-        }
-
-        return m_data.at(index);
+        return m_cacheController.at(m_offset + index);
     }
 
     /**
@@ -181,6 +250,16 @@ public:
 
 protected:
 
+    auto queryable() const -> bool
+    {
+        return m_queryable;
+    }
+
+    auto setQueryable(bool queryable) -> void
+    {
+        m_queryable = queryable;
+    }
+
     /**
      * @brief controller
      * Reference to the underlying cache controller
@@ -198,14 +277,9 @@ protected:
      */
     auto setOffset(qsizetype offset) -> void
     {
-        if(offset == m_offset && offset != std::numeric_limits<qsizetype>::infinity())
+        if(offset == m_offset)
         {
             return;
-        }
-
-        if(offset == std::numeric_limits<qsizetype>::infinity())
-        {
-            offset = 0;
         }
 
         m_offset = offset;
@@ -220,26 +294,11 @@ protected:
             m_offset = 0;
         }
 
-        QList<T> data = m_cacheController.chunk(m_offset, m_resultsPerPage);
-        setData(data);
+        m_cacheController.focus(offset, m_resultsPerPage);
 
-        Q_EMIT this->pageChanged();
-    }
-
-    /**
-     * @brief setData
-     * @param data
-     */
-    auto setData(const QList<T> &data)
-    {
-        m_dataMutex.lock();
-
-        m_data.clear();
-        m_data.append(std::move(data));
-        m_dataMutex.unlock();
-
-        Q_EMIT this->countChanged();
-        Q_EMIT this->dataChanged();
+        Q_EMIT totalResultsChanged();
+        Q_EMIT totalPagesChanged();
+        Q_EMIT pageChanged();
     }
 
     /**
@@ -257,26 +316,34 @@ protected:
      */
     auto reset() -> void
     {
-        m_dataMutex.lock();
-
-        m_data.clear();
+        m_query.clear();
+        m_offset = nullsize;
         controller()->reset();
-        m_dataMutex.unlock();
-
-        Q_EMIT totalPagesChanged();
-        Q_EMIT dataChanged();
-        Q_EMIT pageChanged();
-
-        setOffset(std::numeric_limits<qsizetype>::infinity());
     }
 
 private:
 
     /**
+     * @brief boundaryCheck
+     * Checks if the index is within the bounds of the dataset
+     * @param index
+     * @return
+     */
+    auto boundaryCheck(qsizetype index) const -> bool
+    {
+        if(index < 0 || (m_offset + index) >= m_cacheController.totalCount())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @brief m_offset
      * Current absolute offset. Used in fetch operations
      */
-    qsizetype m_offset = std::numeric_limits<qsizetype>::infinity();
+    mutable qsizetype m_offset = nullsize;
 
     /**
      * @brief m_resultsPerPage
@@ -295,15 +362,21 @@ private:
     SlidingCacheController<T> m_cacheController;
 
     /**
-     * @brief m_data
-     * Internal data copy
-     */
-    QList<T> m_data;
-
-    /**
      * @brief m_dataMutex
      */
     mutable QMutex m_dataMutex;
+
+    /**
+     * @brief m_query
+     * The query string used in fetch operations
+     */
+    QString m_query;
+
+    /**
+     * @brief m_queryable
+     * Controls the queryable state of the paginator
+     */
+    bool m_queryable = false;
 };
 
 #endif // PAGINATOR_H

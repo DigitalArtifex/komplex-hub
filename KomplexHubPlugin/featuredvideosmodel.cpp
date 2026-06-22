@@ -3,8 +3,6 @@
 
 FeaturedVideosModel::FeaturedVideosModel(QObject *parent) : QAbstractListModel{parent}
 {
-    setState(Loading);
-
     m_paginator = new FeaturedVideosPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -38,9 +36,23 @@ FeaturedVideosModel::FeaturedVideosModel(QObject *parent) : QAbstractListModel{p
 
     QObject::connect(
         notifier,
-        &PaginationNotifier::dataChanged,
+        &PaginationNotifier::pageChanged,
         this,
         &FeaturedVideosModel::resetDataModel
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetchComplete,
+        this,
+        &FeaturedVideosModel::resetState
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetching,
+        this,
+        &FeaturedVideosModel::onPaginatorFetching
     );
 }
 
@@ -56,12 +68,12 @@ auto FeaturedVideosModel::rowCount(const QModelIndex &) const -> int
 
 auto FeaturedVideosModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(index.row() < 0 || m_paginator == nullptr)
+    if(index.row() < 0 || m_paginator == nullptr || index.row() >= m_paginator->count())
     {
         return {};
     }
 
-    VideoCache dataPoint = m_data.at(index.row());
+    VideoCache dataPoint = m_paginator->at(index.row());
 
     QVariant data;
 
@@ -103,10 +115,17 @@ auto FeaturedVideosModel::index(int row, int column, const QModelIndex &parent) 
 {
     Q_UNUSED(parent)
 
-    if(row < 0 || row >= m_data.count())
+    if(m_paginator == nullptr)
+    {
         return {};
+    }
 
-    return createIndex(row, column, &m_data[row]);
+    if(row < 0 || row >= m_paginator->count())
+    {
+        return {};
+    }
+
+    return createIndex(row, column, &m_paginator[row]);
 }
 
 auto FeaturedVideosModel::columnCount(const QModelIndex &) const -> int
@@ -147,25 +166,18 @@ auto FeaturedVideosModel::resetState() -> void
 
 auto FeaturedVideosModel::resetDataModel() -> void
 {
-    setState(Loading);
-
     //invalidate previous model data
-    beginRemoveRows(QModelIndex(), 0, m_data.count());
-    m_data.clear();
+    beginRemoveRows(QModelIndex(), 0, m_paginator->count());
     endRemoveRows();
 
     //signal new data
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
-    auto dataset = m_paginator->data();
-
-    for(const VideoCache& data : std::as_const(dataset))
-    {
-        m_data.append(data);
-    }
-
     endInsertRows();
+}
 
-    setState(Idle);
+auto FeaturedVideosModel::onPaginatorFetching() -> void
+{
+    setState(Loading);
 }
 
 auto FeaturedVideosModel::roleNames() const -> QHash<int, QByteArray>
@@ -203,7 +215,13 @@ auto FeaturedVideosModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->setResultsPerPage(resultsPerPage);
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this, resultsPerPage]
+            {
+                m_paginator->setResultsPerPage(resultsPerPage);
+            }
+        );
     }
 }
 
@@ -217,19 +235,31 @@ auto FeaturedVideosModel::totalResults() const -> qsizetype
     return 0;
 }
 
-auto FeaturedVideosModel::nextPage() const -> void
+auto FeaturedVideosModel::nextPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->next();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->next();
+            }
+        );
     }
 }
 
-auto FeaturedVideosModel::previousPage() const -> void
+auto FeaturedVideosModel::previousPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->previous();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->previous();
+            }
+        );
     }
 }
 

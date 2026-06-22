@@ -3,76 +3,47 @@ import QtQuick.Controls
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
+import KomplexHubPlugin
 
-Item {
-    id: imageSearchPageRoot
+Item
+{
+    id: rootItem
 
-    SearchResultList {
-        id: searchResultList
-        anchors.fill: parent
-        color: palette.base
+    property string query
+    readonly property bool searchable: paginator.searchable
+
+    VideoSearchModel
+    {
+        id: searchModel
+        query: rootItem.query
+        resultsPerPage: paginator.resultsPerPage
     }
 
-    KeroErrorAvatar {
-        id: errorOverlay
-
+    PaginatorGrid
+    {
+        id: paginator
         anchors.fill: parent
-        opacity: 0
-    }
+        model: searchModel
+        loading: model.state === VideoSearchModel.Loading
 
-    KeroNoResultsAvatar {
-        id: noResultsOverlay
+        delegate: Item
+        {
+            width: 256
+            height: 245
+            required property string author
+            required property string description
+            required property string uuid
+            required property string thumbnail
+            required property string authorId
 
-        anchors.fill: parent
-        opacity: 0
-    }
-
-    KeroLoadingAnimation {
-        id: loadingOverlay
-
-        anchors.fill: parent
-        opacity: 0
-    }
-
-    states: [
-        State {
-            name: "loading"
-            when: searchResultList.state === "loading"
-
-            PropertyChanges {
-                target: loadingOverlay
-                opacity: 1
-            }
-            PropertyChanges {
-                target: resultsView
-                opacity: 0
-            }
-        },
-        State {
-            name: "empty"
-            when: searchResultList.state === "empty"
-
-            PropertyChanges {
-                target: noResultsOverlay
-                opacity: 1
-            }
-            PropertyChanges {
-                target: resultsView
-                opacity: 0
-            }
-        },
-        State {
-            name: "error"
-            when: searchResultList.state === "error"
-
-            PropertyChanges {
-                target: errorOverlay
-                opacity: 1
-            }
-            PropertyChanges {
-                target: resultsView
-                opacity: 0
+            SearchResultItem
+            {
+                anchors.fill: parent
+                title: parent.author
+                description: parent.description
+                thumbnail: parent.thumbnail
+                uuid: parent.uuid
             }
         }
-    ]
+    }
 }

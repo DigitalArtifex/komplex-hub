@@ -18,6 +18,8 @@
  */
 #ifndef KOMPLEX_GLOBAL_H
 #define KOMPLEX_GLOBAL_H
+#include <QtTypes>
+#include <chrono>
 
 #ifdef KOMPLEX_PLUGIN
 #define KOMPLEX_EXPORT Q_DECL_EXPORT
@@ -60,5 +62,8 @@
 #define KOMPLEX_ENDPOINT_PACKS_FEATURED         "packs/featured"
 #define KOMPLEX_ENDPOINT_PACKS_ITEM             "packs/item"
 #define KOMPLEX_ENDPOINT_PACKS_NEWEST           "packs/newest"
+
+inline static qsizetype nullsize = std::numeric_limits<qsizetype>::min();
+inline static std::chrono::milliseconds KOMPLEX_RATE_LIMIT(500);
 
 #endif // KOMPLEX_GLOBAL_H

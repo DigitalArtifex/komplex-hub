@@ -18,6 +18,7 @@ struct KOMPLEX_EXPORT ImageCache
     QString photographerUrl;
     qint64 photographerId;
     QMap<QString, QString> sources;
+    QMap<QString, QString> sourceSizes;
     QString url;
 
     auto operator == (const ImageCache &other) const -> bool
@@ -33,6 +34,7 @@ struct KOMPLEX_EXPORT ImageCache
             other.photographerUrl == photographerUrl &&
             other.photographerId == photographerId &&
             other.sources == sources &&
+            other.sourceSizes == sourceSizes &&
             other.url == url
         );
     }

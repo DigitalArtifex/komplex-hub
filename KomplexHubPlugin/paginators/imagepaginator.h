@@ -62,45 +62,11 @@ public:
         return m_uri;
     }
 
-    /**
-     * @brief query
-     * Current query string, if the API Endpoint supports queries
-     * @return
-     */
-    [[nodiscard]]
-    auto query() const -> QString
-    {
-        return m_query;
-    }
-
-    /**
-     * @brief setQuery
-     * Sets the new query string and updates the controller
-     * @param query
-     */
-    auto setQuery(const QString &query) -> void
-    {
-        if(query == m_query)
-        {
-            return;
-        }
-
-        m_query = query;
-        Q_EMIT queryChanged();
-
-        reset();
-    }
-
 signals:
     /**
      * @brief uriChanged
      */
     auto uriChanged() -> void;
-
-    /**
-     * @brief queryChanged
-     */
-    auto queryChanged() -> void;
 
 protected:
     /**
@@ -124,6 +90,11 @@ protected:
             {}
         );
 
+        if(queryable() && query().isEmpty())
+        {
+            return {};
+        }
+
         QUrl url(
             QString::fromUtf8("%1/%2/%3").arg(
                 KOMPLEX_API_HOST,
@@ -138,7 +109,7 @@ protected:
                 {
                     {
                         QByteArray("query"),
-                        m_query.toUtf8()
+                        query().toUtf8()
                     },
                     {
                         QByteArray("offset"),
@@ -181,13 +152,28 @@ protected:
 
             const QVariantMap sources = resultObject.value(QString::fromUtf8("src")).toObject().toVariantMap();
             QMap<QString, QString> sourceMap;
+            QMap<QString, QString> sizeMap;
 
             QMapIterator<QString,QVariant> sourceIterator(sources);
 
             while(sourceIterator.hasNext())
             {
                 sourceIterator.next();
-                sourceMap.insert(sourceIterator.key(), sourceIterator.value().toString());
+
+                QString url = sourceIterator.value().toString();
+                sourceMap.insert(sourceIterator.key(), url);
+
+                auto matches = s_sizeExpression.match(url);
+
+                if(matches.hasMatch())
+                {
+                    QString size = matches.captured();
+                    size.remove(QString::fromUtf8("w="));
+                    size.remove(QString::fromUtf8("h="));
+                    size.replace(QLatin1Char('&'), QLatin1Char('x'));
+
+                    sizeMap.insert(sourceIterator.key(), std::move(size));
+                }
             }
 
             fetchedResults.append(
@@ -202,6 +188,7 @@ protected:
                     resultObject.value(QString::fromUtf8("photographer_url")).toString(),
                     resultObject.value(QString::fromUtf8("photographer_id")).toInteger(),
                     std::move(sourceMap),
+                    std::move(sizeMap),
                     resultObject.value(QString::fromUtf8("url")).toString()
                 }
             );
@@ -307,10 +294,13 @@ private:
     QString m_uri;
 
     /**
-     * @brief m_query
-     * The query string used in fetch operations
+     * @brief s_sizeExpression
+     * Regular expression used to extract size data from the url
      */
-    QString m_query;
+    inline static QRegularExpression s_sizeExpression = QRegularExpression
+    (
+        QString::fromUtf8("[h]\\=\\d{1,}\\&[w]\\=\\d{1,}")
+    );
 };
 
 #endif // IMAGEPAGINATOR_H

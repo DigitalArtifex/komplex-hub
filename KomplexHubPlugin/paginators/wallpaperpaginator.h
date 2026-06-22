@@ -98,11 +98,6 @@ signals:
      */
     auto uriChanged() -> void;
 
-    /**
-     * @brief queryChanged
-     */
-    auto queryChanged() -> void;
-
 protected:
     /**
      * @brief fetch
@@ -124,6 +119,11 @@ protected:
             "Uri not set",
             {}
         );
+
+        if(queryable() && query().isEmpty())
+        {
+            return {};
+        }
 
         QUrl url(
             QString::fromUtf8("%1/%2/%3").arg(

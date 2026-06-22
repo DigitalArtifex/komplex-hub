@@ -39,6 +39,8 @@ public:
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_PACKS_FEATURED)
         );
+
+        controller()->setWindowSize(20);
     }
 };
 

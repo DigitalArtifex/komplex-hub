@@ -38,9 +38,23 @@ NewestPacksModel::NewestPacksModel(QObject *parent) : QAbstractListModel{parent}
 
     QObject::connect(
         notifier,
-        &PaginationNotifier::dataChanged,
+        &PaginationNotifier::pageChanged,
         this,
         &NewestPacksModel::resetDataModel
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetchComplete,
+        this,
+        &NewestPacksModel::resetState
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetching,
+        this,
+        &NewestPacksModel::onPaginatorFetching
     );
 }
 
@@ -56,12 +70,12 @@ auto NewestPacksModel::rowCount(const QModelIndex &) const -> int
 
 auto NewestPacksModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(index.row() < 0 || m_paginator == nullptr)
+    if(index.row() < 0 || m_paginator == nullptr || index.row() >= m_paginator->count())
     {
         return {};
     }
 
-    WallpaperCache dataPoint = m_data.at(index.row());
+    WallpaperCache dataPoint = m_paginator->at(index.row());
 
     QVariant data;
 
@@ -109,10 +123,10 @@ auto NewestPacksModel::index(int row, int column, const QModelIndex &parent) con
 {
     Q_UNUSED(parent)
 
-    if(row < 0 || row >= m_data.count())
+    if(row < 0 || row >= m_paginator->count())
         return {};
 
-    return createIndex(row, column, &m_data[row]);
+    return createIndex(row, column, &m_paginator[row]);
 }
 
 auto NewestPacksModel::columnCount(const QModelIndex &) const -> int
@@ -153,23 +167,18 @@ auto NewestPacksModel::resetState() -> void
 
 auto NewestPacksModel::resetDataModel() -> void
 {
-    setState(Loading);
     //invalidate previous model data
-    beginRemoveRows(QModelIndex(), 0, m_data.count());
-    m_data.clear();
+    beginRemoveRows(QModelIndex(), 0, m_paginator->count());
     endRemoveRows();
 
     //signal new data
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
-    auto dataset = m_paginator->data();
-
-    for(const WallpaperCache& data : std::as_const(dataset))
-    {
-        m_data.append(data);
-    }
-
     endInsertRows();
-    setState(Idle);
+}
+
+auto NewestPacksModel::onPaginatorFetching() -> void
+{
+    setState(Loading);
 }
 
 auto NewestPacksModel::roleNames() const -> QHash<int, QByteArray>
@@ -225,7 +234,13 @@ auto NewestPacksModel::nextPage() const -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->next();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->next();
+            }
+        );
     }
 }
 
@@ -233,7 +248,13 @@ auto NewestPacksModel::previousPage() const -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->previous();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->previous();
+            }
+        );
     }
 }
 

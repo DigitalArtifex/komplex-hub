@@ -35,6 +35,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QEventLoop>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "paginators/videosearchpaginator.h"
 
@@ -196,13 +197,13 @@ public:
      * @brief nextPage
      * Function for the QML frontend
      */
-    Q_INVOKABLE auto nextPage() const -> void;
+    Q_INVOKABLE auto nextPage() -> void;
 
     /**
      * @brief previousPage
      * Function for the QML frontend
      */
-    Q_INVOKABLE auto previousPage() const -> void;
+    Q_INVOKABLE auto previousPage() -> void;
 
     /**
      * @brief query
@@ -213,12 +214,34 @@ public:
 
     /**
      * @brief setQuery
-     * Sets the current
+     * Sets the current search query
      * @param query
      */
     auto setQuery(const QString &query) -> void;
 
+    /**
+     * @brief hasNextPage
+     * Calculates if there are more pages based on the current page calculation
+     * @return
+     */
+    auto hasNextPage() const -> bool;
+
+    /**
+     * @brief hasPreviousPage
+     * If page is greater than 1, returns true
+     * @return
+     */
+    auto hasPreviousPage() const -> bool;
+
 protected:
+
+    /**
+     * @brief onPaginatorFetching
+     * Sets current state to loading. Triggered when paginator's cache controller
+     * needs to fetch data from the remote endpoint.
+     */
+    auto onPaginatorFetching() -> void;
+
     /**
      * @brief setErrorString
      * @param errorString
@@ -236,23 +259,59 @@ protected:
      */
     auto resetState() -> void;
 
+    /**
+     * @brief resetDataModel
+     * Clears the data model and creates a new one if data exists
+     */
     auto resetDataModel() -> void;
 
-    auto hasNextPage() -> bool;
-
-    auto hasPreviousPage() -> bool;
-
 signals:
+    /**
+     * @brief stateChanged
+     * Signaled when reported state changes
+     */
     auto stateChanged() -> void;
+
+    /**
+     * @brief errorStringChanged
+     * Signaled when reported error message changes
+     */
     auto errorStringChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto resultsPerPageChanged() -> void;
 
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto pageChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto totalResultsChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto totalPagesChanged() -> void;
+
+    /**
+     * @brief pageChanged
+     * Forwarding signal connected in constructor
+     */
     auto queryChanged() -> void;
 
 private:
+    /**
+     * Data role map that connects VideoSearchModel::DataRole to it's QML accessor name
+     */
     static inline const QHash<int, QByteArray> m_dataRoles =
     {
         {
@@ -297,8 +356,6 @@ private:
     QString m_errorString = QString();
 
     VideoSearchPaginator *m_paginator = nullptr;
-
-    mutable QList<VideoCache> m_data;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)

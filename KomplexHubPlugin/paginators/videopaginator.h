@@ -62,46 +62,11 @@ public:
         return m_uri;
     }
 
-    /**
-     * @brief query
-     * Current query string, if the API Endpoint supports queries
-     * @return
-     */
-    [[nodiscard]]
-    auto query() const -> QString
-    {
-        return m_query;
-    }
-
-    /**
-     * @brief setQuery
-     * Sets the new query string and updates the controller
-     * @param query
-     */
-    auto setQuery(const QString &query) -> void
-    {
-        if(query == m_query)
-        {
-            return;
-        }
-
-        m_query = query;
-        Q_EMIT queryChanged();
-
-        reset();
-        setOffset(0);
-    }
-
 signals:
     /**
      * @brief uriChanged
      */
     auto uriChanged() -> void;
-
-    /**
-     * @brief queryChanged
-     */
-    auto queryChanged() -> void;
 
 protected:
     /**
@@ -125,6 +90,11 @@ protected:
             {}
         );
 
+        if(queryable() && query().isEmpty())
+        {
+            return {};
+        }
+
         QUrl url(
             QString::fromUtf8("%1/%2/%3").arg(
                 KOMPLEX_API_HOST,
@@ -139,7 +109,7 @@ protected:
                 {
                     {
                         QByteArray("query"),
-                        m_query.toUtf8()
+                        query().toUtf8()
                     },
                     {
                         QByteArray("offset"),
@@ -258,7 +228,12 @@ protected:
 
         QNetworkReply *reply = manager->post(request, nullptr);
         QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-        QObject::connect(reply, &QNetworkReply::errorOccurred, &loop,
+
+        QObject::connect
+        (
+            reply,
+            &QNetworkReply::errorOccurred,
+            &loop,
             [&loop](QNetworkReply::NetworkError error) -> void
             {
                 loop.quit();

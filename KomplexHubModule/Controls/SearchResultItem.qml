@@ -2,13 +2,16 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import KomplexHub
+
 Item {
-    property string author: "Author"
-    property string description: "This is a description of the search result item"
-    property string title: "Wallpaper Title"
+    property string author: ""
+    property string description: ""
+    property string title: ""
     property string thumbnail: ""
     property string uuid: ""
     property bool selected: false
+    property bool pexels: false
 
     signal triggered
 
@@ -48,6 +51,22 @@ Item {
                     id: thumnailImage
                     source: searchResultItemRoot.thumbnail
                 }
+
+                Image
+                {
+                    antialiasing: true
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.margins: Constants.mediumMargin
+
+                    width: 24
+                    height: 24
+                    transform: Image.PreserveAspectFit
+                    opacity: 0.5
+                    source: "qrc:/images/icons/pexels-icon-filled-256.svg"
+
+                    visible: searchResultItemRoot.pexels
+                }
             }
 
             Text {
@@ -62,6 +81,8 @@ Item {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
             }
 
+            Item { Layout.fillHeight: true }
+
             Text {
                 color: palette.text
                 font.pixelSize: 12
@@ -70,6 +91,7 @@ Item {
 
                 Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
                 Layout.preferredWidth: 250
+                visible: !searchResultItemRoot.pexels
             }
 
             Text {
@@ -88,6 +110,8 @@ Item {
                 Layout.maximumWidth: 236
                 Layout.bottomMargin: 3
             }
+
+            Item { Layout.fillHeight: true }
         }
 
         Behavior on color {

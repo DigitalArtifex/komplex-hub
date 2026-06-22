@@ -35,6 +35,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QEventLoop>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "paginators/featuredvideospaginator.h"
 
@@ -196,13 +197,13 @@ public:
      * @brief nextPage
      * Function for the QML frontend
      */
-    Q_INVOKABLE auto nextPage() const -> void;
+    Q_INVOKABLE auto nextPage() -> void;
 
     /**
      * @brief previousPage
      * Function for the QML frontend
      */
-    Q_INVOKABLE auto previousPage() const -> void;
+    Q_INVOKABLE auto previousPage() -> void;
 
 protected:
     /**
@@ -224,6 +225,8 @@ protected:
 
     auto resetDataModel() -> void;
 
+    auto onPaginatorFetching() -> void;
+
 signals:
     auto stateChanged() -> void;
     auto errorStringChanged() -> void;
@@ -234,6 +237,10 @@ signals:
     auto totalPagesChanged() -> void;
 
 private:
+    /**
+     * @brief m_dataRoles
+     * Data role map that connects ImageSearchModel::DataRole to it's QML accessor name
+     */
     static inline const QHash<int, QByteArray> m_dataRoles =
     {
         {
@@ -278,8 +285,6 @@ private:
     QString m_errorString = QString();
 
     FeaturedVideosPaginator *m_paginator = nullptr;
-
-    mutable QList<VideoCache> m_data;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)

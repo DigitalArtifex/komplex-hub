@@ -1,68 +1,68 @@
-#include "videosearchmodel.h"
+#include "packsearchmodel.h"
 
-VideoSearchModel::VideoSearchModel(QObject *parent) : QAbstractListModel{parent}
+PackSearchModel::PackSearchModel(QObject *parent) : QAbstractListModel{parent}
 {
-    m_paginator = new VideoSearchPaginator(this);
+    m_paginator = new PackSearchPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
     QObject::connect(
         notifier,
         &PaginationNotifier::resultsPerPageChanged,
         this,
-        &VideoSearchModel::resultsPerPageChanged
+        &PackSearchModel::resultsPerPageChanged
     );
 
     QObject::connect(
         notifier,
         &PaginationNotifier::totalResultsChanged,
         this,
-        &VideoSearchModel::totalResultsChanged
+        &PackSearchModel::totalResultsChanged
     );
 
     QObject::connect(
         notifier,
         &PaginationNotifier::totalPagesChanged,
         this,
-        &VideoSearchModel::totalPagesChanged
+        &PackSearchModel::totalPagesChanged
     );
 
     QObject::connect(
         notifier,
         &PaginationNotifier::pageChanged,
         this,
-        &VideoSearchModel::pageChanged
+        &PackSearchModel::pageChanged
     );
 
     QObject::connect(
         notifier,
         &PaginationNotifier::pageChanged,
         this,
-        &VideoSearchModel::resetDataModel
+        &PackSearchModel::resetDataModel
     );
 
     QObject::connect(
         notifier,
         &PaginationNotifier::fetchComplete,
         this,
-        &VideoSearchModel::resetState
+        &PackSearchModel::resetState
     );
 
     QObject::connect(
         notifier,
         &PaginationNotifier::fetching,
         this,
-        &VideoSearchModel::onPaginatorFetching
+        &PackSearchModel::onPaginatorFetching
     );
 
     QObject::connect(
         m_paginator,
-        &VideoSearchPaginator::queryChanged,
+        &PaginationNotifier::queryChanged,
         this,
-        &VideoSearchModel::queryChanged
+        &PackSearchModel::queryChanged
     );
 }
 
-auto VideoSearchModel::rowCount(const QModelIndex &) const -> int
+auto PackSearchModel::rowCount(const QModelIndex &) const -> int
 {
     if(m_paginator != nullptr)
     {
@@ -72,7 +72,7 @@ auto VideoSearchModel::rowCount(const QModelIndex &) const -> int
     return 0;
 }
 
-auto VideoSearchModel::data(const QModelIndex &index, int role) const -> QVariant
+auto PackSearchModel::data(const QModelIndex &index, int role) const -> QVariant
 {
     if(m_paginator == nullptr)
     {
@@ -84,45 +84,51 @@ auto VideoSearchModel::data(const QModelIndex &index, int role) const -> QVarian
         return {};
     }
 
-    VideoCache dataPoint = m_paginator->at(index.row());
+    WallpaperCache dataPoint = m_paginator->at(index.row());
 
     QVariant data;
 
     switch(static_cast<DataRole>(role))
     {
     case UuidRole:
-        data = dataPoint.id;
+        data = dataPoint.uuid;
         break;
     case AuthorRole:
         data = dataPoint.author;
         break;
-    case AuthorIdRole:
-        data = dataPoint.authorId;
+    case DescriptionRole:
+        data = dataPoint.description;
         break;
-    case AuthorUrlRole:
-        data = dataPoint.authorUrl;
-        break;
-    case DurationRole:
-        data = dataPoint.duration;
+    case NameRole:
+        data = dataPoint.name;
         break;
     case ThumbnailRole:
         data = dataPoint.thumbnail;
         break;
-    case UrlRole:
-        data = dataPoint.url;
+    case CreatedDateRole:
+        data = dataPoint.createdDate;
         break;
-    case HeightRole:
-        data = dataPoint.height;
+    case AuthorIdRole:
+        data = dataPoint.authorId;
         break;
-    case WidthRole:
-        data = dataPoint.width;
+    case PriceRole:
+        data = dataPoint.price;
+        break;
+    case CurrencyRole:
+        data = dataPoint.currency;
+        break;
+    case DownloadCountRole:
+        data = dataPoint.downloadCount;
+        break;
+    case TypeRole:
+        data = dataPoint.type;
         break;
     }
 
     return data;
 }
 
-auto VideoSearchModel::index(int row, int column, const QModelIndex &parent) const -> QModelIndex
+auto PackSearchModel::index(int row, int column, const QModelIndex &parent) const -> QModelIndex
 {
     Q_UNUSED(parent)
 
@@ -132,27 +138,27 @@ auto VideoSearchModel::index(int row, int column, const QModelIndex &parent) con
     return createIndex(row, column, &m_paginator[row]);
 }
 
-auto VideoSearchModel::columnCount(const QModelIndex &) const -> int
+auto PackSearchModel::columnCount(const QModelIndex &) const -> int
 {
     return 0;
 }
 
-auto VideoSearchModel::parent(const QModelIndex &) const -> QModelIndex
+auto PackSearchModel::parent(const QModelIndex &) const -> QModelIndex
 {
     return {};
 }
 
-auto VideoSearchModel::setData(const QModelIndex &, const QVariant &, int) -> bool
+auto PackSearchModel::setData(const QModelIndex &, const QVariant &, int) -> bool
 {
     return false;
 }
 
-auto VideoSearchModel::state() const -> VideoSearchModel::State
+auto PackSearchModel::state() const -> PackSearchModel::State
 {
     return m_state;
 }
 
-auto VideoSearchModel::setState(State state) -> void
+auto PackSearchModel::setState(State state) -> void
 {
     if (m_state == state)
     {
@@ -163,12 +169,12 @@ auto VideoSearchModel::setState(State state) -> void
     emit stateChanged();
 }
 
-auto VideoSearchModel::resetState() -> void
+auto PackSearchModel::resetState() -> void
 {
     setState(Idle);
 }
 
-auto VideoSearchModel::resetDataModel() -> void
+auto PackSearchModel::resetDataModel() -> void
 {
     //invalidate previous model data
     beginRemoveRows(QModelIndex(), 0, m_paginator->count());
@@ -179,32 +185,32 @@ auto VideoSearchModel::resetDataModel() -> void
     endInsertRows();
 }
 
-auto VideoSearchModel::hasNextPage() const -> bool
+auto PackSearchModel::hasNextPage() const -> bool
 {
     return m_paginator->page() < m_paginator->totalPages();
 }
 
-auto VideoSearchModel::hasPreviousPage() const -> bool
+auto PackSearchModel::hasPreviousPage() const -> bool
 {
     return m_paginator->page() > 0;
 }
 
-auto VideoSearchModel::onPaginatorFetching() -> void
+auto PackSearchModel::onPaginatorFetching() -> void
 {
     setState(Loading);
 }
 
-auto VideoSearchModel::roleNames() const -> QHash<int, QByteArray>
+auto PackSearchModel::roleNames() const -> QHash<int, QByteArray>
 {
     return m_dataRoles;
 }
 
-auto VideoSearchModel::errorString() const -> QString
+auto PackSearchModel::errorString() const -> QString
 {
     return m_errorString;
 }
 
-auto VideoSearchModel::setErrorString(const QString &errorString) -> void
+auto PackSearchModel::setErrorString(const QString &errorString) -> void
 {
     if (m_errorString == errorString)
     {
@@ -215,7 +221,7 @@ auto VideoSearchModel::setErrorString(const QString &errorString) -> void
     emit errorStringChanged();
 }
 
-auto VideoSearchModel::resultsPerPage() const -> qsizetype
+auto PackSearchModel::resultsPerPage() const -> qsizetype
 {
     if(m_paginator != nullptr)
     {
@@ -225,7 +231,7 @@ auto VideoSearchModel::resultsPerPage() const -> qsizetype
     return 0;
 }
 
-auto VideoSearchModel::setResultsPerPage(qsizetype resultsPerPage) -> void
+auto PackSearchModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
     if(m_paginator != nullptr)
     {
@@ -239,7 +245,7 @@ auto VideoSearchModel::setResultsPerPage(qsizetype resultsPerPage) -> void
     }
 }
 
-auto VideoSearchModel::totalResults() const -> qsizetype
+auto PackSearchModel::totalResults() const -> qsizetype
 {
     if(m_paginator != nullptr)
     {
@@ -249,7 +255,7 @@ auto VideoSearchModel::totalResults() const -> qsizetype
     return 0;
 }
 
-auto VideoSearchModel::nextPage() -> void
+auto PackSearchModel::nextPage() -> void
 {
     if(m_paginator != nullptr)
     {
@@ -263,7 +269,7 @@ auto VideoSearchModel::nextPage() -> void
     }
 }
 
-auto VideoSearchModel::previousPage() -> void
+auto PackSearchModel::previousPage() -> void
 {
     if(m_paginator != nullptr)
     {
@@ -277,7 +283,7 @@ auto VideoSearchModel::previousPage() -> void
     }
 }
 
-auto VideoSearchModel::query() const -> QString
+auto PackSearchModel::query() const -> QString
 {
     if(m_paginator != nullptr)
     {
@@ -287,7 +293,7 @@ auto VideoSearchModel::query() const -> QString
     return {};
 }
 
-auto VideoSearchModel::setQuery(const QString &query) -> void
+auto PackSearchModel::setQuery(const QString &query) -> void
 {
     if(m_paginator != nullptr)
     {
@@ -301,7 +307,7 @@ auto VideoSearchModel::setQuery(const QString &query) -> void
     }
 }
 
-qsizetype VideoSearchModel::page() const
+qsizetype PackSearchModel::page() const
 {
     if(m_paginator != nullptr)
     {
@@ -311,7 +317,7 @@ qsizetype VideoSearchModel::page() const
     return 0;
 }
 
-auto VideoSearchModel::totalPages() const -> qsizetype
+auto PackSearchModel::totalPages() const -> qsizetype
 {
     if(m_paginator != nullptr)
     {

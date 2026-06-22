@@ -2,8 +2,6 @@
 
 ImageSearchModel::ImageSearchModel(QObject *parent) : QAbstractListModel{parent}
 {
-    setState(Loading);
-
     m_paginator = new ImageSearchPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -37,9 +35,23 @@ ImageSearchModel::ImageSearchModel(QObject *parent) : QAbstractListModel{parent}
 
     QObject::connect(
         notifier,
-        &PaginationNotifier::dataChanged,
+        &PaginationNotifier::pageChanged,
         this,
         &ImageSearchModel::resetDataModel
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetchComplete,
+        this,
+        &ImageSearchModel::resetState
+    );
+
+    QObject::connect(
+        notifier,
+        &PaginationNotifier::fetching,
+        this,
+        &ImageSearchModel::onPaginatorFetching
     );
 
     QObject::connect(
@@ -48,6 +60,14 @@ ImageSearchModel::ImageSearchModel(QObject *parent) : QAbstractListModel{parent}
         this,
         &ImageSearchModel::queryChanged
     );
+}
+
+ImageSearchModel::~ImageSearchModel()
+{
+    if(m_paginator != nullptr)
+    {
+        delete m_paginator;
+    }
 }
 
 auto ImageSearchModel::rowCount(const QModelIndex &) const -> int
@@ -62,12 +82,12 @@ auto ImageSearchModel::rowCount(const QModelIndex &) const -> int
 
 auto ImageSearchModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(index.row() < 0 || m_paginator == nullptr)
+    if(index.row() < 0 || m_paginator == nullptr || index.row() >= m_paginator->count())
     {
         return {};
     }
 
-    ImageCache dataPoint = m_data.at(index.row());
+    ImageCache dataPoint = m_paginator->at(index.row());
 
     QVariant data;
 
@@ -112,6 +132,27 @@ auto ImageSearchModel::data(const QModelIndex &index, int role) const -> QVarian
     case ExtraLargeUrlRole:
         data = dataPoint.sources.value(QString::fromUtf8("large2x"));
         break;
+    case PortraitSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("portrait"));
+        break;
+    case LandscapeSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("landscape"));
+        break;
+    case SmallSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("small"));
+        break;
+    case OriginalSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("original"));
+        break;
+    case MediumSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("medium"));
+        break;
+    case LargeSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("large"));
+        break;
+    case ExtraLargeSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("large2x"));
+        break;
     }
 
     return data;
@@ -121,10 +162,12 @@ auto ImageSearchModel::index(int row, int column, const QModelIndex &parent) con
 {
     Q_UNUSED(parent)
 
-    if(row < 0 || row >= m_data.count())
+    if(row < 0 || row >= m_paginator->count())
+    {
         return {};
+    }
 
-    return createIndex(row, column, &m_data[row]);
+    return createIndex(row, column, &m_paginator->at(row));
 }
 
 auto ImageSearchModel::columnCount(const QModelIndex &) const -> int
@@ -165,33 +208,26 @@ auto ImageSearchModel::resetState() -> void
 
 auto ImageSearchModel::resetDataModel() -> void
 {
-    setState(Loading);
-
     //invalidate previous model data
-    beginRemoveRows(QModelIndex(), 0, m_data.count());
-    m_data.clear();
+    beginRemoveRows(QModelIndex(), 0, m_paginator->count());
     endRemoveRows();
 
     //signal new data
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
-    auto dataset = m_paginator->data();
-
-    for(const ImageCache& data : std::as_const(dataset))
-    {
-        m_data.append(data);
-    }
-
     endInsertRows();
-
-    setState(Idle);
 }
 
-auto ImageSearchModel::hasNextPage() -> bool
+auto ImageSearchModel::onPaginatorFetching() -> void
+{
+    setState(Loading);
+}
+
+auto ImageSearchModel::hasNextPage() const -> bool
 {
     return m_paginator->page() < m_paginator->totalPages();
 }
 
-auto ImageSearchModel::hasPreviousPage() -> bool
+auto ImageSearchModel::hasPreviousPage() const -> bool
 {
     return m_paginator->page() > 0;
 }
@@ -231,7 +267,42 @@ auto ImageSearchModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->setResultsPerPage(resultsPerPage);
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this, resultsPerPage]
+            {
+                qsizetype difference = resultsPerPage - m_paginator->resultsPerPage();
+                m_paginator->setResultsPerPage(resultsPerPage);
+
+                if(difference > 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage() - difference;
+
+                    beginInsertRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        m_paginator->count() - 1
+                    );
+
+                    endInsertRows();
+                }
+
+                else if(difference < 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage();
+
+                    beginRemoveRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        firstIndex - difference
+                    );
+
+                    endRemoveRows();
+                }
+            }
+        );
     }
 }
 
@@ -245,19 +316,31 @@ auto ImageSearchModel::totalResults() const -> qsizetype
     return 0;
 }
 
-auto ImageSearchModel::nextPage() const -> void
+auto ImageSearchModel::nextPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->next();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->next();
+            }
+        );
     }
 }
 
-auto ImageSearchModel::previousPage() const -> void
+auto ImageSearchModel::previousPage() -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->previous();
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this]
+            {
+                m_paginator->previous();
+            }
+        );
     }
 }
 
@@ -275,7 +358,13 @@ auto ImageSearchModel::setQuery(const QString &query) -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->setQuery(query);
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this, query]
+            {
+                m_paginator->setQuery(query);
+            }
+        );
     }
 }
 

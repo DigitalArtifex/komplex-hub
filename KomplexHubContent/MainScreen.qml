@@ -317,20 +317,18 @@ Rectangle {
         }
     }
 
-    KeroBuildingAnimation {
+    KeroBuildingAnimation
+    {
         id: buildingOverlay
 
         anchors.fill: parent
         visible: false
     }
 
-    KeroLoadingAnimation {
+    KeroLoadingAnimation
+    {
         id: loadingAnimation
         anchors.fill: parent
-
-        // OpacityAnimator on opacity {
-        //     duration: 150
-        // }
 
         visible: opacity > 0
         opacity: 0

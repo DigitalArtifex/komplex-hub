@@ -41,6 +41,8 @@ public:
         setUri(
             QString::fromUtf8(KOMPLEX_ENDPOINT_IMAGES_SEARCH)
         );
+
+        setQueryable(true);
     }
 };
 
