@@ -19,6 +19,9 @@ Item
     property int resultHeight: 245
     property bool loading: false
 
+    property alias currentItem: resultsView.currentItem
+    property alias currentIndex: resultsView.currentIndex
+
     property var model
 
     property Component delegate
@@ -78,6 +81,22 @@ Item
                 Layout.maximumWidth: emptyWidth / 2
             }
 
+            Component
+            {
+                id: highlight
+                Rectangle
+                {
+                    width: view.cellWidth
+                    height: view.cellHeight
+                    color: palette.accent
+                    radius: 5
+                    x: view.currentItem.x
+                    y: view.currentItem.y
+                    Behavior on x { SpringAnimation { spring: 3; damping: 0.2 } }
+                    Behavior on y { SpringAnimation { spring: 3; damping: 0.2 } }
+                }
+            }
+
             GridView
             {
                 id: resultsView
@@ -86,10 +105,12 @@ Item
 
                 cellWidth: 256 + Constants.mediumMargin
                 cellHeight: 245 + Constants.mediumMargin
-                focus: true
                 model: rootItem.model
 
                 delegate: rootItem.delegate
+                highlight: Rectangle { color: palette.accent; radius: 5 }
+                highlightFollowsCurrentItem: true
+                focus: true
 
                 add: Transition
                 {
@@ -108,6 +129,15 @@ Item
                 }
 
                 move: Transition
+                {
+                    NumberAnimation
+                    {
+                        properties: "x,y"
+                        duration: 250
+                    }
+                }
+
+                displaced: Transition
                 {
                     NumberAnimation
                     {
@@ -146,6 +176,7 @@ Item
 
         PaginationBox
         {
+            id: buttonBoxLayout
             height: 35
 
             anchors.left: parent.left

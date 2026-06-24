@@ -12,7 +12,7 @@ Item
     property string query
     readonly property bool searchable: paginator.searchable
 
-    VideoSearchModel
+    PackSearchModel
     {
         id: searchModel
         query: rootItem.query
@@ -24,12 +24,16 @@ Item
         id: paginator
         anchors.fill: parent
         model: searchModel
-        loading: model.state === VideoSearchModel.Loading
+        loading: model.state === PackSearchModel.Loading
 
-        delegate: Item
+        delegate: ItemDelegate
         {
+            id: resultDelegate
+
             width: 256
             height: 245
+
+            required property string name
             required property string author
             required property string description
             required property string uuid
@@ -43,6 +47,14 @@ Item
                 description: parent.description
                 thumbnail: parent.thumbnail
                 uuid: parent.uuid
+
+                selected: resultDelegate.highlighted
+            }
+
+            MouseArea
+            {
+                anchors.fill: parent
+                onClicked: paginator.currentIndex = index
             }
         }
     }

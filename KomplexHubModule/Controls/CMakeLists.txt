@@ -16,5 +16,6 @@ qt6_add_qml_module(KomplexHubModule_Controls
         "SearchResultList.qml"
         QML_FILES PaginationBox.qml
         QML_FILES PaginatorGrid.qml
+        QML_FILES HorizontalPaginator.qml
 )
 

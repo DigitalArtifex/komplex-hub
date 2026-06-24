@@ -119,7 +119,8 @@ Item {
         }
     }
 
-    MouseArea {
+    MouseArea
+    {
         property string lastState
         id: mouseArea
 
@@ -152,16 +153,6 @@ Item {
                 return;
 
             selected = !selected
-        }
-    }
-
-    onSelectedChanged: () => {
-        if(selected) {
-            searchResultItemRoot.triggered()
-            searchResultItemRoot.state = "selected"
-        }
-        else {
-            searchResultItemRoot.state = ""
         }
     }
 

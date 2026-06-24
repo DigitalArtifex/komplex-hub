@@ -8,66 +8,33 @@ import KomplexHub.Controls
 import KomplexHub.Kero
 import KomplexHubPlugin
 
-Item {
+Item
+{
     readonly property bool searchable: false
     property int resultsPerRow: (homePageRoot.width - (64 + Constants.largeMargin)) / (resultWidth + Constants.largeMargin) + 1
     property int resultWidth: 256
-    property int resultHeight: 256
+    property int resultHeight: 245
+
+    clip: true
 
     id: homePageRoot
 
     NewestPacksModel
     {
-        id: newestPacksModel
+        id: packsModel
         resultsPerPage: homePageRoot.resultsPerRow
-
-        onStateChanged: () =>
-                        {
-                            if(state == NewestPacksModel.Loading)
-                            {
-                                console.log("Newest packs loading")
-                            }
-                            else if(state == NewestPacksModel.Idle)
-                            {
-                                console.log("Newest packs finished")
-                            }
-                        }
     }
 
     FeaturedImagesModel
     {
-        id: featuredImagesModel
+        id: imagesModel
         resultsPerPage: homePageRoot.resultsPerRow
-
-        onStateChanged: () =>
-                        {
-                            if(state == FeaturedImagesModel.Loading)
-                            {
-                                console.log("Featured Images loading")
-                            }
-                            else if(state == FeaturedImagesModel.Idle)
-                            {
-                                console.log("Featured Images finished")
-                            }
-                        }
     }
 
     FeaturedVideosModel
     {
-        id: featuredVideosModel
+        id: videosModel
         resultsPerPage: homePageRoot.resultsPerRow
-
-        onStateChanged: () =>
-                        {
-                            if(state == FeaturedVideosModel.Loading)
-                            {
-                                console.log("Featured Videos loading")
-                            }
-                            else if(state == FeaturedVideosModel.Idle)
-                            {
-                                console.log("Featured Videos finished")
-                            }
-                        }
     }
 
     Rectangle
@@ -75,329 +42,174 @@ Item {
         anchors.fill: parent
         color: palette.base
 
-        ScrollView
+        ColumnLayout
         {
-            id: newPacksView
+            id: resultsLayout
             anchors.fill: parent
-            anchors.margins: Constants.largeMargin
+            anchors.margins: Constants.mediumMargin
 
-            ColumnLayout
+            Text
             {
-                width: newPacksView.width
+                Layout.alignment: Qt.AlignTop
+                Layout.preferredHeight: 50
 
-                ColumnLayout
+                color: palette.text
+                font.pixelSize: Constants.h2Font.pixelSize
+                font.bold: true
+                text: qsTr("Newest Wallpaper Packs")
+                verticalAlignment: Qt.AlignVCenter
+            }
+
+            HorizontalPaginator
+            {
+                id: packsPaginator
+                Layout.fillWidth: true
+                Layout.preferredHeight: 245
+                Layout.alignment: Qt.AlignTop
+
+                model: packsModel
+                delegate: ItemDelegate
                 {
-                    width: parent.width
-                    height: 420
+                    width: resultWidth
+                    height: resultHeight
 
-                    Text
+                    required property string name
+                    required property string author
+                    required property string description
+                    required property string uuid
+                    required property string thumbnail
+                    required property string authorId
+                    required property int index
+
+                    SearchResultItem
                     {
-                        color: palette.text
-                        font.pixelSize: Constants.h2Font.pixelSize
-                        font.bold: true
-                        text: qsTr("Newest Wallpaper Packs")
+                        anchors.fill: parent
+                        title: parent.name
+                        author: parent.author
+                        description: parent.description
+                        thumbnail: parent.thumbnail
+                        uuid: parent.uuid
+
+                        selected: parent.highlighted
                     }
 
-                    RowLayout
+                    MouseArea
                     {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 256
-
-                        Rectangle
-                        {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-
-                            color: "transparent"
-
-                            clip: true
-                            Row
-                            {
-                                clip: true
-                                spacing: Constants.mediumMargin
-
-                                anchors.top: parent.top
-                                anchors.left: parent.left
-                                anchors.bottom: parent.bottom
-                                anchors.right: newPacksMoreButton.left
-                                anchors.leftMargin: Constants.largeMargin
-                                anchors.rightMargin: Constants.largeMargin
-
-                                Repeater
-                                {
-                                    model: newestPacksModel
-
-                                    delegate: Item {
-                                        width: resultWidth
-                                        height: resultHeight
-
-                                        required property string name
-                                        required property string author
-                                        required property string description
-                                        required property string uuid
-                                        required property string thumbnail
-                                        required property string authorId
-
-                                        SearchResultItem
-                                        {
-                                            anchors.fill: parent
-                                            title: parent.name
-                                            author: parent.author
-                                            description: parent.description
-                                            thumbnail: parent.thumbnail
-                                            uuid: parent.uuid
-                                        }
-                                    }
-                                }
-                            }
-
-                            Rectangle
-                            {
-                                id: newestGradientMap
-                                anchors.top: parent.top
-                                anchors.right: newPacksMoreButton.left
-                                height: resultHeight
-                                width: resultWidth / 4
-
-                                gradient: Gradient
-                                {
-                                    orientation: Gradient.Horizontal
-                                    GradientStop { position: 0.0; color: "transparent" }
-                                    GradientStop { position: 1.0; color: palette.light }
-                                }
-                                opacity: 0.5
-                            }
-
-                            SquareButton
-                            {
-                                id: newPacksMoreButton
-                                anchors.top: parent.top
-                                anchors.right: parent.right
-                                height: resultHeight
-
-                                width: 64
-
-                                icon.source: "qrc:/images/icons/icons8-forward.svg"
-                                icon.height: 24
-                                icon.width: 24
-                            }
-                        }
-                    }
-                }
-
-                Item {
-                    height: Constants.largeMargin
-                }
-
-                ColumnLayout
-                {
-                    width: parent.width
-                    height: 420
-
-                    Text
-                    {
-                        color: palette.text
-                        font.pixelSize: Constants.h2Font.pixelSize
-                        font.bold: true
-                        text: qsTr("Featured Images")
-                    }
-
-                    RowLayout
-                    {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 256
-
-                        Rectangle
-                        {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-
-                            color: "transparent"
-
-                            clip: true
-                            Row
-                            {
-                                clip: true
-                                spacing: Constants.mediumMargin
-
-                                anchors.top: parent.top
-                                anchors.left: parent.left
-                                anchors.bottom: parent.bottom
-                                anchors.right: featuredImagesMoreButton.left
-                                anchors.leftMargin: Constants.largeMargin
-                                anchors.rightMargin: Constants.largeMargin
-
-                                Repeater
-                                {
-                                    model: featuredImagesModel
-
-                                    delegate: Item
-                                    {
-                                        width: resultWidth
-                                        height: resultHeight
-
-                                        required property string author
-                                        required property string description
-                                        required property string uuid
-                                        required property string thumbnail
-                                        required property string authorId
-
-                                        SearchResultItem
-                                        {
-                                            anchors.fill: parent
-                                            title: parent.author
-                                            description: parent.description
-                                            thumbnail: parent.thumbnail
-                                            uuid: parent.uuid
-
-                                            pexels: true
-                                        }
-                                    }
-                                }
-                            }
-
-                            Rectangle
-                            {
-                                anchors.top: parent.top
-                                anchors.right: featuredImagesMoreButton.left
-                                height: resultHeight
-                                width: resultWidth / 4
-
-                                gradient: Gradient
-                                {
-                                    orientation: Gradient.Horizontal
-                                    GradientStop { position: 0.0; color: "transparent" }
-                                    GradientStop { position: 1.0; color: palette.light }
-                                }
-                                opacity: 0.5
-                            }
-
-                            SquareButton
-                            {
-                                id: featuredImagesMoreButton
-                                anchors.top: parent.top
-                                anchors.right: parent.right
-                                height: resultHeight
-
-                                width: 64
-
-                                icon.source: "qrc:/images/icons/icons8-forward.svg"
-                                icon.height: 24
-                                icon.width: 24
-                            }
-                        }
-                    }
-                }
-
-                Item {
-                    height: Constants.largeMargin
-                }
-
-                ColumnLayout
-                {
-                    width: parent.width
-                    height: 420
-
-                    Text
-                    {
-                        color: palette.text
-                        font.pixelSize: Constants.h2Font.pixelSize
-                        font.bold: true
-                        text: qsTr("Featured Videos")
-                    }
-
-                    RowLayout
-                    {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 256
-
-                        Rectangle
-                        {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-
-                            color: "transparent"
-
-                            clip: true
-                            Row
-                            {
-                                clip: true
-                                spacing: Constants.mediumMargin
-
-                                anchors.top: parent.top
-                                anchors.left: parent.left
-                                anchors.bottom: parent.bottom
-                                anchors.right: featuredVideosMoreButton.left
-                                anchors.leftMargin: Constants.largeMargin
-                                anchors.rightMargin: Constants.largeMargin
-
-                                Repeater
-                                {
-                                    model: featuredVideosModel
-
-                                    delegate: Item {
-                                        width: resultWidth
-                                        height: resultHeight
-
-                                        required property string uuid
-                                        required property string author
-                                        required property string authorId
-                                        required property string authorUrl
-                                        required property string thumbnail
-
-                                        SearchResultItem
-                                        {
-                                            anchors.fill: parent
-                                            title: parent.author
-                                            thumbnail: parent.thumbnail
-                                            uuid: parent.uuid
-                                            pexels: true
-                                        }
-                                    }
-                                }
-                            }
-
-                            Rectangle
-                            {
-                                anchors.top: parent.top
-                                anchors.right: featuredVideosMoreButton.left
-                                height: resultHeight
-                                width: resultWidth / 4
-
-                                gradient: Gradient
-                                {
-                                    orientation: Gradient.Horizontal
-                                    GradientStop { position: 0.0; color: "transparent" }
-                                    GradientStop { position: 1.0; color: palette.light }
-                                }
-                                opacity: 0.5
-                            }
-
-                            SquareButton
-                            {
-                                id: featuredVideosMoreButton
-                                anchors.top: parent.top
-                                anchors.right: parent.right
-                                height: resultHeight
-
-                                width: 64
-
-                                icon.source: "qrc:/images/icons/icons8-forward.svg"
-                                icon.height: 24
-                                icon.width: 24
-                            }
-                        }
+                        anchors.fill: parent
+                        onClicked: () => packsPaginator.currentIndex = index
                     }
                 }
             }
+
+            Text
+            {
+                Layout.alignment: Qt.AlignTop
+                Layout.preferredHeight: 50
+
+                color: palette.text
+                font.pixelSize: Constants.h2Font.pixelSize
+                font.bold: true
+                text: qsTr("Featured Images")
+                verticalAlignment: Qt.AlignVCenter
+            }
+
+            HorizontalPaginator
+            {
+                id: imagesPaginator
+                Layout.fillWidth: true
+                Layout.preferredHeight: 245
+                Layout.alignment: Qt.AlignTop
+
+                model: imagesModel
+                delegate: ItemDelegate
+                {
+                    width: resultWidth
+                    height: resultHeight
+
+                    required property string author
+                    required property string description
+                    required property string uuid
+                    required property string thumbnail
+                    required property string authorId
+
+                    SearchResultItem
+                    {
+                        anchors.fill: parent
+                        title: parent.author
+                        description: parent.description
+                        thumbnail: parent.thumbnail
+                        uuid: parent.uuid
+                        pexels: true
+                        selected: parent.highlighted
+                    }
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+                        onClicked: () => imagesPaginator.currentIndex = index
+                    }
+                }
+            }
+
+            Text
+            {
+                Layout.alignment: Qt.AlignTop
+                Layout.preferredHeight: 50
+
+                color: palette.text
+                font.pixelSize: Constants.h2Font.pixelSize
+                font.bold: true
+                text: qsTr("Popular Videos")
+                verticalAlignment: Qt.AlignVCenter
+            }
+
+            HorizontalPaginator
+            {
+                id: videosPaginator
+                Layout.fillWidth: true
+                Layout.preferredHeight: 245
+                Layout.alignment: Qt.AlignTop
+
+                model: videosModel
+                delegate: ItemDelegate
+                {
+                    width: resultWidth
+                    height: resultHeight
+
+                    required property string uuid
+                    required property string author
+                    required property string authorId
+                    required property string authorUrl
+                    required property string thumbnail
+
+                    SearchResultItem
+                    {
+                        anchors.fill: parent
+                        title: parent.author
+                        thumbnail: parent.thumbnail
+                        uuid: parent.uuid
+                        pexels: true
+                        selected: parent.highlighted
+                    }
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+                        onClicked: () => videosPaginator.currentIndex = index
+                    }
+                }
+            }
+
+            /* spacer */
+            Item { Layout.fillHeight: true }
         }
     }
 
     Component.onCompleted: () =>
     {
-        featuredImagesModel.nextPage()
-        featuredVideosModel.nextPage()
-        newestPacksModel.nextPage()
+        imagesModel.nextPage()
+        videosModel.nextPage()
+        packsModel.nextPage()
     }
 
     KeroLoadingAnimation
@@ -405,26 +217,66 @@ Item {
         id: loadingAnimation
         anchors.fill: parent
 
-        OpacityAnimator on opacity {
-            duration: 150
-        }
-
         visible: opacity > 0
-        opacity: 0
+        opacity: 1
     }
 
     states: [
         State {
             name: "loading"
-            when: newestPacksModel.state == NewestPacksModel.Loading ||
-                  featuredImagesModel.state == FeaturedImagesModel.Loading ||
-                  featuredVideosModel.state == FeaturedVideosModel.Loading;
+            when: packsModel.state === NewestPacksModel.Loading ||
+                  imagesModel.state === FeaturedImagesModel.Loading ||
+                  videosModel.state === FeaturedVideosModel.Loading;
 
-            PropertyChanges {
+            PropertyChanges
+            {
                 target: loadingAnimation
                 opacity: 1
             }
-        }
 
+            PropertyChanges
+            {
+                target: resultsLayout
+                opacity: 0
+            }
+        },
+        State {
+            name: "idle"
+            when: packsModel.state !== NewestPacksModel.Loading &&
+                  imagesModel.state !== FeaturedImagesModel.Loading &&
+                  videosModel.state !== FeaturedVideosModel.Loading;
+
+            PropertyChanges
+            {
+                target: loadingAnimation
+                opacity: 0
+            }
+
+            PropertyChanges
+            {
+                target: resultsLayout
+                opacity: 1
+            }
+        }
+    ]
+
+    transitions: [
+        Transition
+        {
+            from: "loading"
+            to: "idle"
+            NumberAnimation
+            {
+                target: loadingOverlay
+                duration: 250
+                property: "opacity";
+            }
+            NumberAnimation
+            {
+                target: resultsLayout
+                duration: 250
+                property: "opacity";
+            }
+        }
     ]
 }

@@ -28,15 +28,19 @@ Item
         model: searchModel
         loading: model.state === ImageSearchModel.Loading
 
-        delegate: Item
+        delegate: ItemDelegate
         {
+            id: resultDelegate
+
             width: 256
             height: 245
+
             required property string author
             required property string description
             required property string uuid
             required property string thumbnail
             required property string authorId
+            required property int index
 
             SearchResultItem
             {
@@ -45,6 +49,14 @@ Item
                 description: parent.description
                 thumbnail: parent.thumbnail
                 uuid: parent.uuid
+
+                selected: resultDelegate.highlighted
+            }
+
+            MouseArea
+            {
+                anchors.fill: parent
+                onClicked: paginator.currentIndex = index
             }
         }
     }
