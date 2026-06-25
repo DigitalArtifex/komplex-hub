@@ -12,6 +12,7 @@ Item {
     property color color: palette.button
     property Gradient gradient: defaultGradient
     property BorderSettings border: BorderSettings {}
+    readonly property bool hovered: state === "hovered"
 
     signal triggered
 
@@ -106,10 +107,6 @@ Item {
         Behavior on color {
             ColorAnimation { duration: 250 }
         }
-
-        // Behavior on gradient {
-        //     PropertyAnimation { duration: 250 }
-        // }
     }
 
     MouseArea {
@@ -216,7 +213,5 @@ Item {
                 color: palette.text.darker()
             }
         }
-
     ]
-
 }
