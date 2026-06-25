@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
@@ -14,6 +14,7 @@ Item
     property int resultsPerRow: (homePageRoot.width - (64 + Constants.largeMargin)) / (resultWidth + Constants.largeMargin) + 1
     property int resultWidth: 256
     property int resultHeight: 245
+    property bool popup: false
 
     clip: true
 
@@ -90,13 +91,14 @@ Item
                         thumbnail: parent.thumbnail
                         uuid: parent.uuid
 
-                        selected: parent.highlighted
-                    }
+                        selected: packsPaginator.currentIndex === parent.index
 
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        onClicked: () => packsPaginator.currentIndex = index
+                        onTriggered: () => packsPaginator.currentIndex = parent.index
+
+                        function onViewMoreTriggered()
+                        {
+
+                        }
                     }
                 }
             }
@@ -131,6 +133,7 @@ Item
                     required property string uuid
                     required property string thumbnail
                     required property string authorId
+                    required property int index
 
                     SearchResultItem
                     {
@@ -140,13 +143,14 @@ Item
                         thumbnail: parent.thumbnail
                         uuid: parent.uuid
                         pexels: true
-                        selected: parent.highlighted
-                    }
+                        selected: imagesPaginator.currentIndex === parent.index
 
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        onClicked: () => imagesPaginator.currentIndex = index
+                        onTriggered: () => packsPaginator.currentIndex = parent.index
+
+                        onViewMoreTriggered: () =>
+                        {
+                            showImagePopup(parent.index)
+                        }
                     }
                 }
             }
@@ -181,6 +185,7 @@ Item
                     required property string authorId
                     required property string authorUrl
                     required property string thumbnail
+                    required property int index
 
                     SearchResultItem
                     {
@@ -189,13 +194,14 @@ Item
                         thumbnail: parent.thumbnail
                         uuid: parent.uuid
                         pexels: true
-                        selected: parent.highlighted
-                    }
+                        selected: videosPaginator.currentIndex === parent.index
 
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        onClicked: () => videosPaginator.currentIndex = index
+                        onTriggered: () => packsPaginator.currentIndex = parent.index
+
+                        onViewMoreTriggered:() =>
+                        {
+                            viewMoreImagePopup.opacity = 1
+                        }
                     }
                 }
             }
@@ -221,6 +227,35 @@ Item
         opacity: 1
     }
 
+    Rectangle
+    {
+        id: popupContainer
+        anchors.fill: parent
+        opacity: 0
+        color: palette.base
+
+        ImageView
+        {
+            id: viewMoreImagePopup
+            anchors.fill: parent
+            opacity: 0
+
+            Behavior on opacity {
+                NumberAnimation
+                {
+                    duration: 250
+                }
+            }
+        }
+
+        Behavior on opacity {
+            NumberAnimation
+            {
+                duration: 250
+            }
+        }
+    }
+
     states: [
         State {
             name: "loading"
@@ -237,6 +272,12 @@ Item
             PropertyChanges
             {
                 target: resultsLayout
+                opacity: 0
+            }
+
+            PropertyChanges
+            {
+                target: popupContainer
                 opacity: 0
             }
         },
@@ -267,7 +308,7 @@ Item
             to: "idle"
             NumberAnimation
             {
-                target: loadingOverlay
+                target: loadingAnimation
                 duration: 250
                 property: "opacity";
             }
@@ -278,5 +319,39 @@ Item
                 property: "opacity";
             }
         }
+
     ]
+
+    function showImagePopup(index)
+    {
+        viewMoreImagePopup.author = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.AuthorRole)
+        viewMoreImagePopup.authorUrl = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.AuthorUrlRole)
+        viewMoreImagePopup.description = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.DescriptionRole)
+        viewMoreImagePopup.uuid = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.UuidRole)
+        viewMoreImagePopup.thumbnail = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.ThumbnailRole)
+        viewMoreImagePopup.small = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.SmallUrlRole)
+        viewMoreImagePopup.medium = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.MediumUrlRole)
+        viewMoreImagePopup.large = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LargeUrlRole)
+        viewMoreImagePopup.extraLarge = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.ExtraLargeUrlRole)
+        viewMoreImagePopup.original = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.OriginalUrlRole)
+        viewMoreImagePopup.portrait = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.PortraitUrlRole)
+        viewMoreImagePopup.landscape = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LandscapeUrlRole)
+        viewMoreImagePopup.smallSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.SmallSizeRole)
+        viewMoreImagePopup.mediumSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.MediumSizeRole)
+        viewMoreImagePopup.largeSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LargeSizeRole)
+        viewMoreImagePopup.extraLargeSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.ExtraLargeSizeRole)
+        viewMoreImagePopup.originalSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.OriginalSizeRole)
+        viewMoreImagePopup.portraitSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.PortraitSizeRole)
+        viewMoreImagePopup.landscapeSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LandscapeSizeRole)
+        viewMoreImagePopup.opacity = 1
+        popupContainer.opacity = 1
+        homePageRoot.popup = true
+    }
+
+    function closePopup()
+    {
+        viewMoreImagePopup.opacity = 0
+        popupContainer.opacity = 0
+        homePageRoot.popup = false
+    }
 }
