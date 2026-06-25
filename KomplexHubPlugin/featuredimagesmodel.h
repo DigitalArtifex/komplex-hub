@@ -75,7 +75,14 @@ public:
         OriginalUrlRole,
         MediumUrlRole,
         LargeUrlRole,
-        ExtraLargeUrlRole
+        ExtraLargeUrlRole,
+        PortraitSizeRole,
+        LandscapeSizeRole,
+        SmallSizeRole,
+        OriginalSizeRole,
+        MediumSizeRole,
+        LargeSizeRole,
+        ExtraLargeSizeRole
     };
     Q_ENUM(DataRole)
 
@@ -315,6 +322,34 @@ private:
         {
             static_cast<int>(ExtraLargeUrlRole),
             QByteArray("extraLarge")
+        },
+        {
+            static_cast<int>(PortraitSizeRole),
+            QByteArray("portraitSize")
+        },
+        {
+            static_cast<int>(LandscapeSizeRole),
+            QByteArray("landscapeSize")
+        },
+        {
+            static_cast<int>(SmallSizeRole),
+            QByteArray("smallSize")
+        },
+        {
+            static_cast<int>(OriginalSizeRole),
+            QByteArray("originalSize")
+        },
+        {
+            static_cast<int>(MediumSizeRole),
+            QByteArray("mediumSize")
+        },
+        {
+            static_cast<int>(LargeSizeRole),
+            QByteArray("largeSize")
+        },
+        {
+            static_cast<int>(ExtraLargeSizeRole),
+            QByteArray("extraLargeSize")
         }
     };
     State m_state = Idle;

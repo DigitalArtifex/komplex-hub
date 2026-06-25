@@ -117,6 +117,27 @@ auto FeaturedImagesModel::data(const QModelIndex &index, int role) const -> QVar
     case ExtraLargeUrlRole:
         data = dataPoint.sources.value(QString::fromUtf8("large2x"));
         break;
+    case PortraitSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("portrait"));
+        break;
+    case LandscapeSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("landscape"));
+        break;
+    case SmallSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("small"));
+        break;
+    case OriginalSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("original"));
+        break;
+    case MediumSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("medium"));
+        break;
+    case LargeSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("large"));
+        break;
+    case ExtraLargeSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("large2x"));
+        break;
     }
 
     return data;
