@@ -335,12 +335,14 @@ Item
                 target: noResultsOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
             NumberAnimation
             {
                 target: loadingOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
         },
         Transition
@@ -352,12 +354,14 @@ Item
                 target: noSearchOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
             NumberAnimation
             {
                 target: loadingOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
         },
         Transition
@@ -369,12 +373,14 @@ Item
                 target: noSearchOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
             NumberAnimation
             {
                 target: loadingOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
         },
         Transition
@@ -386,12 +392,14 @@ Item
                 target: noResultsOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
             NumberAnimation
             {
                 target: loadingOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
         },
         Transition
@@ -403,12 +411,14 @@ Item
                 target: loadingOverlay
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
             NumberAnimation
             {
                 target: resultsView
                 duration: 250
                 property: "opacity";
+                easing.type: Easing.InOutQuad
             }
         }
     ]
