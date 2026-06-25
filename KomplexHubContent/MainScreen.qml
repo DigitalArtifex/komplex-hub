@@ -14,6 +14,7 @@ import KomplexHubContent
 
 Rectangle {
     property MenuButton currentMenuButton
+    property bool popup: false
 
     id: windowRoot
 
@@ -35,9 +36,41 @@ Rectangle {
 
             color: palette.base.lighter()
 
+            ColumnLayout
+            {
+                height: popup ? 64 : 0
+                opacity: popup ? 1 : 0
+
+                MenuButton
+                {
+                    Layout.alignment: Qt.AlignTop
+
+                    height: 64
+                    width: 100
+                    text: qsTr("Back")
+
+                    icon.height: 32
+                    icon.width: 32
+                    icon.url: "qrc:/images/icons/icons8-reply-arrow.svg"
+
+                    onTriggered: () => {
+                        pageLoader.item.closePopup()
+                        selected = false
+                    }
+
+                    Behavior on opacity {
+                        NumberAnimation
+                        {
+                            duration: 250
+                        }
+                    }
+                }
+            }
+
             ColumnLayout {
+                opacity: popup ? 0 : 1
+                visible: opacity > 0.01
                 id: windowMenuLayout
-                anchors.fill: parent
 
                 MenuButton {
                     id: homeMenubutton
@@ -174,6 +207,13 @@ Rectangle {
                         searchContainer.preferredHeight = 0
                     }
                 }
+
+                Behavior on opacity {
+                    NumberAnimation
+                    {
+                        duration: 250
+                    }
+                }
             }
         }
 
@@ -250,6 +290,7 @@ Rectangle {
                                 {
                                     pageLoader.loading = false
                                     pageLoader.updateSearchTerm();
+                                    popupConnection.target = pageLoader.item
                                 }
                             }
                         }
@@ -332,6 +373,17 @@ Rectangle {
 
         visible: opacity > 0
         opacity: 0
+    }
+
+    Connections
+    {
+        id: popupConnection
+        target: pageLoader.item
+
+        function onPopupChanged()
+        {
+            windowRoot.popup = pageLoader.item.popup
+        }
     }
 
     Component.onCompleted: () => {
