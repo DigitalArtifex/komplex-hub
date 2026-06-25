@@ -145,7 +145,7 @@ Item
                         pexels: true
                         selected: imagesPaginator.currentIndex === parent.index
 
-                        onTriggered: () => packsPaginator.currentIndex = parent.index
+                        onTriggered: () => imagesPaginator.currentIndex = parent.index
 
                         onViewMoreTriggered: () =>
                         {
@@ -324,25 +324,25 @@ Item
 
     function showImagePopup(index)
     {
-        viewMoreImagePopup.author = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.AuthorRole)
-        viewMoreImagePopup.authorUrl = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.AuthorUrlRole)
-        viewMoreImagePopup.description = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.DescriptionRole)
-        viewMoreImagePopup.uuid = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.UuidRole)
-        viewMoreImagePopup.thumbnail = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.ThumbnailRole)
-        viewMoreImagePopup.small = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.SmallUrlRole)
-        viewMoreImagePopup.medium = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.MediumUrlRole)
-        viewMoreImagePopup.large = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LargeUrlRole)
-        viewMoreImagePopup.extraLarge = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.ExtraLargeUrlRole)
-        viewMoreImagePopup.original = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.OriginalUrlRole)
-        viewMoreImagePopup.portrait = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.PortraitUrlRole)
-        viewMoreImagePopup.landscape = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LandscapeUrlRole)
-        viewMoreImagePopup.smallSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.SmallSizeRole)
-        viewMoreImagePopup.mediumSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.MediumSizeRole)
-        viewMoreImagePopup.largeSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LargeSizeRole)
-        viewMoreImagePopup.extraLargeSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.ExtraLargeSizeRole)
-        viewMoreImagePopup.originalSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.OriginalSizeRole)
-        viewMoreImagePopup.portraitSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.PortraitSizeRole)
-        viewMoreImagePopup.landscapeSize = imagesModel.data(imagesModel.index(0,index), FeaturedImagesModel.LandscapeSizeRole)
+        viewMoreImagePopup.author = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.AuthorRole)
+        viewMoreImagePopup.authorUrl = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.AuthorUrlRole)
+        viewMoreImagePopup.description = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.DescriptionRole)
+        viewMoreImagePopup.uuid = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.UuidRole)
+        viewMoreImagePopup.thumbnail = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ThumbnailRole)
+        viewMoreImagePopup.small = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.SmallUrlRole)
+        viewMoreImagePopup.medium = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.MediumUrlRole)
+        viewMoreImagePopup.large = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LargeUrlRole)
+        viewMoreImagePopup.extraLarge = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ExtraLargeUrlRole)
+        viewMoreImagePopup.original = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.OriginalUrlRole)
+        viewMoreImagePopup.portrait = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.PortraitUrlRole)
+        viewMoreImagePopup.landscape = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LandscapeUrlRole)
+        viewMoreImagePopup.smallSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.SmallSizeRole)
+        viewMoreImagePopup.mediumSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.MediumSizeRole)
+        viewMoreImagePopup.largeSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LargeSizeRole)
+        viewMoreImagePopup.extraLargeSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ExtraLargeSizeRole)
+        viewMoreImagePopup.originalSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.OriginalSizeRole)
+        viewMoreImagePopup.portraitSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.PortraitSizeRole)
+        viewMoreImagePopup.landscapeSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LandscapeSizeRole)
         viewMoreImagePopup.opacity = 1
         popupContainer.opacity = 1
         homePageRoot.popup = true

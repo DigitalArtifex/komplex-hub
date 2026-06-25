@@ -59,7 +59,7 @@ Item
                     width: imageWidth
                     height: imageHeight
                     transform: Image.PreserveAspectFit
-                    source: rootItem.medium
+                    source: rootItem.large
                 }
 
                 /** Spacer **/
@@ -138,20 +138,20 @@ Item
                 }
             }
 
-            Text {
-                property var texts: [
-                    small,
-                    medium,
-                    large,
-                    extraLarge,
-                    portrait,
-                    landscape
-                ]
-                text: texts[downloadSelector.currentIndex]
-                elide: Text.ElideLeft
+            // Text {
+            //     property var texts: [
+            //         small,
+            //         medium,
+            //         large,
+            //         extraLarge,
+            //         portrait,
+            //         landscape
+            //     ]
+            //     text: texts[downloadSelector.currentIndex]
+            //     elide: Text.ElideLeft
 
-                Layout.fillWidth: true
-            }
+            //     Layout.fillWidth: true
+            // }
 
             /** Spacer **/
             Item { Layout.fillWidth: true; Layout.fillHeight: true }

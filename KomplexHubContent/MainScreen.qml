@@ -67,10 +67,13 @@ Rectangle {
                 }
             }
 
-            ColumnLayout {
+            ColumnLayout
+            {
                 opacity: popup ? 0 : 1
                 visible: opacity > 0.01
                 id: windowMenuLayout
+                Layout.fillHeight: true
+                anchors.fill: parent
 
                 MenuButton {
                     id: homeMenubutton
@@ -158,7 +161,6 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 50
-                        // searchContainer.searchTerm = pageLoader.page.query
                     }
                 }
 
@@ -185,6 +187,7 @@ Rectangle {
 
                 Item {
                     Layout.fillHeight: true
+                    Layout.minimumHeight: 100
                 }
 
                 MenuButton {
