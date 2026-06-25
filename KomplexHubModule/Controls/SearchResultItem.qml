@@ -14,6 +14,7 @@ Item {
     property bool pexels: false
 
     signal triggered
+    signal viewMoreTriggered
 
     id: searchResultItemRoot
     width: 256
@@ -24,10 +25,33 @@ Item {
     {
         id: searchResultItemContainer
         anchors.fill: parent
-
         border.color: palette.alternateBase.lighter(1.75)
-
         color: palette.alternateBase.lighter(1.25)
+
+        MouseArea
+        {
+            property string lastState
+            id: mouseArea
+
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onEntered: () => {
+                states.hovered = true
+            }
+
+            onExited: () => {
+                if(!viewMoreButton.hovered)
+                    states.hovered = false
+            }
+
+            onReleased: () => {
+                if(!states.selected)
+                {
+                    searchResultItemRoot.triggered()
+                }
+            }
+        }
 
         ColumnLayout
         {
@@ -69,7 +93,8 @@ Item {
                 }
             }
 
-            Text {
+            Text
+            {
                 color: palette.text
                 text: searchResultItemRoot.title
 
@@ -83,7 +108,8 @@ Item {
 
             Item { Layout.fillHeight: true }
 
-            Text {
+            Text
+            {
                 color: palette.text
                 font.pixelSize: 12
                 text: "By: " + searchResultItemRoot.author
@@ -94,71 +120,70 @@ Item {
                 visible: !searchResultItemRoot.pexels
             }
 
-            Text {
+            Text
+            {
+                id: descriptionText
                 clip: true
                 color: palette.text
                 font.pixelSize: 12
                 text: searchResultItemRoot.description
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 textFormat: Text.PlainText
-                Layout.maximumHeight: 32
-                Layout.preferredHeight: 32
                 elide: Text.ElideRight
 
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                Layout.maximumHeight: 32
+                Layout.preferredHeight: 32
                 Layout.preferredWidth: 236
                 Layout.maximumWidth: 236
                 Layout.bottomMargin: 3
             }
 
-            Item { Layout.fillHeight: true }
-        }
+            SquareButton
+            {
+                id: viewMoreButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
+                Layout.maximumHeight: 50
+                Layout.preferredHeight: 32
+                Layout.preferredWidth: 236
+                Layout.maximumWidth: 236
+                Layout.bottomMargin: 3
 
-        Behavior on color {
-            ColorAnimation { duration: 200 }
+                text: qsTr("View More")
+                opacity: 0
+
+                onTriggered: () => {
+                    searchResultItemRoot.viewMoreTriggered()
+                }
+            }
+
+            Item { Layout.fillHeight: true }
         }
     }
 
-    MouseArea
+    QtObject
     {
-        property string lastState
-        id: mouseArea
+        id: states
+        property bool clicked: false
+        property bool hovered: false
+        property alias selected: searchResultItemRoot.selected
+        property bool idle: true
 
-        anchors.fill: parent
-        hoverEnabled: true
-
-        onEntered: () => {
-            if(!selected)
-                searchResultItemRoot.state = "hovered"
-        }
-
-        onExited: () => {
-            lastState = ""
-
-            if(selected)
-                searchResultItemRoot.state = "selected"
-            else
-                searchResultItemRoot.state = ""
-        }
-
-        onPressed: () => {
-            if(!selected) {
-                lastState = searchResultItemRoot.state
-                searchResultItemRoot.state = "clicked"
+        onIdleChanged: () =>
+        {
+            if(idle)
+            {
+                clicked = false
+                hovered = false
+                selected = false
             }
-        }
-
-        onReleased: () => {
-            if(!mouseArea.containsMouse)
-                return;
-
-            selected = !selected
         }
     }
 
     states: [
         State {
             name: "hovered"
+            when: states.hovered && !states.selected
 
             PropertyChanges {
                 target: searchResultItemContainer
@@ -168,13 +193,139 @@ Item {
                                       0.5, // Set custom lightness
                                       1.0)
             }
+
+            PropertyChanges
+            {
+                target: viewMoreButton
+                opacity: 0
+
+                Layout.preferredHeight: 0
+            }
+
+            PropertyChanges
+            {
+                target: descriptionText
+                opacity: 1
+
+                Layout.preferredHeight: 32
+            }
         },
         State {
             name: "selected"
+            when: states.selected && !states.hovered
 
-            PropertyChanges {
+            PropertyChanges
+            {
                 target: searchResultItemContainer
                 color: palette.accent
+            }
+        },
+        State
+        {
+            name: "view_more"
+            when: states.selected && states.hovered
+
+            PropertyChanges
+            {
+                target: viewMoreButton
+                opacity: 1
+
+                Layout.preferredHeight: 32
+            }
+
+            PropertyChanges
+            {
+                target: descriptionText
+                opacity: 0
+
+                Layout.preferredHeight: 0
+            }
+        },
+
+        State
+        {
+            name: "default"
+            when: states.idle
+
+            PropertyChanges
+            {
+                target: viewMoreButton
+                opacity: 0
+
+                Layout.preferredHeight: 0
+            }
+
+            PropertyChanges
+            {
+                target: descriptionText
+                opacity: 1
+
+                Layout.preferredHeight: 32
+            }
+        }
+
+    ]
+
+    transitions:
+    [
+        Transition
+        {
+            to: "selected"
+
+            ColorAnimation
+            {
+                target: searchResultItemContainer
+                duration: 250
+            }
+        },
+
+        Transition
+        {
+            from: "selected"
+            to: "view_more"
+
+            NumberAnimation
+            {
+                target: viewMoreButton
+                property: "opacity"
+                duration: 250
+                easing.type: Easing.InOutQuad
+            }
+        },
+
+        Transition
+        {
+            from: "view_more"
+            to: "selected"
+
+            NumberAnimation
+            {
+                target: descriptionText
+                property: "opacity"
+                duration: 250
+                easing.type: Easing.InOutQuad
+            }
+        },
+
+        Transition
+        {
+            to: "default"
+
+            ColorAnimation
+            {
+                target: searchResultItemContainer
+                duration: 250
+            }
+        },
+
+        Transition
+        {
+            to: "hovered"
+
+            ColorAnimation
+            {
+                target: searchResultItemContainer
+                duration: 250
             }
         }
     ]
