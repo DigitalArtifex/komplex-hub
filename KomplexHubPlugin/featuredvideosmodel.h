@@ -38,6 +38,7 @@
 #include <QtConcurrent/QtConcurrentRun>
 
 #include "paginators/featuredvideospaginator.h"
+#include "videoitemmodel.h"
 
 /**
  * @brief The FeaturedVideosModel class
@@ -76,6 +77,7 @@ public:
     Q_ENUM(DataRole)
 
     explicit FeaturedVideosModel(QObject *parent = nullptr);
+    ~FeaturedVideosModel();
 
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
 
@@ -205,6 +207,16 @@ public:
      */
     Q_INVOKABLE auto previousPage() -> void;
 
+    /**
+     * @brief setItem
+     * Sets the current itemModel to the item at the specified index
+     * @param index
+     * @return
+     */
+    Q_INVOKABLE auto setItem(qint64 index) -> bool;
+
+    VideoItemModel *itemModel() const;
+
 protected:
     /**
      * @brief setErrorString
@@ -237,6 +249,14 @@ signals:
     auto totalPagesChanged() -> void;
 
 private:
+    /**
+     * @brief boundaryCheck
+     * Helper function to check the requested index boundary
+     * @param index
+     * @return
+     */
+    auto boundaryCheck(qsizetype index) const -> bool;
+
     /**
      * @brief m_dataRoles
      * Data role map that connects ImageSearchModel::DataRole to it's QML accessor name
@@ -285,6 +305,7 @@ private:
     QString m_errorString = QString();
 
     FeaturedVideosPaginator *m_paginator = nullptr;
+    VideoItemModel *m_itemModel = nullptr;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
@@ -292,6 +313,7 @@ private:
     Q_PROPERTY(qsizetype totalResults READ totalResults NOTIFY totalResultsChanged FINAL)
     Q_PROPERTY(qsizetype totalPages READ totalPages NOTIFY totalPagesChanged FINAL)
     Q_PROPERTY(qsizetype page READ page NOTIFY pageChanged FINAL)
+    Q_PROPERTY(VideoItemModel *itemModel READ itemModel CONSTANT FINAL)
 };
 Q_DECLARE_METATYPE(FeaturedVideosModel)
 

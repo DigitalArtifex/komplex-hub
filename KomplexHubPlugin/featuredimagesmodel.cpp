@@ -55,6 +55,14 @@ FeaturedImagesModel::FeaturedImagesModel(QObject *parent) : QAbstractListModel{p
     );
 }
 
+FeaturedImagesModel::~FeaturedImagesModel()
+{
+    if(m_paginator)
+    {
+        delete m_paginator;
+    }
+}
+
 auto FeaturedImagesModel::rowCount(const QModelIndex &) const -> int
 {
     if(m_paginator != nullptr)
@@ -94,49 +102,36 @@ auto FeaturedImagesModel::data(const QModelIndex &index, int role) const -> QVar
         data = dataPoint.altText;
         break;
     case ThumbnailRole:
-        data = dataPoint.sources.value(QString::fromUtf8("tiny"));
+        data = dataPoint.sources.value(QString::fromUtf8("thumbnail"));
+        break;
+    case LargeThumbnailRole:
+        data = dataPoint.sources.value(QString::fromUtf8("largeThumbnail"));
         break;
     case PortraitUrlRole:
         data = dataPoint.sources.value(QString::fromUtf8("portrait"));
         break;
-    case LandscapeUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("landscape"));
+    case PortraitSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("portrait"));
         break;
-    case SmallUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("small"));
+    case ScreenUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("screen"));
+        break;
+    case ScreenSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("screen"));
         break;
     case OriginalUrlRole:
         data = dataPoint.sources.value(QString::fromUtf8("original"));
         break;
-    case MediumUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("medium"));
-        break;
-    case LargeUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("large"));
-        break;
-    case ExtraLargeUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("large2x"));
-        break;
-    case PortraitSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("portrait"));
+    case LandscapeUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("landscape"));
         break;
     case LandscapeSizeRole:
         data = dataPoint.sourceSizes.value(QString::fromUtf8("landscape"));
         break;
-    case SmallSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("small"));
-        break;
-    case OriginalSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("original"));
-        break;
-    case MediumSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("medium"));
-        break;
-    case LargeSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("large"));
-        break;
-    case ExtraLargeSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("large2x"));
+    case BackgroundPortraitRole:
+        data = dataPoint.sources.value(QString::fromUtf8("backgroundPortrait"));
+    case BackgroundLandscapeRole:
+        data = dataPoint.sources.value(QString::fromUtf8("backgroundLandscape"));
         break;
     }
 
@@ -250,13 +245,43 @@ auto FeaturedImagesModel::resultsPerPage() const -> qsizetype
 
 auto FeaturedImagesModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
+
     if(m_paginator != nullptr)
     {
         QFuture<void> future = QtConcurrent::run
         (
             [this, resultsPerPage]
             {
+                qsizetype difference = resultsPerPage - m_paginator->resultsPerPage();
                 m_paginator->setResultsPerPage(resultsPerPage);
+
+                if(difference > 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage() - difference;
+
+                    beginInsertRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        m_paginator->count() - 1
+                    );
+
+                    endInsertRows();
+                }
+
+                else if(difference < 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage();
+
+                    beginRemoveRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        firstIndex - difference
+                    );
+
+                    endRemoveRows();
+                }
             }
         );
     }

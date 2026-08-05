@@ -78,6 +78,7 @@ public:
     Q_ENUM(DataRole)
 
     explicit NewestPacksModel(QObject *parent = nullptr);
+    ~NewestPacksModel();
 
     /**
      * @brief rowCount
@@ -249,6 +250,18 @@ signals:
     auto totalPagesChanged() -> void;
 
 private:
+    /**
+     * @brief boundaryCheck
+     * Helper function to check the requested index boundary
+     * @param index
+     * @return
+     */
+    auto boundaryCheck(qsizetype index) const -> bool;
+
+    /**
+     * @brief m_dataRoles
+     * Data role map that connects ImageSearchModel::DataRole to it's QML accessor name
+     */
     static inline const QHash<int, QByteArray> m_dataRoles =
     {
         {

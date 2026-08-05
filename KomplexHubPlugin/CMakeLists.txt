@@ -25,45 +25,52 @@ qt_add_qml_module(
         common/logging.h
         common/fetchresult.h
         paginators/newestpackspaginator.h
-        SOURCES paginators/featuredpackspaginator.h
-        SOURCES paginators/featuredimagespaginator.h
-        SOURCES paginators/wallpaperpaginator.h
-        SOURCES paginators/packsearchpaginator.h
-        SOURCES paginators/imagesearchpaginator.h
-        SOURCES paginators/newestshaderspaginator.h
-        SOURCES paginators/newestcubemapspaginator.h
-        SOURCES paginators/featuredshaderspaginator.h
-        SOURCES paginators/featuredcubemapspaginator.h
-        SOURCES paginators/searchshaderspaginator.h
-        SOURCES paginators/searchcubemapspaginator.h
-        SOURCES paginators/videosearchpaginator.h
-        SOURCES featuredpacksmodel.h
-        SOURCES featuredpacksmodel.cpp
-        SOURCES featuredimagesmodel.h
-        SOURCES featuredimagesmodel.cpp
-        SOURCES featuredvideosmodel.h
-        SOURCES featuredvideosmodel.cpp
-        SOURCES paginators/featuredvideospaginator.h
-        SOURCES common/imagecache.h
-        SOURCES paginators/imagepaginator.h
-        SOURCES common/videocache.h
-        SOURCES paginators/videopaginator.h
-        SOURCES imagesearchmodel.cpp
-        SOURCES imagesearchmodel.h
-        SOURCES videosearchmodel.h
-        SOURCES videosearchmodel.cpp
-        SOURCES
-        SOURCES
-        SOURCES packsearchmodel.cpp
-        SOURCES packsearchmodel.h
-
+        paginators/featuredpackspaginator.h
+        paginators/featuredimagespaginator.h
+        paginators/wallpaperpaginator.h
+        paginators/packsearchpaginator.h
+        paginators/imagesearchpaginator.h
+        paginators/newestshaderspaginator.h
+        paginators/newestcubemapspaginator.h
+        paginators/featuredshaderspaginator.h
+        paginators/featuredcubemapspaginator.h
+        paginators/searchshaderspaginator.h
+        paginators/searchcubemapspaginator.h
+        paginators/videosearchpaginator.h
+        featuredpacksmodel.h
+        featuredpacksmodel.cpp
+        featuredimagesmodel.h
+        featuredimagesmodel.cpp
+        featuredvideosmodel.h
+        featuredvideosmodel.cpp
+        paginators/featuredvideospaginator.h
+        common/imagecache.h
+        paginators/imagepaginator.h
+        common/videocache.h
+        paginators/videopaginator.h
+        imagesearchmodel.cpp
+        imagesearchmodel.h
+        videosearchmodel.h
+        videosearchmodel.cpp
+        packsearchmodel.cpp
+        packsearchmodel.h
+        videoitemmodel.h
+        videoitemmodel.cpp
+        downloadmanager.h downloadmanager.cpp
+        common/exceptions.h
+        common/shadertoymetadata.h
+        common/shaderpackmetadata.h
 )
 
 target_compile_definitions(
     KomplexHubPlugin
     PUBLIC
         KOMPLEX_PLUGIN
-        KOMPLEX_LOCAL_DEV
+)
+
+target_link_libraries(KomplexHubPlugin PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
 )
 
 if(ENABLE_ASAN)

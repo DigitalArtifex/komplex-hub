@@ -13,20 +13,31 @@ Item
     property string uuid
     property string author
     property string authorUrl
-    property string description
     property string thumbnail
-    property string portrait
-    property string landscape
-    property string original
-    property string fullScreen
-    property string portraitSize
-    property string landscapeSize
-    property string fullScreenSize
-    property string backgroundPortrait
-    property string backgroundLandscape
+    property alias model: downloadSelector.model
+    property int modelIndex
 
     property int imageHeight
     property int imageWidth
+
+    visible: opacity > 0.01
+    onVisibleChanged: () =>
+    {
+        if(!visible)
+        {
+            model = null
+        }
+    }
+
+    Connections
+    {
+        target: model
+
+        function onRowCountChanged()
+        {
+            downloadSelector.currentIndex = 0
+        }
+    }
 
     id: rootItem
 
@@ -38,10 +49,10 @@ Item
         Image
         {
             id: backgroundImage
-            source: width > height ? backgroundLandscape : backgroundPortrait
-            transform: Image.PreserveAspectCrop
+            source: thumbnail
             anchors.fill: parent
             visible: false
+            fillMode: Image.PreserveAspectFit
         }
 
         MultiEffect
@@ -86,9 +97,9 @@ Item
                     {
                         id: viewImage
                         anchors.fill: parent
-                        transform: Image.PreserveAspectCrop
                         source: rootItem.thumbnail
                         visible: !(status === Image.Loading)
+                        fillMode: Image.PreserveAspectCrop
                     }
                 }
             }
@@ -104,18 +115,6 @@ Item
 
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignTop| Qt.AlignLeft
-            }
-
-            Text
-            {
-                id: descriptionText
-                text: rootItem.description
-                color: palette.text
-                font.pointSize: Constants.h4Font.pixelSize
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-
-                Layout.alignment: Qt.AlignTop| Qt.AlignLeft
-                Layout.fillWidth: true
             }
 
             /** Spacer **/
@@ -144,11 +143,8 @@ Item
                 ComboBox
                 {
                     id: downloadSelector
-                    model:[
-                        "Screen (" + fullScreenSize + ")",
-                        "Portrait (" + portraitSize + ")",
-                        "Landscape (" + landscapeSize + ")"
-                    ]
+                    textRole: "text"
+                    valueRole: "url"
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
                 }
@@ -170,7 +166,7 @@ Item
                 Layout.alignment: Qt.AlignBottom
 
                 Text {
-                    text: qsTr("Images Provided Courtesy of Pexels")
+                    text: qsTr("Videos Provided Courtesy of Pexels and Their Respective Authors")
                     elide: Text.ElideLeft
                     color: palette.text
                     font.bold: true

@@ -3,6 +3,8 @@
 
 FeaturedVideosModel::FeaturedVideosModel(QObject *parent) : QAbstractListModel{parent}
 {
+    m_itemModel = new VideoItemModel(this);
+
     m_paginator = new FeaturedVideosPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -56,6 +58,19 @@ FeaturedVideosModel::FeaturedVideosModel(QObject *parent) : QAbstractListModel{p
     );
 }
 
+FeaturedVideosModel::~FeaturedVideosModel()
+{
+    if(m_paginator)
+    {
+        delete m_paginator;
+    }
+
+    if(m_itemModel)
+    {
+        delete m_itemModel;
+    }
+}
+
 auto FeaturedVideosModel::rowCount(const QModelIndex &) const -> int
 {
     if(m_paginator != nullptr)
@@ -68,7 +83,7 @@ auto FeaturedVideosModel::rowCount(const QModelIndex &) const -> int
 
 auto FeaturedVideosModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(index.row() < 0 || m_paginator == nullptr || index.row() >= m_paginator->count())
+    if(!boundaryCheck(index.row()))
     {
         return {};
     }
@@ -115,12 +130,7 @@ auto FeaturedVideosModel::index(int row, int column, const QModelIndex &parent) 
 {
     Q_UNUSED(parent)
 
-    if(m_paginator == nullptr)
-    {
-        return {};
-    }
-
-    if(row < 0 || row >= m_paginator->count())
+    if(!boundaryCheck(row))
     {
         return {};
     }
@@ -180,6 +190,21 @@ auto FeaturedVideosModel::onPaginatorFetching() -> void
     setState(Loading);
 }
 
+auto FeaturedVideosModel::boundaryCheck(qsizetype index) const -> bool
+{
+    if(index < 0 || m_paginator == nullptr || index >= m_paginator->count())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+auto FeaturedVideosModel::itemModel() const -> VideoItemModel*
+{
+    return m_itemModel;
+}
+
 auto FeaturedVideosModel::roleNames() const -> QHash<int, QByteArray>
 {
     return m_dataRoles;
@@ -219,7 +244,36 @@ auto FeaturedVideosModel::setResultsPerPage(qsizetype resultsPerPage) -> void
         (
             [this, resultsPerPage]
             {
+                qsizetype difference = resultsPerPage - m_paginator->resultsPerPage();
                 m_paginator->setResultsPerPage(resultsPerPage);
+
+                if(difference > 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage() - difference;
+
+                    beginInsertRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        m_paginator->count() - 1
+                    );
+
+                    endInsertRows();
+                }
+
+                else if(difference < 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage();
+
+                    beginRemoveRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        firstIndex - difference
+                    );
+
+                    endRemoveRows();
+                }
             }
         );
     }
@@ -261,6 +315,17 @@ auto FeaturedVideosModel::previousPage() -> void
             }
         );
     }
+}
+
+auto FeaturedVideosModel::setItem(qint64 index) -> bool
+{
+    if(!boundaryCheck(index))
+    {
+        return false;
+    }
+
+    m_itemModel->setDataEntry(m_paginator->at(index));
+    return true;
 }
 
 qsizetype FeaturedVideosModel::page() const

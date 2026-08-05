@@ -255,28 +255,6 @@ protected:
     }
 
     /**
-     * @brief getDocument
-     * Extracts the JSON document from the server reply
-     * @param reply
-     * @return
-     */
-    [[nodiscard]]
-    auto getDocument(QNetworkReply *reply) const -> QJsonDocument
-    {
-        QByteArray data = reply->readAll();
-        QJsonParseError documentError;
-        QJsonDocument document = QJsonDocument::fromJson(data, &documentError);
-
-        LOG_ERROR_X(documentError.error != QJsonParseError::NoError,
-            "NewestPacksPaginator::getDocument",
-            documentError.errorString().toStdString().c_str(),
-            {}
-        );
-
-        return document;
-    }
-
-    /**
      * @brief setUri
      * Sets the API Endpoint URI to fetch from
      * @param uri

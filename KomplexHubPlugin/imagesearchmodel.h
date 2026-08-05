@@ -69,20 +69,16 @@ public:
         AuthorUrlRole,
         DescriptionRole,
         ThumbnailRole,
+        LargeThumbnailRole,
+        OriginalUrlRole,
+        ScreenUrlRole,
         PortraitUrlRole,
         LandscapeUrlRole,
-        SmallUrlRole,
-        OriginalUrlRole,
-        MediumUrlRole,
-        LargeUrlRole,
-        ExtraLargeUrlRole,
+        ScreenSizeRole,
         PortraitSizeRole,
         LandscapeSizeRole,
-        SmallSizeRole,
-        OriginalSizeRole,
-        MediumSizeRole,
-        LargeSizeRole,
-        ExtraLargeSizeRole
+        BackgroundPortraitRole,
+        BackgroundLandscapeRole
     };
     Q_ENUM(DataRole)
 
@@ -323,92 +319,84 @@ signals:
 
 private:
     /**
+     * @brief boundaryCheck
+     * Helper function to check the requested index boundary
+     * @param index
+     * @return
+     */
+    auto boundaryCheck(qsizetype index) const -> bool;
+
+    /**
      * @brief m_dataRoles
      * Data role map that connects ImageSearchModel::DataRole to it's QML accessor name
      */
     static inline const QHash<int, QByteArray> m_dataRoles =
-    {
         {
-            static_cast<int>(UuidRole),
-            QByteArray("uuid")
-        },
-        {
-            static_cast<int>(AuthorRole),
-            QByteArray("author")
-        },
-        {
-            static_cast<int>(AuthorIdRole),
-            QByteArray("authorId")
-        },
-        {
-            static_cast<int>(AuthorUrlRole),
-            QByteArray("authorUrl")
-        },
-        {
-            static_cast<int>(DescriptionRole),
-            QByteArray("description")
-        },
-        {
-            static_cast<int>(ThumbnailRole),
-            QByteArray("thumbnail")
-        },
-        {
-            static_cast<int>(PortraitUrlRole),
-            QByteArray("portrait")
-        },
-        {
-            static_cast<int>(LandscapeUrlRole),
-            QByteArray("landscape")
-        },
-        {
-            static_cast<int>(SmallUrlRole),
-            QByteArray("small")
-        },
-        {
-            static_cast<int>(OriginalUrlRole),
-            QByteArray("original")
-        },
-        {
-            static_cast<int>(MediumUrlRole),
-            QByteArray("medium")
-        },
-        {
-            static_cast<int>(LargeUrlRole),
-            QByteArray("large")
-        },
-        {
-            static_cast<int>(ExtraLargeUrlRole),
-            QByteArray("extraLarge")
-        },
-        {
-            static_cast<int>(PortraitSizeRole),
-            QByteArray("portraitSize")
-        },
-        {
-            static_cast<int>(LandscapeSizeRole),
-            QByteArray("landscapeSize")
-        },
-        {
-            static_cast<int>(SmallSizeRole),
-            QByteArray("smallSize")
-        },
-        {
-            static_cast<int>(OriginalSizeRole),
-            QByteArray("originalSize")
-        },
-        {
-            static_cast<int>(MediumSizeRole),
-            QByteArray("mediumSize")
-        },
-        {
-            static_cast<int>(LargeSizeRole),
-            QByteArray("largeSize")
-        },
-        {
-            static_cast<int>(ExtraLargeSizeRole),
-            QByteArray("extraLargeSize")
-        }
-    };
+            {
+                static_cast<int>(UuidRole),
+                QByteArray("uuid")
+            },
+            {
+                static_cast<int>(AuthorRole),
+                QByteArray("author")
+            },
+            {
+                static_cast<int>(AuthorIdRole),
+                QByteArray("authorId")
+            },
+            {
+                static_cast<int>(AuthorUrlRole),
+                QByteArray("authorUrl")
+            },
+            {
+                static_cast<int>(DescriptionRole),
+                QByteArray("description")
+            },
+            {
+                static_cast<int>(ThumbnailRole),
+                QByteArray("thumbnail")
+            },
+            {
+                static_cast<int>(LargeThumbnailRole),
+                QByteArray("largeThumbnail")
+            },
+            {
+                static_cast<int>(OriginalUrlRole),
+                QByteArray("original")
+            },
+            {
+                static_cast<int>(PortraitUrlRole),
+                QByteArray("portrait")
+            },
+            {
+                static_cast<int>(LandscapeUrlRole),
+                QByteArray("landscape")
+            },
+            {
+                static_cast<int>(BackgroundPortraitRole),
+                QByteArray("backgroundPortrait")
+            },
+            {
+                static_cast<int>(BackgroundLandscapeRole),
+                QByteArray("backgroundLandscape")
+            },
+            {
+                static_cast<int>(ScreenUrlRole),
+                QByteArray("fullScreen")
+            },
+            {
+                static_cast<int>(ScreenSizeRole),
+                QByteArray("fullScreenSize")
+            },
+            {
+                static_cast<int>(PortraitSizeRole),
+                QByteArray("portraitSize")
+            },
+            {
+                static_cast<int>(LandscapeSizeRole),
+                QByteArray("landscapeSize")
+            }
+        };
     State m_state = Idle;
 
     QString m_errorString = QString();

@@ -220,9 +220,8 @@ Rectangle {
             }
         }
 
-        Rectangle {
-
-            //Kirigami.Theme.colorSet: Kirigami.Theme.View
+        Rectangle
+        {
             id: windowContainer
 
             Layout.fillHeight: true
@@ -414,6 +413,15 @@ Rectangle {
         },
         State {
             name: "build_complete"
+        },
+        State
+        {
+            name: "popup"
+            when: popup
+            PropertyChanges {
+                target: searchContainer
+                preferredHeight: 0
+            }
         }
 
     ]

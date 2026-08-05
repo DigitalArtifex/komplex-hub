@@ -14,6 +14,8 @@ Item
     property string query
     readonly property bool searchable: paginator.searchable
     property bool popup: false
+    property int resultWidth: 256
+    property int resultHeight: 245
 
     ImageSearchModel
     {
@@ -33,8 +35,8 @@ Item
         {
             id: resultDelegate
 
-            width: 256
-            height: 245
+            width: resultWidth
+            height: resultHeight
 
             required property string author
             required property string description
@@ -50,6 +52,7 @@ Item
                 description: parent.description
                 thumbnail: parent.thumbnail
                 uuid: parent.uuid
+                pexels: true
                 selected: paginator.currentIndex === parent.index
 
                 onTriggered: () => paginator.currentIndex = parent.index
@@ -93,27 +96,23 @@ Item
 
     function showImagePopup(index)
     {
-        viewMoreImagePopup.author = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.AuthorRole)
-        viewMoreImagePopup.authorUrl = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.AuthorUrlRole)
-        viewMoreImagePopup.description = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.DescriptionRole)
-        viewMoreImagePopup.uuid = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.UuidRole)
-        viewMoreImagePopup.thumbnail = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.ThumbnailRole)
-        viewMoreImagePopup.small = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.SmallUrlRole)
-        viewMoreImagePopup.medium = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.MediumUrlRole)
-        viewMoreImagePopup.large = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.LargeUrlRole)
-        viewMoreImagePopup.extraLarge = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.ExtraLargeUrlRole)
-        viewMoreImagePopup.original = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.OriginalUrlRole)
-        viewMoreImagePopup.portrait = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.PortraitUrlRole)
-        viewMoreImagePopup.landscape = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.LandscapeUrlRole)
-        viewMoreImagePopup.smallSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.SmallSizeRole)
-        viewMoreImagePopup.mediumSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.MediumSizeRole)
-        viewMoreImagePopup.largeSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.LargeSizeRole)
-        viewMoreImagePopup.extraLargeSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.ExtraLargeSizeRole)
-        viewMoreImagePopup.originalSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.OriginalSizeRole)
-        viewMoreImagePopup.portraitSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.PortraitSizeRole)
-        viewMoreImagePopup.landscapeSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.LandscapeSizeRole)
+        viewMoreImagePopup.author = searchModel.data(searchModel.index(index,0), ImageSearchModel.AuthorRole)
+        viewMoreImagePopup.authorUrl = searchModel.data(searchModel.index(index,0), ImageSearchModel.AuthorUrlRole)
+        viewMoreImagePopup.description = searchModel.data(searchModel.index(index,0), ImageSearchModel.DescriptionRole)
+        viewMoreImagePopup.uuid = searchModel.data(searchModel.index(index,0), ImageSearchModel.UuidRole)
+        viewMoreImagePopup.thumbnail = searchModel.data(searchModel.index(index,0), ImageSearchModel.LargeThumbnailRole)
+        viewMoreImagePopup.original = searchModel.data(searchModel.index(index,0), ImageSearchModel.OriginalUrlRole)
+        viewMoreImagePopup.portrait = searchModel.data(searchModel.index(index,0), ImageSearchModel.PortraitUrlRole)
+        viewMoreImagePopup.landscape = searchModel.data(searchModel.index(index,0), ImageSearchModel.LandscapeUrlRole)
+        viewMoreImagePopup.backgroundPortrait = searchModel.data(searchModel.index(index,0), ImageSearchModel.BackgroundPortraitRole)
+        viewMoreImagePopup.backgroundLandscape = searchModel.data(searchModel.index(index,0), ImageSearchModel.BackgroundLandscapeRole)
+        viewMoreImagePopup.fullScreen = searchModel.data(searchModel.index(index,0), ImageSearchModel.ScreenUrlRole)
+        viewMoreImagePopup.portraitSize = searchModel.data(searchModel.index(index,0), ImageSearchModel.PortraitSizeRole)
+        viewMoreImagePopup.landscapeSize = searchModel.data(searchModel.index(index,0), ImageSearchModel.LandscapeSizeRole)
+        viewMoreImagePopup.fullScreenSize = searchModel.data(searchModel.index(index,0), ImageSearchModel.ScreenSizeRole)
         viewMoreImagePopup.opacity = 1
         popupContainer.opacity = 1
+        paginator.opacity = 0
         rootItem.popup = true
     }
 
@@ -121,6 +120,7 @@ Item
     {
         viewMoreImagePopup.opacity = 0
         popupContainer.opacity = 0
+        paginator.opacity = 1
         rootItem.popup = false
     }
 }

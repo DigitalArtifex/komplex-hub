@@ -38,6 +38,7 @@
 #include <QtConcurrent/QtConcurrentRun>
 
 #include "paginators/videosearchpaginator.h"
+#include "videoitemmodel.h"
 
 /**
  * @brief The VideoSearchModel class
@@ -76,6 +77,7 @@ public:
     Q_ENUM(DataRole)
 
     explicit VideoSearchModel(QObject *parent = nullptr);
+    ~VideoSearchModel();
 
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
 
@@ -233,6 +235,16 @@ public:
      */
     auto hasPreviousPage() const -> bool;
 
+    /**
+     * @brief setItem
+     * Sets the current itemModel to the item at the specified index
+     * @param index
+     * @return
+     */
+    Q_INVOKABLE auto setItem(qint64 index) -> bool;
+
+    VideoItemModel *itemModel() const;
+
 protected:
 
     /**
@@ -310,6 +322,14 @@ signals:
 
 private:
     /**
+     * @brief boundaryCheck
+     * Helper function to check the requested index boundary
+     * @param index
+     * @return
+     */
+    auto boundaryCheck(qsizetype index) const -> bool;
+
+    /**
      * Data role map that connects VideoSearchModel::DataRole to it's QML accessor name
      */
     static inline const QHash<int, QByteArray> m_dataRoles =
@@ -356,6 +376,9 @@ private:
     QString m_errorString = QString();
 
     VideoSearchPaginator *m_paginator = nullptr;
+    VideoItemModel *m_itemModel = nullptr;
+
+    qint64 m_lastCount = 0;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
@@ -366,6 +389,7 @@ private:
     Q_PROPERTY(bool hasNextPage READ hasNextPage NOTIFY pageChanged FINAL)
     Q_PROPERTY(bool hasPreviousPage READ hasPreviousPage NOTIFY pageChanged FINAL)
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged FINAL)
+    Q_PROPERTY(VideoItemModel *itemModel READ itemModel CONSTANT FINAL)
 };
 Q_DECLARE_METATYPE(VideoSearchModel)
 

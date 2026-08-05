@@ -2,6 +2,7 @@
 
 VideoSearchModel::VideoSearchModel(QObject *parent) : QAbstractListModel{parent}
 {
+    m_itemModel = new VideoItemModel(this);
     m_paginator = new VideoSearchPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
@@ -62,6 +63,19 @@ VideoSearchModel::VideoSearchModel(QObject *parent) : QAbstractListModel{parent}
     );
 }
 
+VideoSearchModel::~VideoSearchModel()
+{
+    if(m_paginator)
+    {
+        delete m_paginator;
+    }
+
+    if(m_itemModel)
+    {
+        delete m_itemModel;
+    }
+}
+
 auto VideoSearchModel::rowCount(const QModelIndex &) const -> int
 {
     if(m_paginator != nullptr)
@@ -74,18 +88,12 @@ auto VideoSearchModel::rowCount(const QModelIndex &) const -> int
 
 auto VideoSearchModel::data(const QModelIndex &index, int role) const -> QVariant
 {
-    if(m_paginator == nullptr)
-    {
-        return {};
-    }
-
-    if(index.row() < 0 || index.row() >= m_paginator->count() )
+    if(!boundaryCheck(index.row()))
     {
         return {};
     }
 
     VideoCache dataPoint = m_paginator->at(index.row());
-
     QVariant data;
 
     switch(static_cast<DataRole>(role))
@@ -126,8 +134,10 @@ auto VideoSearchModel::index(int row, int column, const QModelIndex &parent) con
 {
     Q_UNUSED(parent)
 
-    if(row < 0 || row >= m_paginator->count())
+    if(!boundaryCheck(row))
+    {
         return {};
+    }
 
     return createIndex(row, column, &m_paginator[row]);
 }
@@ -171,12 +181,43 @@ auto VideoSearchModel::resetState() -> void
 auto VideoSearchModel::resetDataModel() -> void
 {
     //invalidate previous model data
-    beginRemoveRows(QModelIndex(), 0, m_paginator->count());
-    endRemoveRows();
+    if(m_lastCount > 0)
+    {
+        beginRemoveRows(QModelIndex(), 0, m_lastCount - 1);
+        endRemoveRows();
+    }
+
+    m_lastCount = m_paginator->count();
 
     //signal new data
     beginInsertRows(QModelIndex(), 0, m_paginator->count() - 1);
     endInsertRows();
+}
+
+auto VideoSearchModel::setItem(qint64 index) -> bool
+{
+    if(!boundaryCheck(index))
+    {
+        return false;
+    }
+
+    m_itemModel->setDataEntry(m_paginator->at(index));
+    return true;
+}
+
+auto VideoSearchModel::boundaryCheck(qsizetype index) const -> bool
+{
+    if(index < 0 || m_paginator == nullptr || index >= m_paginator->count())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+auto VideoSearchModel::itemModel() const -> VideoItemModel*
+{
+    return m_itemModel;
 }
 
 auto VideoSearchModel::hasNextPage() const -> bool
@@ -233,7 +274,37 @@ auto VideoSearchModel::setResultsPerPage(qsizetype resultsPerPage) -> void
         (
             [this, resultsPerPage]
             {
+                qsizetype difference = resultsPerPage - m_paginator->resultsPerPage();
                 m_paginator->setResultsPerPage(resultsPerPage);
+                m_lastCount = m_paginator->resultsPerPage();
+
+                if(difference > 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage() - difference;
+
+                    beginInsertRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        m_paginator->count() - 1
+                    );
+
+                    endInsertRows();
+                }
+
+                else if(difference < 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage();
+
+                    beginRemoveRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        firstIndex - difference
+                    );
+
+                    endRemoveRows();
+                }
             }
         );
     }

@@ -50,3 +50,15 @@ auto CoreServices::sessionToken() -> QByteArray
         {}
     );
 }
+
+auto CoreServices::screenSize() -> QSize
+{
+    QScreen *screen = QGuiApplication::primaryScreen();
+
+    if(screen == nullptr)
+    {
+        return QSize(0,0);
+    }
+
+    return screen->size();
+}

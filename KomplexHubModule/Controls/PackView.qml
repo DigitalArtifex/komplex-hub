@@ -12,18 +12,9 @@ Item
 {
     property string uuid
     property string author
-    property string authorUrl
+    property string authorId
     property string description
     property string thumbnail
-    property string portrait
-    property string landscape
-    property string original
-    property string fullScreen
-    property string portraitSize
-    property string landscapeSize
-    property string fullScreenSize
-    property string backgroundPortrait
-    property string backgroundLandscape
 
     property int imageHeight
     property int imageWidth
@@ -38,7 +29,7 @@ Item
         Image
         {
             id: backgroundImage
-            source: width > height ? backgroundLandscape : backgroundPortrait
+            source: thumbnail
             transform: Image.PreserveAspectCrop
             anchors.fill: parent
             visible: false
@@ -125,33 +116,24 @@ Item
                 Layout.preferredHeight: 32
             }
 
-            Text
-            {
-                text: qsTr("Available Downloads")
-                color: palette.text
-                font.bold: true
-                font.pixelSize: Constants.h3Font.pixelSize
-                elide: Text.ElideRight
+            // Text
+            // {
+            //     text: qsTr("Available Downloads")
+            //     color: palette.text
+            //     font.bold: true
+            //     font.pixelSize: Constants.h3Font.pixelSize
+            //     elide: Text.ElideRight
 
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignTop| Qt.AlignLeft
-            }
+            //     Layout.fillWidth: true
+            //     Layout.alignment: Qt.AlignTop| Qt.AlignLeft
+            // }
 
             RowLayout
             {
                 Layout.fillWidth: true
 
-                ComboBox
-                {
-                    id: downloadSelector
-                    model:[
-                        "Screen (" + fullScreenSize + ")",
-                        "Portrait (" + portraitSize + ")",
-                        "Landscape (" + landscapeSize + ")"
-                    ]
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 36
-                }
+                Item { Layout.fillWidth: true }
+
                 SquareButton
                 {
                     Layout.preferredHeight: 36
@@ -170,7 +152,7 @@ Item
                 Layout.alignment: Qt.AlignBottom
 
                 Text {
-                    text: qsTr("Images Provided Courtesy of Pexels")
+                    text: qsTr("Shaders Provided Courtesy of ShaderToy and Their Respective Authors")
                     elide: Text.ElideLeft
                     color: palette.text
                     font.bold: true

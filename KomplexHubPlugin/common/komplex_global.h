@@ -31,11 +31,12 @@
 #define SLIDING_CACHE_PREFETCH_THRESHOLD 20
 
 #define NETWORK_TIMEOUT 10000
+#define NETWORK_RETRY_LIMIT 3
 
 #ifdef KOMPLEX_LOCAL_DEV
 #define KOMPLEX_API_HOST                        "https://komplexapi.hlab"
 #else
-#define KOMPLEX_API_HOST                        "https://komplex.digitalartifex.dev"
+#define KOMPLEX_API_HOST                        "https://api.komplex.dev"
 #endif
 
 #define KOMPLEX_API_VERSION                     "v2"

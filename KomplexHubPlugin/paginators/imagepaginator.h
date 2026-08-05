@@ -152,29 +152,120 @@ protected:
 
             const QVariantMap sources = resultObject.value(QString::fromUtf8("src")).toObject().toVariantMap();
             QMap<QString, QString> sourceMap;
-            QMap<QString, QString> sizeMap;
 
             QMapIterator<QString,QVariant> sourceIterator(sources);
+            QString original;
 
             while(sourceIterator.hasNext())
             {
                 sourceIterator.next();
 
-                QString url = sourceIterator.value().toString();
-                sourceMap.insert(sourceIterator.key(), url);
-
-                auto matches = s_sizeExpression.match(url);
-
-                if(matches.hasMatch())
+                if(sourceIterator.key().toLower() == QString::fromUtf8("original"))
                 {
-                    QString size = matches.captured();
-                    size.remove(QString::fromUtf8("w="));
-                    size.remove(QString::fromUtf8("h="));
-                    size.replace(QLatin1Char('&'), QLatin1Char('x'));
-
-                    sizeMap.insert(sourceIterator.key(), std::move(size));
+                    original = sourceIterator.value().toString();
+                    break;
                 }
             }
+
+            QSize screenSize = CoreServices::screenSize();
+            QSize portraitSize(screenSize.height(),screenSize.width());
+            QSize landscapeSize(screenSize.width(),screenSize.height());
+
+            if(screenSize.height() > screenSize.width())
+            {
+                portraitSize = screenSize;
+                landscapeSize = QSize(screenSize.height(),screenSize.width());
+            }
+
+            sourceMap.clear();
+            sourceMap = QMap<QString,QString>
+            {
+                {
+                    QString::fromUtf8("original"),
+                    original
+                },
+                {
+                    QString::fromUtf8("screen"),
+                    QString::fromUtf8("%1?auto=compress&cs=tinysrgb&fit=crop&h=%2&w=%3").arg(
+                        original,
+                        QString::number(screenSize.height()),
+                        QString::number(screenSize.width())
+                    )
+                },
+                {
+                    QString::fromUtf8("portrait"),
+                    QString::fromUtf8("%1?auto=compress&cs=tinysrgb&fit=crop&h=%2&w=%3").arg(
+                        original,
+                        QString::number(portraitSize.height()),
+                        QString::number(portraitSize.width())
+                    )
+                },
+                {
+                    QString::fromUtf8("landscape"),
+                    QString::fromUtf8("%1?auto=compress&cs=tinysrgb&fit=crop&h=%2&w=%3").arg(
+                        original,
+                        QString::number(landscapeSize.height()),
+                        QString::number(landscapeSize.width())
+                    )
+                },
+                {
+                    QString::fromUtf8("backgroundPortrait"),
+                    QString::fromUtf8("%1?auto=compress&cs=tinysrgb&fit=crop&h=%2&w=%3").arg(
+                        original,
+                        QString::number(portraitSize.height() / 2),
+                        QString::number(portraitSize.width() / 2)
+                    )
+                },
+                {
+                    QString::fromUtf8("backgroundLandscape"),
+                    QString::fromUtf8("%1?auto=compress&cs=tinysrgb&fit=crop&h=%2&w=%3").arg(
+                        original,
+                        QString::number(landscapeSize.height() / 2),
+                        QString::number(landscapeSize.width() / 2)
+                    )
+                },
+                {
+                    QString::fromUtf8("thumbnail"),
+                    QString::fromUtf8("%1?auto=compress&cs=tinysrgb&fit=crop&h=144&w=256%3").arg(
+                        original
+                    )
+                },
+                {
+                    QString::fromUtf8("largeThumbnail"),
+                    QString::fromUtf8("%1?auto=compress&cs=tinysrgb&fit=crop&h=450&w=800%3").arg(
+                        original
+                    )
+                }
+            };
+
+            QMap<QString, QString> sizeMap =
+            {
+                {
+                    QString::fromUtf8("original"),
+                    QString()
+                },
+                {
+                    QString::fromUtf8("screen"),
+                    QString::fromUtf8("%1x%2").arg(
+                        QString::number(screenSize.width()),
+                        QString::number(screenSize.height())
+                    )
+                },
+                {
+                    QString::fromUtf8("portrait"),
+                    QString::fromUtf8("%1x%2").arg(
+                        QString::number(portraitSize.width()),
+                        QString::number(portraitSize.height())
+                    )
+                },
+                {
+                    QString::fromUtf8("landscape"),
+                    QString::fromUtf8("%1x%2").arg(
+                        QString::number(landscapeSize.width()),
+                        QString::number(landscapeSize.height())
+                    )
+                }
+            };
 
             fetchedResults.append(
                 {
@@ -214,8 +305,8 @@ protected:
     auto getNetworkReply(const QNetworkRequest &request) const -> QNetworkReply*
     {
         QEventLoop loop;
-        QWeakPointer<QNetworkAccessManager> managerReference = CoreServices::networkAccessManager();
 
+        QWeakPointer<QNetworkAccessManager> managerReference = CoreServices::networkAccessManager();
         QSharedPointer<QNetworkAccessManager> manager = managerReference.toStrongRef();
 
         LOG_ERROR_X(!manager,
@@ -238,6 +329,8 @@ protected:
             loop.exec();
         }
 
+        manager.clear();
+
         LOG_ERROR_X(reply->error() != QNetworkReply::NoError,
             "NewestPacksPaginator::getNetworkReply",
             reply->errorString().toStdString().c_str(),
@@ -245,28 +338,6 @@ protected:
         );
 
         return reply;
-    }
-
-    /**
-     * @brief getDocument
-     * Extracts the JSON document from the server reply
-     * @param reply
-     * @return
-     */
-    [[nodiscard]]
-    auto getDocument(QNetworkReply *reply) const -> QJsonDocument
-    {
-        QByteArray data = reply->readAll();
-        QJsonParseError documentError;
-        QJsonDocument document = QJsonDocument::fromJson(data, &documentError);
-
-        LOG_ERROR_X(documentError.error != QJsonParseError::NoError,
-            "NewestPacksPaginator::getDocument",
-            documentError.errorString().toStdString().c_str(),
-            {}
-        );
-
-        return document;
     }
 
     /**

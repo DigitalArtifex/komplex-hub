@@ -16,8 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
-#ifndef PackSearchModel_H
-#define PackSearchModel_H
+#ifndef VideoItemModel_H
+#define VideoItemModel_H
 #include <QObject>
 #include <QQmlEngine>
 #include <QList>
@@ -37,12 +37,13 @@
 #include <QEventLoop>
 #include <QtConcurrent/QtConcurrentRun>
 
-#include "paginators/packsearchpaginator.h"
+#include "common/komplex_global.h"
+#include "common/videocache.h"
 
 /**
- * @brief The PackSearchModel class
+ * @brief The VideoItemModel class
  */
-class KOMPLEX_EXPORT PackSearchModel : public QAbstractListModel
+class KOMPLEX_EXPORT VideoItemModel : public QAbstractListModel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -64,21 +65,18 @@ public:
      */
     enum DataRole {
         UuidRole = Qt::UserRole + 1,
-        AuthorRole,
-        AuthorIdRole,
-        DescriptionRole,
-        NameRole,
-        ThumbnailRole,
-        CreatedDateRole,
-        PriceRole,
-        CurrencyRole,
-        DownloadCountRole,
-        TypeRole
+        FileTypeRole,
+        FpsRole,
+        HeightRole,
+        WidthRole,
+        SizeRole,
+        UrlRole,
+        QualityRole,
+        TextRole
     };
     Q_ENUM(DataRole)
 
-    explicit PackSearchModel(QObject *parent = nullptr);
-    ~PackSearchModel();
+    explicit VideoItemModel(QObject *parent = nullptr);
 
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
 
@@ -165,85 +163,21 @@ public:
     auto errorString() const -> QString;
 
     /**
-     * @brief resultsPerPage
+     * @brief setDataEntry
+     * Set the dataEntry from the Search or List model
+     * @param entry
+     */
+    auto setDataEntry(const VideoCache &entry) -> void;
+
+    /**
+     * @brief friendlyText
+     * Generates the friendly text for comboboxes and the like
+     * @param video
      * @return
      */
-    auto resultsPerPage() const -> qsizetype;
-
-    /**
-     * @brief setResultsPerPage
-     * @param resultsPerPage
-     */
-    auto setResultsPerPage(qsizetype resultsPerPage) -> void;
-
-    /**
-     * @brief totalResults
-     * Total number of results available
-     * @return
-     */
-    auto totalResults() const -> qsizetype;
-
-    /**
-     * @brief page
-     * @return
-     */
-    auto page() const -> qsizetype;
-
-    /**
-     * @brief totalPages
-     * Total pages based on the current resultsPerPage
-     * @return
-     */
-    auto totalPages() const -> qsizetype;
-
-    /**
-     * @brief nextPage
-     * Function for the QML frontend
-     */
-    Q_INVOKABLE auto nextPage() -> void;
-
-    /**
-     * @brief previousPage
-     * Function for the QML frontend
-     */
-    Q_INVOKABLE auto previousPage() -> void;
-
-    /**
-     * @brief query
-     * Current search query
-     * @return
-     */
-    auto query() const -> QString;
-
-    /**
-     * @brief setQuery
-     * Sets the current search query
-     * @param query
-     */
-    auto setQuery(const QString &query) -> void;
-
-    /**
-     * @brief hasNextPage
-     * Calculates if there are more pages based on the current page calculation
-     * @return
-     */
-    auto hasNextPage() const -> bool;
-
-    /**
-     * @brief hasPreviousPage
-     * If page is greater than 1, returns true
-     * @return
-     */
-    auto hasPreviousPage() const -> bool;
+    auto friendlyText(const VideoEntry &video) const -> QString;
 
 protected:
-
-    /**
-     * @brief onPaginatorFetching
-     * Sets current state to loading. Triggered when paginator's cache controller
-     * needs to fetch data from the remote endpoint.
-     */
-    auto onPaginatorFetching() -> void;
 
     /**
      * @brief setErrorString
@@ -269,6 +203,8 @@ protected:
     auto resetDataModel() -> void;
 
 signals:
+    auto dataEntryChanged() -> void;
+
     /**
      * @brief stateChanged
      * Signaled when reported state changes
@@ -281,36 +217,6 @@ signals:
      */
     auto errorStringChanged() -> void;
 
-    /**
-     * @brief pageChanged
-     * Forwarding signal connected in constructor
-     */
-    auto resultsPerPageChanged() -> void;
-
-    /**
-     * @brief pageChanged
-     * Forwarding signal connected in constructor
-     */
-    auto pageChanged() -> void;
-
-    /**
-     * @brief pageChanged
-     * Forwarding signal connected in constructor
-     */
-    auto totalResultsChanged() -> void;
-
-    /**
-     * @brief pageChanged
-     * Forwarding signal connected in constructor
-     */
-    auto totalPagesChanged() -> void;
-
-    /**
-     * @brief pageChanged
-     * Forwarding signal connected in constructor
-     */
-    auto queryChanged() -> void;
-
 private:
     /**
      * @brief boundaryCheck
@@ -321,72 +227,68 @@ private:
     auto boundaryCheck(qsizetype index) const -> bool;
 
     /**
-     * Data role map that connects PackSearchModel::DataRole to it's QML accessor name
+     * Size texts used in friendlyText()
+     */
+    QStringList m_sizeTexts
+    {
+        QString::fromUtf8("B"),
+        QString::fromUtf8("KB"),
+        QString::fromUtf8("MB"),
+        QString::fromUtf8("GB")
+    };
+
+    /**
+     * Data role map that connects VideoItemModel::DataRole to it's QML accessor name
      */
     static inline const QHash<int, QByteArray> m_dataRoles =
     {
         {
-            static_cast<int>(UuidRole),
-            QByteArray("uuid")
+           static_cast<int>(UuidRole),
+           QByteArray("uuid")
         },
         {
-            static_cast<int>(AuthorRole),
-            QByteArray("author")
+           static_cast<int>(FileTypeRole),
+           QByteArray("fileType")
         },
         {
-            static_cast<int>(AuthorIdRole),
-            QByteArray("authorId")
+           static_cast<int>(FpsRole),
+           QByteArray("fps")
         },
         {
-            static_cast<int>(DescriptionRole),
-            QByteArray("description")
+           static_cast<int>(HeightRole),
+           QByteArray("height")
         },
         {
-            static_cast<int>(NameRole),
-            QByteArray("name")
+           static_cast<int>(WidthRole),
+           QByteArray("width")
         },
         {
-            static_cast<int>(ThumbnailRole),
-            QByteArray("thumbnail")
+           static_cast<int>(SizeRole),
+           QByteArray("size")
         },
         {
-            static_cast<int>(CreatedDateRole),
-            QByteArray("createdDate")
+           static_cast<int>(UrlRole),
+           QByteArray("url")
         },
         {
-            static_cast<int>(PriceRole),
-            QByteArray("price")
+            static_cast<int>(QualityRole),
+            QByteArray("quality")
         },
         {
-            static_cast<int>(CurrencyRole),
-            QByteArray("currency")
-        },
-        {
-            static_cast<int>(DownloadCountRole),
-            QByteArray("downloadCount")
-        },
-        {
-            static_cast<int>(TypeRole),
-            QByteArray("type")
+            static_cast<int>(TextRole),
+            QByteArray("text")
         }
     };
 
     State m_state = Idle;
-
     QString m_errorString = QString();
 
-    PackSearchPaginator *m_paginator = nullptr;
+    VideoCache m_dataEntry;
+    qint64 m_lastCount = 0;
 
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
-    Q_PROPERTY(qsizetype resultsPerPage READ resultsPerPage WRITE setResultsPerPage NOTIFY resultsPerPageChanged FINAL)
-    Q_PROPERTY(qsizetype totalResults READ totalResults NOTIFY totalResultsChanged FINAL)
-    Q_PROPERTY(qsizetype totalPages READ totalPages NOTIFY totalPagesChanged FINAL)
-    Q_PROPERTY(qsizetype page READ page NOTIFY pageChanged FINAL)
-    Q_PROPERTY(bool hasNextPage READ hasNextPage NOTIFY pageChanged FINAL)
-    Q_PROPERTY(bool hasPreviousPage READ hasPreviousPage NOTIFY pageChanged FINAL)
-    Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged FINAL)
 };
-Q_DECLARE_METATYPE(PackSearchModel)
+Q_DECLARE_METATYPE(VideoItemModel)
 
-#endif // PackSearchModel_H
+#endif // VideoItemModel_H

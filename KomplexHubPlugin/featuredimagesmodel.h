@@ -69,24 +69,21 @@ public:
         AuthorUrlRole,
         DescriptionRole,
         ThumbnailRole,
+        LargeThumbnailRole,
+        OriginalUrlRole,
+        ScreenUrlRole,
         PortraitUrlRole,
         LandscapeUrlRole,
-        SmallUrlRole,
-        OriginalUrlRole,
-        MediumUrlRole,
-        LargeUrlRole,
-        ExtraLargeUrlRole,
+        ScreenSizeRole,
         PortraitSizeRole,
         LandscapeSizeRole,
-        SmallSizeRole,
-        OriginalSizeRole,
-        MediumSizeRole,
-        LargeSizeRole,
-        ExtraLargeSizeRole
+        BackgroundPortraitRole,
+        BackgroundLandscapeRole
     };
     Q_ENUM(DataRole)
 
     explicit FeaturedImagesModel(QObject *parent = nullptr);
+    ~FeaturedImagesModel();
 
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
 
@@ -296,6 +293,14 @@ private:
             QByteArray("thumbnail")
         },
         {
+            static_cast<int>(LargeThumbnailRole),
+            QByteArray("largeThumbnail")
+        },
+        {
+            static_cast<int>(OriginalUrlRole),
+            QByteArray("original")
+        },
+        {
             static_cast<int>(PortraitUrlRole),
             QByteArray("portrait")
         },
@@ -304,24 +309,20 @@ private:
             QByteArray("landscape")
         },
         {
-            static_cast<int>(SmallUrlRole),
-            QByteArray("small")
+            static_cast<int>(BackgroundPortraitRole),
+            QByteArray("backgroundPortrait")
         },
         {
-            static_cast<int>(OriginalUrlRole),
-            QByteArray("original")
+            static_cast<int>(BackgroundLandscapeRole),
+            QByteArray("backgroundLandscape")
         },
         {
-            static_cast<int>(MediumUrlRole),
-            QByteArray("medium")
+            static_cast<int>(ScreenUrlRole),
+            QByteArray("fullScreen")
         },
         {
-            static_cast<int>(LargeUrlRole),
-            QByteArray("large")
-        },
-        {
-            static_cast<int>(ExtraLargeUrlRole),
-            QByteArray("extraLarge")
+            static_cast<int>(ScreenSizeRole),
+            QByteArray("fullScreenSize")
         },
         {
             static_cast<int>(PortraitSizeRole),
@@ -330,26 +331,6 @@ private:
         {
             static_cast<int>(LandscapeSizeRole),
             QByteArray("landscapeSize")
-        },
-        {
-            static_cast<int>(SmallSizeRole),
-            QByteArray("smallSize")
-        },
-        {
-            static_cast<int>(OriginalSizeRole),
-            QByteArray("originalSize")
-        },
-        {
-            static_cast<int>(MediumSizeRole),
-            QByteArray("mediumSize")
-        },
-        {
-            static_cast<int>(LargeSizeRole),
-            QByteArray("largeSize")
-        },
-        {
-            static_cast<int>(ExtraLargeSizeRole),
-            QByteArray("extraLargeSize")
         }
     };
     State m_state = Idle;

@@ -109,49 +109,36 @@ auto ImageSearchModel::data(const QModelIndex &index, int role) const -> QVarian
         data = dataPoint.altText;
         break;
     case ThumbnailRole:
-        data = dataPoint.sources.value(QString::fromUtf8("tiny"));
+        data = dataPoint.sources.value(QString::fromUtf8("thumbnail"));
+        break;
+    case LargeThumbnailRole:
+        data = dataPoint.sources.value(QString::fromUtf8("largeThumbnail"));
         break;
     case PortraitUrlRole:
         data = dataPoint.sources.value(QString::fromUtf8("portrait"));
         break;
-    case LandscapeUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("landscape"));
+    case PortraitSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("portrait"));
         break;
-    case SmallUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("small"));
+    case ScreenUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("screen"));
+        break;
+    case ScreenSizeRole:
+        data = dataPoint.sourceSizes.value(QString::fromUtf8("screen"));
         break;
     case OriginalUrlRole:
         data = dataPoint.sources.value(QString::fromUtf8("original"));
         break;
-    case MediumUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("medium"));
-        break;
-    case LargeUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("large"));
-        break;
-    case ExtraLargeUrlRole:
-        data = dataPoint.sources.value(QString::fromUtf8("large2x"));
-        break;
-    case PortraitSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("portrait"));
+    case LandscapeUrlRole:
+        data = dataPoint.sources.value(QString::fromUtf8("landscape"));
         break;
     case LandscapeSizeRole:
         data = dataPoint.sourceSizes.value(QString::fromUtf8("landscape"));
         break;
-    case SmallSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("small"));
-        break;
-    case OriginalSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("original"));
-        break;
-    case MediumSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("medium"));
-        break;
-    case LargeSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("large"));
-        break;
-    case ExtraLargeSizeRole:
-        data = dataPoint.sourceSizes.value(QString::fromUtf8("large2x"));
+    case BackgroundPortraitRole:
+        data = dataPoint.sources.value(QString::fromUtf8("backgroundPortrait"));
+    case BackgroundLandscapeRole:
+        data = dataPoint.sources.value(QString::fromUtf8("backgroundLandscape"));
         break;
     }
 
@@ -220,6 +207,16 @@ auto ImageSearchModel::resetDataModel() -> void
 auto ImageSearchModel::onPaginatorFetching() -> void
 {
     setState(Loading);
+}
+
+auto ImageSearchModel::boundaryCheck(qsizetype index) const -> bool
+{
+    if(index < 0 || m_paginator == nullptr || index >= m_paginator->count())
+    {
+        return false;
+    }
+
+    return true;
 }
 
 auto ImageSearchModel::hasNextPage() const -> bool

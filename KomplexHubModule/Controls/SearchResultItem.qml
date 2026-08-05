@@ -16,7 +16,7 @@ Item {
     signal triggered
     signal viewMoreTriggered
 
-    id: searchResultItemRoot
+    id: mainItem
     width: 256
     height: 256
     clip: true
@@ -48,7 +48,7 @@ Item {
             onReleased: () => {
                 if(!states.selected)
                 {
-                    searchResultItemRoot.triggered()
+                    mainItem.triggered()
                 }
             }
         }
@@ -68,12 +68,35 @@ Item {
 
                 color: palette.base.lighter(1.25)
 
-                Image
+                Throbber
                 {
                     anchors.fill: parent
+                    id: loadingThrobber
+                    visible: viewImage.status === Image.Loading
+                }
+
+                Image
+                {
+                    property int retries: 0
+                    id: viewImage
+                    anchors.fill: parent
+                    source: mainItem.thumbnail
+                    visible: !(status === Image.Loading)
                     fillMode: Image.PreserveAspectCrop
-                    id: thumnailImage
-                    source: searchResultItemRoot.thumbnail
+
+                    onStatusChanged: () =>
+                    {
+                        // if(status === Image.Error)
+                        // {
+                        //     if(retries <= 3)
+                        //     {
+                        //         ++retries
+                        //         let src = source
+                        //         source = ""
+                        //         source = src
+                        //     }
+                        // }
+                    }
                 }
 
                 Image
@@ -89,14 +112,14 @@ Item {
                     opacity: 0.5
                     source: "qrc:/images/icons/pexels-icon-filled-256.svg"
 
-                    visible: searchResultItemRoot.pexels
+                    visible: mainItem.pexels
                 }
             }
 
             Text
             {
                 color: palette.text
-                text: searchResultItemRoot.title
+                text: mainItem.title
 
                 font.pixelSize: 16
                 font.bold: true
@@ -112,12 +135,12 @@ Item {
             {
                 color: palette.text
                 font.pixelSize: 12
-                text: "By: " + searchResultItemRoot.author
+                text: "By: " + mainItem.author
                 leftPadding: 12
 
                 Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
                 Layout.preferredWidth: 250
-                visible: !searchResultItemRoot.pexels
+                visible: !mainItem.pexels
             }
 
             Text
@@ -126,7 +149,7 @@ Item {
                 clip: true
                 color: palette.text
                 font.pixelSize: 12
-                text: searchResultItemRoot.description
+                text: mainItem.description
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 textFormat: Text.PlainText
                 elide: Text.ElideRight
@@ -153,7 +176,7 @@ Item {
                 opacity: 0
 
                 onTriggered: () => {
-                    searchResultItemRoot.viewMoreTriggered()
+                    mainItem.viewMoreTriggered()
                 }
             }
 
@@ -166,7 +189,7 @@ Item {
         id: states
         property bool clicked: false
         property bool hovered: false
-        property alias selected: searchResultItemRoot.selected
+        property alias selected: mainItem.selected
         property bool idle: true
 
         onIdleChanged: () =>

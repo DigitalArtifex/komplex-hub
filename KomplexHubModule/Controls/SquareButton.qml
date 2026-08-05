@@ -25,7 +25,7 @@ Item {
     component IconSettings: QtObject {
         property int width: 16
         property int height: 16
-        property string source: "images/icons/icons8-next.svg"
+        property string source: "qrc:/images/icons/icons8-next.svg"
     }
 
     component BorderSettings: QtObject {

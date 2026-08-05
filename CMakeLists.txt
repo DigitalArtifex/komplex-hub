@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21.1)
 
 option(LINK_INSIGHT "Link Qt Insight Tracker library" ON)
 option(BUILD_QDS_COMPONENTS "Build design studio components" ON)
- 
+
 project(KomplexHub LANGUAGES CXX) 
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -87,6 +87,12 @@ qt_add_resources(${CMAKE_PROJECT_NAME} "app_images"
         "images/kero/kero_success.png"
         "images/kero/kero_warning.png"
     )
+
+  target_compile_definitions(
+    ${CMAKE_PROJECT_NAME}
+    PUBLIC
+      KOMPLEX_LOCAL_DEV
+  )
 
 include(qds)
 

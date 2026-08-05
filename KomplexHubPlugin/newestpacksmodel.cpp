@@ -58,6 +58,14 @@ NewestPacksModel::NewestPacksModel(QObject *parent) : QAbstractListModel{parent}
     );
 }
 
+NewestPacksModel::~NewestPacksModel()
+{
+    if(m_paginator)
+    {
+        delete m_paginator;
+    }
+}
+
 auto NewestPacksModel::rowCount(const QModelIndex &) const -> int
 {
     if(m_paginator != nullptr)
@@ -216,7 +224,42 @@ auto NewestPacksModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
     if(m_paginator != nullptr)
     {
-        m_paginator->setResultsPerPage(resultsPerPage);
+        QFuture<void> future = QtConcurrent::run
+        (
+            [this, resultsPerPage]
+            {
+                qsizetype difference = resultsPerPage - m_paginator->resultsPerPage();
+                m_paginator->setResultsPerPage(resultsPerPage);
+
+                if(difference > 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage() - difference;
+
+                    beginInsertRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        m_paginator->count() - 1
+                    );
+
+                    endInsertRows();
+                }
+
+                else if(difference < 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage();
+
+                    beginRemoveRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        firstIndex - difference
+                    );
+
+                    endRemoveRows();
+                }
+            }
+        );
     }
 }
 

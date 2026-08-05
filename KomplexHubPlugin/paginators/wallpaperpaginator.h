@@ -62,35 +62,35 @@ public:
         return m_uri;
     }
 
-    /**
-     * @brief query
-     * Current query string, if the API Endpoint supports queries
-     * @return
-     */
-    [[nodiscard]]
-    auto query() const -> QString
-    {
-        return m_query;
-    }
+    // /**
+    //  * @brief query
+    //  * Current query string, if the API Endpoint supports queries
+    //  * @return
+    //  */
+    // [[nodiscard]]
+    // auto query() const -> QString
+    // {
+    //     return m_query;
+    // }
 
-    /**
-     * @brief setQuery
-     * Sets the new query string and updates the controller
-     * @param query
-     */
-    auto setQuery(const QString &query) -> void
-    {
-        if(query == m_query)
-        {
-            return;
-        }
+    // /**
+    //  * @brief setQuery
+    //  * Sets the new query string and updates the controller
+    //  * @param query
+    //  */
+    // auto setQuery(const QString &query) -> void
+    // {
+    //     if(query == m_query)
+    //     {
+    //         return;
+    //     }
 
-        m_query = query;
-        Q_EMIT queryChanged();
+    //     m_query = query;
+    //     Q_EMIT queryChanged();
 
-        reset();
-        setOffset(0);
-    }
+    //     reset();
+    //     setOffset(0);
+    // }
 
 signals:
     /**
@@ -120,7 +120,7 @@ protected:
             {}
         );
 
-        if(queryable() && query().isEmpty())
+         if(queryable() && query().isEmpty())
         {
             return {};
         }
@@ -139,7 +139,7 @@ protected:
                 {
                     {
                         QByteArray("query"),
-                        m_query.toUtf8()
+                        query().toUtf8()
                     },
                     {
                         QByteArray("offset"),
@@ -303,11 +303,11 @@ private:
      */
     QString m_uri;
 
-    /**
-     * @brief m_query
-     * The query string used in fetch operations
-     */
-    QString m_query;
+    // /**
+    //  * @brief m_query
+    //  * The query string used in fetch operations
+    //  */
+    // QString m_query;
 };
 
 #endif // WALLPAPERPAGINATOR_H

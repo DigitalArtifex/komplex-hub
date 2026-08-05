@@ -56,6 +56,14 @@ FeaturedPacksModel::FeaturedPacksModel(QObject *parent) : QAbstractListModel{par
     );
 }
 
+FeaturedPacksModel::~FeaturedPacksModel()
+{
+    if(m_paginator)
+    {
+        delete m_paginator;
+    }
+}
+
 auto FeaturedPacksModel::rowCount(const QModelIndex &) const -> int
 {
     if(m_paginator != nullptr)
@@ -181,6 +189,16 @@ auto FeaturedPacksModel::onPaginatorFetching() -> void
     setState(Loading);
 }
 
+auto FeaturedPacksModel::boundaryCheck(qsizetype index) const -> bool
+{
+    if(index < 0 || m_paginator == nullptr || index >= m_paginator->count())
+    {
+        return false;
+    }
+
+    return true;
+}
+
 auto FeaturedPacksModel::roleNames() const -> QHash<int, QByteArray>
 {
     return m_dataRoles;
@@ -220,7 +238,36 @@ auto FeaturedPacksModel::setResultsPerPage(qsizetype resultsPerPage) -> void
         (
             [this, resultsPerPage]
             {
+                qsizetype difference = resultsPerPage - m_paginator->resultsPerPage();
                 m_paginator->setResultsPerPage(resultsPerPage);
+
+                if(difference > 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage() - difference;
+
+                    beginInsertRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        m_paginator->count() - 1
+                    );
+
+                    endInsertRows();
+                }
+
+                else if(difference < 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage();
+
+                    beginRemoveRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        firstIndex - difference
+                    );
+
+                    endRemoveRows();
+                }
             }
         );
     }

@@ -24,6 +24,7 @@
 #include <QNetworkReply>
 #include <QSharedPointer>
 #include <QWeakPointer>
+#include <QScreen>
 #include <QMutex>
 #include <QMutexLocker>
 
@@ -44,6 +45,8 @@ public:
      * @return
      */
     static auto sessionToken() -> QByteArray;
+
+    static auto screenSize() -> QSize;
 
 private:
 

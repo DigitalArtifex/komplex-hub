@@ -40,7 +40,7 @@ public:
             QString::fromUtf8(KOMPLEX_ENDPOINT_PACKS_FEATURED)
         );
 
-        controller()->setWindowSize(20);
+        controller()->setWindowSize(32);
     }
 };
 

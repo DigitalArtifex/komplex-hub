@@ -96,7 +96,6 @@ public:
     auto at(qsizetype index) const -> const T&
     {
         QMutexLocker cacheLocker(&m_cacheMutex);
-        T defaultValue;
 
         if(!externalBoundaryCheck(index))
         {
@@ -203,7 +202,7 @@ public:
             return;
         }
 
-        if(!externalBoundaryCheck(index + count))
+        if(externalBoundaryCheck(index + count))
         {
             slideWindow(index);
         }
@@ -589,6 +588,8 @@ private:
      * Override for window size
      */
     qsizetype m_windowSize = nullsize;
+
+    T defaultValue;
 };
 
 #endif // SLIDINGCACHECONTROLLER_H

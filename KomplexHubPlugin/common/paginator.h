@@ -23,6 +23,9 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <qdebug.h>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 #include "komplex_global.h"
 #include "slidingcachecontroller.h"
@@ -47,6 +50,7 @@ signals:
     auto pageChanged() -> void;
     auto countChanged() -> void;
     auto queryChanged() -> void;
+    auto uriChanged() -> void;
 };
 
 /**
@@ -166,6 +170,34 @@ public:
 
         controller()->init();
         setOffset(0);
+    }
+
+    /**
+     * @brief uri
+     * URI of the API Endpoint. This is set by the child class
+     * @return
+     */
+    [[nodiscard]]
+    auto uri() const -> QString
+    {
+        return m_uri;
+    }
+
+    /**
+     * @brief setUri
+     * Sets the API Endpoint URI to fetch from
+     * @param uri
+     */
+    auto setUri(const QString &uri) -> void
+    {
+        if(uri == m_uri)
+        {
+            return;
+        }
+
+        m_uri = uri;
+
+        Q_EMIT uriChanged();
     }
 
     /**
@@ -321,6 +353,31 @@ protected:
         controller()->reset();
     }
 
+    /**
+     * @brief getDocument
+     * Extracts the JSON document from the server reply and deletes the reply
+     * object.
+     * @param reply
+     * @return
+     */
+    [[nodiscard]]
+    auto getDocument(QNetworkReply *reply) const -> QJsonDocument
+    {
+        QByteArray data = reply->readAll();
+        QJsonParseError documentError;
+        QJsonDocument document = QJsonDocument::fromJson(data, &documentError);
+
+        reply->deleteLater();
+
+        LOG_ERROR_X(documentError.error != QJsonParseError::NoError,
+            "NewestPacksPaginator::getDocument",
+            documentError.errorString().toStdString().c_str(),
+            {}
+        );
+
+        return document;
+    }
+
 private:
 
     /**
@@ -377,6 +434,12 @@ private:
      * Controls the queryable state of the paginator
      */
     bool m_queryable = false;
+
+    /**
+     * @brief m_uri
+     * API Endpoint URI
+     */
+    QString m_uri;
 };
 
 #endif // PAGINATOR_H

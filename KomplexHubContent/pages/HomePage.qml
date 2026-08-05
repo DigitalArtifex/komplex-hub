@@ -15,6 +15,15 @@ Item
     property int resultWidth: 256
     property int resultHeight: 245
     property bool popup: false
+    property bool loading: packsModel.state === NewestPacksModel.Loading ||
+                           imagesModel.state === FeaturedImagesModel.Loading ||
+                           videosModel.state === FeaturedVideosModel.Loading;
+
+    onWidthChanged:() => {
+        packsModel.resultsPerPage = resultsPerRow
+        imagesModel.resultsPerPage = resultsPerRow
+        videosModel.resultsPerPage = resultsPerRow
+    }
 
     clip: true
 
@@ -23,19 +32,19 @@ Item
     NewestPacksModel
     {
         id: packsModel
-        resultsPerPage: homePageRoot.resultsPerRow
+        resultsPerPage: 0
     }
 
     FeaturedImagesModel
     {
         id: imagesModel
-        resultsPerPage: homePageRoot.resultsPerRow
+        resultsPerPage: 0
     }
 
     FeaturedVideosModel
     {
         id: videosModel
-        resultsPerPage: homePageRoot.resultsPerRow
+        resultsPerPage: 0
     }
 
     Rectangle
@@ -46,6 +55,7 @@ Item
         ColumnLayout
         {
             id: resultsLayout
+            visible: opacity > 0.01
             anchors.fill: parent
             anchors.margins: Constants.mediumMargin
 
@@ -95,9 +105,14 @@ Item
 
                         onTriggered: () => packsPaginator.currentIndex = parent.index
 
-                        function onViewMoreTriggered()
+                        onViewMoreTriggered: () =>
                         {
+                            showWallpaperPopup(parent.index)
+                        }
 
+                        onThumbnailChanged: () =>
+                        {
+                            console.log(index + " " + thumbnail + " " + parent.thumbnail)
                         }
                     }
                 }
@@ -196,12 +211,8 @@ Item
                         pexels: true
                         selected: videosPaginator.currentIndex === parent.index
 
-                        onTriggered: () => packsPaginator.currentIndex = parent.index
-
-                        onViewMoreTriggered:() =>
-                        {
-                            viewMoreImagePopup.opacity = 1
-                        }
+                        onTriggered: () => videosPaginator.currentIndex = parent.index
+                        onViewMoreTriggered:() => showVideoPopup(parent.index)
                     }
                 }
             }
@@ -232,6 +243,7 @@ Item
         id: popupContainer
         anchors.fill: parent
         opacity: 0
+        visible: opacity > 0.01
         color: palette.base
 
         ImageView
@@ -239,6 +251,39 @@ Item
             id: viewMoreImagePopup
             anchors.fill: parent
             opacity: 0
+            visible: opacity > 0.01
+
+            Behavior on opacity {
+                NumberAnimation
+                {
+                    duration: 250
+                }
+            }
+        }
+
+        VideoView
+        {
+            id: viewMoreVideoPopup
+            anchors.fill: parent
+            opacity: 0
+            visible: opacity > 0.01
+            //model: videosModel.itemModel
+
+            Behavior on opacity {
+                NumberAnimation
+                {
+                    duration: 250
+                }
+            }
+        }
+
+        PackView
+        {
+            id: viewMoreWallpaperPopup
+            anchors.fill: parent
+            opacity: 0
+            visible: opacity > 0.01
+            //model: videosModel.itemModel
 
             Behavior on opacity {
                 NumberAnimation
@@ -259,9 +304,7 @@ Item
     states: [
         State {
             name: "loading"
-            when: packsModel.state === NewestPacksModel.Loading ||
-                  imagesModel.state === FeaturedImagesModel.Loading ||
-                  videosModel.state === FeaturedVideosModel.Loading;
+            when: homePageRoot.loading
 
             PropertyChanges
             {
@@ -319,7 +362,6 @@ Item
                 property: "opacity";
             }
         }
-
     ]
 
     function showImagePopup(index)
@@ -328,30 +370,56 @@ Item
         viewMoreImagePopup.authorUrl = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.AuthorUrlRole)
         viewMoreImagePopup.description = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.DescriptionRole)
         viewMoreImagePopup.uuid = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.UuidRole)
-        viewMoreImagePopup.thumbnail = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ThumbnailRole)
-        viewMoreImagePopup.small = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.SmallUrlRole)
-        viewMoreImagePopup.medium = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.MediumUrlRole)
-        viewMoreImagePopup.large = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LargeUrlRole)
-        viewMoreImagePopup.extraLarge = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ExtraLargeUrlRole)
+        viewMoreImagePopup.thumbnail = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LargeThumbnailRole)
         viewMoreImagePopup.original = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.OriginalUrlRole)
         viewMoreImagePopup.portrait = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.PortraitUrlRole)
         viewMoreImagePopup.landscape = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LandscapeUrlRole)
-        viewMoreImagePopup.smallSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.SmallSizeRole)
-        viewMoreImagePopup.mediumSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.MediumSizeRole)
-        viewMoreImagePopup.largeSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LargeSizeRole)
-        viewMoreImagePopup.extraLargeSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ExtraLargeSizeRole)
-        viewMoreImagePopup.originalSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.OriginalSizeRole)
+        viewMoreImagePopup.backgroundPortrait = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.BackgroundPortraitRole)
+        viewMoreImagePopup.backgroundLandscape = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.BackgroundLandscapeRole)
+        viewMoreImagePopup.fullScreen = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ScreenUrlRole)
         viewMoreImagePopup.portraitSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.PortraitSizeRole)
         viewMoreImagePopup.landscapeSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LandscapeSizeRole)
+        viewMoreImagePopup.fullScreenSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ScreenSizeRole)
         viewMoreImagePopup.opacity = 1
         popupContainer.opacity = 1
+        resultsLayout.opacity = 0
+        homePageRoot.popup = true
+    }
+
+    function showVideoPopup(index)
+    {
+        videosModel.setItem(index)
+        viewMoreVideoPopup.author = videosModel.data(videosModel.index(index,0), FeaturedVideosModel.AuthorRole)
+        viewMoreVideoPopup.authorUrl = videosModel.data(videosModel.index(index,0), FeaturedVideosModel.AuthorUrlRole)
+        viewMoreVideoPopup.uuid = videosModel.data(videosModel.index(index,0), FeaturedVideosModel.UuidRole)
+        viewMoreVideoPopup.thumbnail = videosModel.data(videosModel.index(index,0), FeaturedVideosModel.ThumbnailRole)
+        viewMoreVideoPopup.modelIndex = index
+        viewMoreVideoPopup.model = videosModel.itemModel
+        viewMoreVideoPopup.opacity = 1
+        resultsLayout.opacity = 0
+        popupContainer.opacity = 1
+        homePageRoot.popup = true
+    }
+
+    function showWallpaperPopup(index)
+    {
+        viewMoreWallpaperPopup.author = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorRole)
+        viewMoreWallpaperPopup.authorId = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorIdRole)
+        viewMoreWallpaperPopup.description = packsModel.data(packsModel.index(index,0), NewestPacksModel.DescriptionRole)
+        viewMoreWallpaperPopup.thumbnail = packsModel.data(packsModel.index(index,0), NewestPacksModel.ThumbnailRole)
+        viewMoreWallpaperPopup.opacity = 1
+        popupContainer.opacity = 1
+        resultsLayout.opacity = 0
         homePageRoot.popup = true
     }
 
     function closePopup()
     {
         viewMoreImagePopup.opacity = 0
+        viewMoreVideoPopup.opacity = 0
+        viewMoreWallpaperPopup.opacity = 0
         popupContainer.opacity = 0
+        resultsLayout.opacity = 1
         homePageRoot.popup = false
     }
 }

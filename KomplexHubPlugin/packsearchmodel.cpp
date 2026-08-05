@@ -62,6 +62,14 @@ PackSearchModel::PackSearchModel(QObject *parent) : QAbstractListModel{parent}
     );
 }
 
+PackSearchModel::~PackSearchModel()
+{
+    if(m_paginator)
+    {
+        delete m_paginator;
+    }
+}
+
 auto PackSearchModel::rowCount(const QModelIndex &) const -> int
 {
     if(m_paginator != nullptr)
@@ -185,6 +193,16 @@ auto PackSearchModel::resetDataModel() -> void
     endInsertRows();
 }
 
+auto PackSearchModel::boundaryCheck(qsizetype index) const -> bool
+{
+    if(index < 0 || m_paginator == nullptr || index >= m_paginator->count())
+    {
+        return false;
+    }
+
+    return true;
+}
+
 auto PackSearchModel::hasNextPage() const -> bool
 {
     return m_paginator->page() < m_paginator->totalPages();
@@ -239,7 +257,36 @@ auto PackSearchModel::setResultsPerPage(qsizetype resultsPerPage) -> void
         (
             [this, resultsPerPage]
             {
+                qsizetype difference = resultsPerPage - m_paginator->resultsPerPage();
                 m_paginator->setResultsPerPage(resultsPerPage);
+
+                if(difference > 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage() - difference;
+
+                    beginInsertRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        m_paginator->count() - 1
+                    );
+
+                    endInsertRows();
+                }
+
+                else if(difference < 0)
+                {
+                    qsizetype firstIndex = m_paginator->resultsPerPage();
+
+                    beginRemoveRows
+                    (
+                        QModelIndex(),
+                        firstIndex,
+                        firstIndex - difference
+                    );
+
+                    endRemoveRows();
+                }
             }
         );
     }

@@ -78,6 +78,7 @@ public:
     Q_ENUM(DataRole)
 
     explicit FeaturedPacksModel(QObject *parent = nullptr);
+    ~FeaturedPacksModel();
 
     auto rowCount(const QModelIndex &parent = QModelIndex()) const -> int override;
 
@@ -239,6 +240,14 @@ signals:
     auto totalPagesChanged() -> void;
 
 private:
+    /**
+     * @brief boundaryCheck
+     * Helper function to check the requested index boundary
+     * @param index
+     * @return
+     */
+    auto boundaryCheck(qsizetype index) const -> bool;
+
     /**
      * @brief m_dataRoles
      * Data role map that connects ImageSearchModel::DataRole to it's QML accessor name
