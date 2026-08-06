@@ -21,7 +21,7 @@
             <img src="https://git.digitalartifex.dev/digitalartifex/komplex-hub/raw/branch/main/images/screenshots/screenshot_04_videos.png" />
         </td>
         <td>
-            <img src="" />
+            <img src="https://git.digitalartifex.dev/digitalartifex/komplex-hub/raw/branch/main/images/screenshots/screenshot_05_live.png" />
         </td>
     </tr>
     <tr>
