@@ -74,4 +74,4 @@ Content purchases will be processed through the website using Paypal as will art
 
 ## Status
 
-This app is currently under development and is pre-alpha. During this phase, the new API is only hosted locally and not yet available on digitalartifex.dev
+This app is currently under development and is pre-alpha. The API is now being hosted on https://komplex.dev. However, there is no download functionality as of yet. BETA should be here within a few weeks.
