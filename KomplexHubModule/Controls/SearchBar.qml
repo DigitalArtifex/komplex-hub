@@ -72,4 +72,9 @@ Item
             }
         }
     ]
+
+    function reset()
+    {
+        searchEdit.text = ""
+    }
 }

@@ -87,7 +87,8 @@ Rectangle {
                     icon.width: 32
                     icon.url: "qrc:/images/icons/icons8-famous.svg"
 
-                    onTriggered: () => {
+                    onTriggered: () =>
+                    {
                         pageLoader.page = "pages/HomePage.qml"
 
                         if(currentMenuButton !== null)
@@ -98,10 +99,12 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 0
+                        searchContainer.reset()
                     }
                 }
 
-                MenuButton {
+                MenuButton
+                {
                     Layout.alignment: Qt.AlignTop
 
                     height: 64
@@ -119,10 +122,12 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 50
+                        searchContainer.reset()
                     }
                 }
 
-                MenuButton {
+                MenuButton
+                {
                     Layout.alignment: Qt.AlignTop
 
                     height: 64
@@ -140,10 +145,12 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 50
+                        searchContainer.reset()
                     }
                 }
 
-                MenuButton {
+                MenuButton
+                {
                     Layout.alignment: Qt.AlignTop
 
                     height: 64
@@ -161,10 +168,12 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 50
+                        searchContainer.reset()
                     }
                 }
 
-                MenuButton {
+                MenuButton
+                {
                     Layout.alignment: Qt.AlignTop
 
                     height: 64
@@ -182,15 +191,18 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 0
+                        searchContainer.reset()
                     }
                 }
 
-                Item {
+                Item
+                {
                     Layout.fillHeight: true
                     Layout.minimumHeight: 100
                 }
 
-                MenuButton {
+                MenuButton
+                {
                     Layout.alignment: Qt.AlignBottom
 
                     height: 64
@@ -208,10 +220,12 @@ Rectangle {
                         currentMenuButton = this
 
                         searchContainer.preferredHeight = 0
+                        searchContainer.reset()
                     }
                 }
 
-                Behavior on opacity {
+                Behavior on opacity
+                {
                     NumberAnimation
                     {
                         duration: 250
@@ -229,12 +243,14 @@ Rectangle {
 
             color: "transparent"
 
-            ColumnLayout {
+            ColumnLayout
+            {
                 id: windowContainerLayout
                 anchors.fill: parent
                 spacing: 0
 
-                SearchBar {
+                SearchBar
+                {
                     property int preferredHeight: 50
                     id: searchContainer
                     color: palette.base.lighter()
@@ -245,7 +261,8 @@ Rectangle {
 
                     icon: "qrc:/images/icons/icons8-search.svg"
 
-                    onSearchTermChanged: () => {
+                    onSearchTermChanged: () =>
+                    {
                         pageLoader.setSearchTerm()
                     }
 
@@ -254,7 +271,8 @@ Rectangle {
                     }
                 }
 
-                Rectangle {
+                Rectangle
+                {
                     id: windowContent
 
                     Layout.fillHeight: true
@@ -264,20 +282,23 @@ Rectangle {
 
                     color: palette.base.darker()
 
-                    Loader {
+                    Loader
+                    {
                         property bool loading: false
                         property string page
 
                         anchors.fill: parent
 
-                        onPageChanged: () => {
+                        onPageChanged: () =>
+                        {
                             loading = true
                             fadeOutPage()
                         }
 
                         id: pageLoader
 
-                        OpacityAnimator on opacity {
+                        OpacityAnimator on opacity
+                        {
                             id: pageLoaderAnimation
 
                             target: pageLoader
