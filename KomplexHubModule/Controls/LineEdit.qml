@@ -62,10 +62,12 @@ Item {
 
     id: lineEditRoot
 
-    ColumnLayout {
+    ColumnLayout
+    {
         anchors.fill: parent
 
-        Rectangle {
+        Rectangle
+        {
             id: lineEditBackground
 
             border.color: lineEditRoot.border.color
@@ -87,7 +89,8 @@ Item {
             topLeftRadius: lineEditRoot.radius.topLeft
             topRightRadius: lineEditRoot.radius.topRight
 
-            TextInput {
+            TextInput
+            {
                 id: lineEditInput
                 anchors.fill: parent
                 color: lineEditRoot.color
@@ -101,6 +104,14 @@ Item {
                 onAccepted: () => lineEditRoot.accepted()
                 onTextChanged: () => lineEditRoot.text = lineEditInput.text
                 onEditingFinished: () => lineEditRoot.editingFinished()
+
+                MouseArea
+                {
+                    anchors.fill: parent
+                    cursorShape: Qt.IBeamCursor
+
+                    onClicked: () => lineEditInput.focus = true
+                }
             }
 
             states: [
