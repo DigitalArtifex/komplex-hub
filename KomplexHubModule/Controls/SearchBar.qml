@@ -9,7 +9,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import KomplexHub
 
-Item {
+Item
+{
     property string searchTerm: ""
     property string icon: ""
     property color color: "transparent"
@@ -17,15 +18,18 @@ Item {
     id: searchBarRootItem
     clip: true
 
-    Rectangle {
+    Rectangle
+    {
         color: searchBarRootItem.color
         anchors.fill: parent
 
-        RowLayout {
+        RowLayout
+        {
             id: searchContainerLayout
             anchors.fill: parent
 
-            LineEdit {
+            LineEdit
+            {
                 id: searchEdit
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -40,7 +44,8 @@ Item {
                 onAccepted: () => searchBarRootItem.searchTerm = text
             }
 
-            SquareButton {
+            SquareButton
+            {
                 id: searchButton
 
                 Layout.fillHeight: searchEdit.height
