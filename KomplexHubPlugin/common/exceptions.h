@@ -25,4 +25,10 @@ struct SqlException : Exception
 {
     SqlException(const QString &message, qsizetype errorCode = 0) : Exception(message, errorCode) {}
 };
+
+
+struct KOMPLEX_EXPORT ShaderCompilerException : Exception
+{
+    ShaderCompilerException(const QString &message, qsizetype errorCode = 0) : Exception(message, errorCode) {}
+};
 #endif // EXCEPTIONS_H

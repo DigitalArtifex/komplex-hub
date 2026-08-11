@@ -60,6 +60,7 @@ qt_add_qml_module(
         common/exceptions.h
         common/shadertoymetadata.h
         common/shaderpackmetadata.h
+        SOURCES packcompiler.h packcompiler.cpp
 )
 
 target_compile_definitions(

@@ -7,9 +7,39 @@
 DownloadManager::DownloadManager(QObject *parent)
     : QObject{parent}
 {
+    m_compiler = new PackCompiler(this);
 
+    QObject::connect
+    (
+        m_compiler,
+        &PackCompiler::progressChanged,
+        this,
+        &DownloadManager::compileProgressChanged
+    );
+
+    QObject::connect
+    (
+        m_compiler,
+        &PackCompiler::currentStepChanged,
+        this,
+        &DownloadManager::compileStepsCompletedChanged
+    );
+
+    QObject::connect
+    (
+        m_compiler,
+        &PackCompiler::totalStepsChanged,
+        this,
+        &DownloadManager::compileStepsChanged
+    );
 }
 
+/**
+ * [1] Download image from endpoint
+ * [2] Apply generic single-media template, with an image source
+ * [3] Optionally ask user if they would like to apply manipulative shader
+ * [4] Install locally
+ */
 auto DownloadManager::downloadImage(const QString &author, const QString &authorId, const QString &description, const QUrl &url) noexcept(false) -> void
 {
     QFuture future = QtConcurrent::run
@@ -22,15 +52,29 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
 
             try
             {
-                QUrl downloadUri = download(request, id);
+                QFuture<QUrl> downloadUri = download(request, id);
 
-                ShaderPackMetadata metadata;
-                metadata.setAuthor(author);
-                metadata.setDescription(description);
-                metadata.setName(QStringLiteral("Pexels Image (%1)").arg(id));
+                downloadUri
+                    .then
+                    (
+                        [this, author, description, id](QUrl result) -> QUrl
+                        {
+                            ShaderPackMetadata metadata;
+                            metadata.setAuthor(author);
+                            metadata.setDescription(description);
+                            metadata.setName(QStringLiteral("Pexels Image (%1)").arg(id));
 
-                setState(Complete);
-                Q_EMIT downloadComplete(downloadUri.toString());
+                            setState(Complete);
+                            Q_EMIT downloadComplete(result.toString());
+                        }
+                    )
+                    .onFailed
+                    (
+                        [] ()
+                        {
+
+                        }
+                    );
             }
             catch (FileException e)
             {
@@ -48,51 +92,48 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
 
 auto DownloadManager::downloadPack(const QString &id) noexcept(false) -> void
 {
-    QFuture future = QtConcurrent::run
+    QFuture aether = QtConcurrent::run
     (
         [this, id]()
         {
-            QUrl uri = QUrl
+            QUrl downloadUrl = QUrl
             (
                 QStringLiteral("%1/%2/%3").arg
                 (
                     KOMPLEX_API_HOST,
                     KOMPLEX_API_VERSION,
-                    KOMPLEX_ENDPOINT_PACKS_ITEM,
-                    id
+                    KOMPLEX_ENDPOINT_PACKS_ITEM
                 )
             );
 
-            QNetworkRequest request(uri);
+            QNetworkRequest request(downloadUrl);
             request.setRawHeader(QByteArray("uuid"), id.toUtf8());
+            //QUrl localUri = download(request, id, Post);
 
-            QUrl localUri;
+            QFuture<QUrl> compiledUri = download(request, id, Post);
 
-            try
-            {
-                QUrl tempUri = download(request, id);
-                QUrl decompressedUri = decompress(tempUri);
-
-                ShaderToyEntry entry = readShaderToyEntry(decompressedUri);
-                //scan and replace media via user choice. resave with decompressedUri
-
-                QUrl compiledUri = compile(decompressedUri);
-                QUrl installedUri = install(compiledUri);
-
-                setState(Complete);
-
-                Q_EMIT downloadComplete(installedUri.toString());
-            }
-            catch (FileException e)
-            {
-                setError(QStringLiteral("File Exception"), e.message);
-                localUri.clear();
-            }
-            catch (NetworkException e)
-            {
-                setError(QStringLiteral("Network Exception"), e.message);
-                localUri.clear();
-            }
+            compiledUri
+                .then
+                (
+                    [this](QUrl result) -> QUrl
+                    {
+                        m_compiler->process(result);
+                    }
+                )
+                .then
+                (
+                    [this](QUrl result) -> QUrl
+                    {
+                        install(result);
+                    }
+                )
+                .onFailed
+                (
+                    [this]()
+                    {
+                        setError(m_compiler->errorTitle(), m_compiler->errorMessage());
+                    }
+                );
         }
     );
 }
@@ -101,6 +142,36 @@ auto DownloadManager::reset() -> void
 {
     setError(QString(), QString());
     setState(Idle);
+}
+
+auto DownloadManager::compileProgress() -> qreal
+{
+    if(m_compiler == nullptr)
+    {
+        return 0;
+    }
+
+    return m_compiler->progress();
+}
+
+auto DownloadManager::compileSteps() -> qint64
+{
+    if(m_compiler == nullptr)
+    {
+        return 0;
+    }
+
+    return m_compiler->totalSteps();
+}
+
+auto DownloadManager::compileStepsCompleted() -> qint64
+{
+    if(nullptr == m_compiler)
+    {
+        return 0;
+    }
+
+    return m_compiler->currentStep();
 }
 
 auto DownloadManager::setError(const QString &title, const QString &message) -> void
@@ -113,109 +184,6 @@ auto DownloadManager::setError(const QString &title, const QString &message) -> 
     m_errorMessage = std::move(message);
     m_errorTitle = std::move(title);
     Q_EMIT errorChanged();
-}
-
-auto DownloadManager::compile(const QUrl &uri) noexcept(false) -> QUrl
-{
-    if(!uri.isLocalFile())
-    {
-        throw FileException(QStringLiteral("Uri needs to be a local file"), 0);
-    }
-
-    setState(Compiling);
-
-    QDir localToolsDirectory
-    (
-        QStringLiteral("%1/.local/share/komplex/tools").arg
-        (
-            QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
-        )
-    );
-
-    QDir outputDirectory = QStringLiteral("%1/komplex/build").arg
-    (
-        QStandardPaths::writableLocation(QStandardPaths::TempLocation)
-    );
-
-    QStringList arguments =
-    {
-        localToolsDirectory.absoluteFilePath(QStringLiteral("stc.py")),
-        QStringLiteral("-i"),
-        uri.toLocalFile(),
-        QStringLiteral("-o"),
-        outputDirectory.absolutePath()
-    };
-
-    if(!QFile::exists(localToolsDirectory.absoluteFilePath(QStringLiteral("stc.py"))))
-    {
-        throw FileException
-        (
-            QStringLiteral("Shader Compiler is not installed at %1").arg
-            (
-                localToolsDirectory.absoluteFilePath(QStringLiteral("stc.py"))
-            )
-        );
-    }
-
-    QProcess *process = new QProcess(this);
-
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardOutput,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardOutput();
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
-
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardError,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardError();
-
-            if(!processData.isValidUtf8())
-            {
-                qWarning() << QStringLiteral("Process output not valid UTF8 data");
-                return;
-            }
-
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
-
-    process->start(QStringLiteral("python3"), arguments);
-
-    if(!process->waitForStarted(3000))
-    {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Could not start shader compiler"));
-    }
-
-    if(!process->waitForFinished())
-    {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Shader compiler timeout"));
-    }
-
-    if(process->exitCode() != 0)
-    {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Shader compiler error"));
-    }
-
-    process->deleteLater();
-
-    QUrl outputUri = outputDirectory.absolutePath();
-    outputUri.setScheme(QStringLiteral("file://"));
-
-    return outputUri;
 }
 
 void DownloadManager::setCompilerOutput(const QString &compilerOutput)
@@ -252,241 +220,6 @@ auto DownloadManager::setDownloadProgress(qreal progress) -> void
     m_downloadProgress = progress;
     Q_EMIT downloadProgressChanged();
 }
-
-auto DownloadManager::decompress(const QUrl &uri) noexcept(false) -> QUrl
-{
-    return {};
-}
-
-// void DownloadManager::save(ShaderToyEntry entry)
-// {
-//     QString directoryLocation = QStringLiteral("%1/komplex/src/%2").arg(QStandardPaths::writableLocation(QStandardPaths::TempLocation), entry.metadata.id);
-//     QDir directory(directoryLocation);
-
-//     if(!directory.exists())
-//     {
-//         directory.mkpath(directoryLocation + QStringLiteral("/shaders"));
-//         directory.mkpath(directoryLocation + QStringLiteral("/images"));
-//         directory.mkpath(directoryLocation + QStringLiteral("/videos"));
-//     }
-
-//     QDir shaderDirectory(directoryLocation + QStringLiteral("/shaders"));
-//     QDir imageDirectory(directoryLocation + QStringLiteral("/images"));
-//     // QDir videoDirectory(directoryLocation + QStringLiteral("/videos"));
-
-//     QJsonObject rootObject;
-//     rootObject[QStringLiteral("author")] = entry.metadata.username;
-//     rootObject[QStringLiteral("name")] = entry.metadata.name;
-//     rootObject[QStringLiteral("version")] = entry.metadata.version;
-//     rootObject[QStringLiteral("engine")] = QStringLiteral("shadertoy");
-//     rootObject[QStringLiteral("description")] = entry.metadata.description;
-//     rootObject[QStringLiteral("id")] = entry.metadata.id;
-//     rootObject[QStringLiteral("tags")] = QJsonArray::fromStringList(entry.metadata.tags);
-//     QMap<QString,QString> externalMedia;
-
-//     externalMedia.insert
-//     (
-//         directory.absoluteFilePath(QStringLiteral("thumbnail.jpg")),
-//         QStringLiteral("/media/shaders/%1.jpg").arg(entry.metadata.id)
-//     );
-
-//     for(const ShaderToyRenderPass &pass : std::as_const(entry.renderPasses))
-//     {
-//         // skip tone generators
-//         if(pass.type == QStringLiteral("sound"))
-//             continue;
-
-//         QString passName = pass.name;
-
-//         if(passName.contains(QStringLiteral("Buf")) && !passName.contains(QStringLiteral("Buffer")))
-//             passName.replace(QStringLiteral("Buf"), QStringLiteral("Buffer"));
-
-//         QFile shaderFile(shaderDirectory.absoluteFilePath(passName + QStringLiteral(".frag")));
-
-//         if(!shaderFile.open(QFile::WriteOnly))
-//         {
-//             qWarning() << QStringLiteral("Could not open shader file for saving");
-//             return;
-//         }
-
-//         if(shaderFile.write(pass.code) != pass.code.length())
-//         {
-//             qWarning() << QStringLiteral("Could not write shader file data");
-//             shaderFile.close();
-//             return;
-//         }
-
-//         shaderFile.close();
-
-//         //this is the common file
-//         if(pass.type == QStringLiteral("common"))
-//             continue; // wont have any inputs
-
-//         const ShaderToyRenderOutput *channelOutput = nullptr;
-
-//         for(const ShaderToyRenderOutput &output : std::as_const(pass.outputs))
-//         {
-//             if(output.channel == 0)
-//             {
-//                 channelOutput = &output;
-//                 break;
-//             }
-//         }
-
-//         QList<QJsonObject> channels(4);
-
-//         QJsonObject *passObject = nullptr;
-
-//         //this is the root shader
-//         if(pass.type == QStringLiteral("image"))
-//         {
-//             rootObject[QStringLiteral("source")] = QStringLiteral("./shaders/%1.frag.qsb").arg(pass.name);
-//             passObject = &rootObject;
-//         }
-//         else
-//             passObject = new QJsonObject;
-
-//         for(const ShaderToyRenderInput &input : std::as_const(pass.inputs))
-//         {
-//             /*
-//             * Only recursive buffers, images, videos and shader buffers are currently supported.
-//             * audio will default to audio capture
-//             */
-
-//             if(!m_supportedChannelTypes.contains(input.ctype))
-//             {
-//                 qWarning() << input.ctype << QStringLiteral(" is not a valid channel type");
-//                 continue;
-//             }
-
-//             // recursive buffer reference
-//             if(channelOutput && input.id == channelOutput->id)
-//             {
-//                 passObject->insert(QStringLiteral("frame_buffer_channel"), input.channel);
-//                 continue;
-//             }
-
-//             if(input.ctype == QStringLiteral("buffer"))
-//             {
-//                 // get input reference by id
-//                 const ShaderToyRenderPass *inputPass = nullptr;
-
-//                 for(const ShaderToyRenderPass &passSubScan : std::as_const(entry.renderPasses))
-//                 {
-//                     for(const ShaderToyRenderOutput &output : std::as_const(passSubScan.outputs))
-//                     {
-//                         if(output.id == input.id && output.channel == 0)
-//                         {
-//                             inputPass = &passSubScan;
-//                             break;
-//                         }
-
-//                         if(inputPass)
-//                             break;
-//                     }
-//                 }
-
-//                 //whoopsie
-//                 if(!inputPass)
-//                     continue;
-
-//                 QString name = inputPass->name.toCaseFolded();
-//                 name.replace(name.length() - 1, 1, name.right(1).toUpper());
-//                 name.remove(QLatin1Char(' '));
-//                 name.replace(QStringLiteral("buf"), QStringLiteral("buffer"));
-
-//                 channels[input.channel][QStringLiteral("source")] = QStringLiteral("{%1}").arg(name);
-//             }
-
-//             else if(input.ctype == QStringLiteral("audio"))
-//                 channels[input.channel][QStringLiteral("type")] = 4;
-
-//             else if(input.ctype == QStringLiteral("texture"))
-//             {
-//                 QString filename = input.source;
-//                 filename = filename.mid(filename.lastIndexOf(QLatin1Char('/')) + 1);
-
-//                 channels[input.channel][QStringLiteral("type")] = 0;
-//                 channels[input.channel][QStringLiteral("source")] = QStringLiteral("./images/%1").arg(filename);
-
-//                 externalMedia.insert(imageDirectory.absoluteFilePath(filename), input.source);
-//             }
-
-//             //select video file after compilation
-//             else if(input.ctype == QStringLiteral("video"))
-//             {
-//                 //set the channel source to a uuid then add that uuid to the video
-//                 // selection stringlist
-//                 QString sourceName = QUuid::createUuidV7().toString();
-//                 channels[input.channel][QStringLiteral("type")] = 1;
-//                 channels[input.channel][QStringLiteral("source")] = sourceName;
-
-//                 QStringList newSelections = m_videoSelections;
-//                 newSelections += sourceName;
-
-//                 setVideoSelections(newSelections);
-//             }
-
-//             channels[input.channel][QStringLiteral("filter")] = input.filter;
-//             channels[input.channel][QStringLiteral("wrap")] = input.wrap;
-//             channels[input.channel][QStringLiteral("invert")] = input.verticalFlip;
-//             channels[input.channel][QStringLiteral("srgb")] = input.srgb;
-//             channels[input.channel][QStringLiteral("internal")] = input.internal;
-//         }
-
-//         for(int i = 0; i < 4; ++i)
-//         {
-//             if(channels[i].isEmpty())
-//                 continue;
-
-//             passObject->insert(QStringLiteral("channel%1").arg(i), channels[i]);
-//         }
-
-//         //this is a buffer
-//         if(pass.type == QStringLiteral("buffer"))
-//         {
-//             QString name = pass.name.toCaseFolded();
-//             name.replace(name.length() - 1, 1, name.right(1).toUpper());
-//             name.remove(QLatin1Char(' '));
-//             name.replace(QStringLiteral("buf"), QStringLiteral("buffer"));
-//             passObject->insert(QStringLiteral("source"), QStringLiteral("./shaders/%1.frag.qsb").arg(passName));
-
-//             rootObject[name] = *passObject;
-//         }
-
-//         if(*passObject != rootObject)
-//             delete passObject;
-//     }
-
-//     QFile shaderPackFile(directory.absoluteFilePath(QStringLiteral("pack.json")));
-
-//     if(!shaderPackFile.open(QFile::WriteOnly))
-//     {
-//         qWarning() << QStringLiteral("Could not open pack file");
-//         return;
-//     }
-
-//     QJsonDocument packDocument;
-//     packDocument.setObject(rootObject);
-
-//     QByteArray jsonData = packDocument.toJson(QJsonDocument::Indented);
-
-//     if(shaderPackFile.write(jsonData) != jsonData.length())
-//     {
-//         qWarning() << QStringLiteral("Could not write pack data");
-//         return;
-//     }
-
-//     const QStringList keys = externalMedia.keys();
-
-//     // qWarning() << QStringLiteral("Downloading %1 Images").arg(externalMedia.count());
-//     // setStatus(Compiling, QStringLiteral("Downloading images"));
-
-//     setTotalDownloads(externalMedia.count());
-
-//     for(const QString &key : keys)
-//         downloadMedia(key, externalMedia[key]);
-// }
 
 auto DownloadManager::install(const QUrl &uri) noexcept(false) -> QUrl
 {
@@ -575,116 +308,129 @@ auto DownloadManager::install(const QUrl &uri) noexcept(false) -> QUrl
     return installUri;
 }
 
-auto DownloadManager::download(const QNetworkRequest &request, const QString &id) noexcept(false) -> QUrl
+auto DownloadManager::download(const QNetworkRequest &request, const QString &id, RequestType type) -> QFuture<QUrl>
 {
-    QEventLoop loop;
-
-    QUrl downloadUri = QStringLiteral("%1/%2").arg
+    return QtConcurrent::run
     (
-        QStandardPaths::writableLocation(QStandardPaths::TempLocation),
-        request.url().path().split('/', Qt::SkipEmptyParts).last()
-    );
-
-    QWeakPointer<QNetworkAccessManager> reference = CoreServices::networkAccessManager();
-    QSharedPointer<QNetworkAccessManager> manager = reference.toStrongRef();
-
-    if(manager == nullptr)
-    {
-        throw NetworkException
-        (
-            QStringLiteral("Network Manager reference has already been deleted")
-        );
-    }
-
-    QFile downloadFile(downloadUri.toLocalFile());
-
-    if(!downloadFile.open(QFile::ReadWrite))
-    {
-        throw FileException(QStringLiteral("Could not open temp file location"));
-    }
-
-    QNetworkReply *reply = manager->post(request, nullptr);
-
-    QObject::connect
-    (
-        reply,
-        &QNetworkReply::finished,
-        &loop,
-        &QEventLoop::quit
-    );
-
-    QObject::connect
-    (
-        reply,
-        &QNetworkReply::errorOccurred,
-        &loop,
-        [&loop](QNetworkReply::NetworkError error) -> void
+        [this, request, id]() -> QUrl
         {
-            loop.quit();
+            QEventLoop loop;
+            QString filename = id;
 
-            throw NetworkException
+            if(filename.isEmpty())
+            {
+                filename = QUuid::createUuidV7().toString();
+            }
+
+            QUrl downloadUri = QStringLiteral("%1/%2").arg
             (
-                QStringLiteral("Network Error %1").arg
-                (
-                    QString::number(static_cast<qint64>(error))
-                )
+                QStandardPaths::writableLocation(QStandardPaths::TempLocation),
+                filename
             );
-        }
-    );
 
-    QObject::connect
-    (
-        reply,
-        &QNetworkReply::downloadProgress,
-        this,
-        [this](qint64 bytesDownloaded, qint64 bytesTotal)
-        {
-            setDownloadProgress(static_cast<qreal>(bytesDownloaded) / bytesTotal);
-        }
-    );
+            auto manager = CoreServices::networkAccessManager().toStrongRef();
 
-    QObject::connect
-    (
-        reply,
-        &QNetworkReply::readyRead,
-        this,
-        [this, &downloadFile, &reply]()
-        {
-            if(!downloadFile.isOpen())
+            if(manager == nullptr)
             {
-                return;
+                throw NetworkException
+                {
+                    QStringLiteral("Network Manager reference has already been deleted")
+                };
             }
 
-            quint64 bytes = reply->bytesAvailable();
-            quint64 bytesWritten = downloadFile.write(reply->read(bytes));
+            QFile downloadFile(downloadUri.toLocalFile());
 
-            if(bytesWritten != bytes)
+            if(!downloadFile.open(QFile::ReadWrite))
             {
-                throw FileException(QStringLiteral("Could not write temp file data"));
+                throw FileException(QStringLiteral("Could not open temp file location"));
             }
+
+            QNetworkReply *reply = manager->post(request, nullptr);
+
+            QObject::connect
+            (
+                reply,
+                &QNetworkReply::finished,
+                &loop,
+                &QEventLoop::quit
+            );
+
+            QObject::connect
+            (
+                reply,
+                &QNetworkReply::errorOccurred,
+                &loop,
+                [&loop](QNetworkReply::NetworkError error) -> void
+                {
+                    loop.quit();
+
+                    throw NetworkException
+                    (
+                        QStringLiteral("Network Error %1").arg
+                        (
+                            QString::number(static_cast<qint64>(error))
+                        )
+                    );
+                }
+            );
+
+            QObject::connect
+            (
+                reply,
+                &QNetworkReply::downloadProgress,
+                this,
+                [this](qint64 bytesDownloaded, qint64 bytesTotal)
+                {
+                    setDownloadSize(bytesTotal);
+                    setDownloadedBytes(bytesDownloaded);
+                    setDownloadProgress(static_cast<qreal>(bytesDownloaded) / bytesTotal);
+                }
+            );
+
+            QObject::connect
+            (
+                reply,
+                &QNetworkReply::readyRead,
+                this,
+                [this, &downloadFile, &reply]()
+                {
+                    if(!downloadFile.isOpen())
+                    {
+                        return;
+                    }
+
+                    quint64 bytes = reply->bytesAvailable();
+                    quint64 bytesWritten = downloadFile.write(reply->read(bytes));
+
+                    if(bytesWritten != bytes)
+                    {
+                        throw FileException(QStringLiteral("Could not write temp file data"));
+                    }
+                }
+            );
+
+            if(!reply->isFinished())
+            {
+                loop.exec();
+            }
+
+            if(reply->bytesAvailable() > 0)
+            {
+                quint64 bytes = reply->bytesAvailable();
+                quint64 bytesWritten = downloadFile.write(reply->read(bytes));
+
+                if(bytesWritten != bytes)
+                {
+                    throw FileException(QStringLiteral("Could not write temp file data"));
+                }
+            }
+
+            downloadFile.close();
+            manager.clear();
+
+            return downloadUri;
         }
     );
-
-    if(!reply->isFinished())
-    {
-        loop.exec();
-    }
-
-    if(reply->bytesAvailable() > 0)
-    {
-        quint64 bytes = reply->bytesAvailable();
-        quint64 bytesWritten = downloadFile.write(reply->read(bytes));
-
-        if(bytesWritten != bytes)
-        {
-            throw FileException(QStringLiteral("Could not write temp file data"));
-        }
-    }
-
-    downloadFile.close();
-    manager.clear();
-
-    return downloadUri;
 }
 
 auto DownloadManager::readShaderToyEntry(const QUrl &uri) noexcept(false) -> ShaderToyEntry
@@ -816,4 +562,22 @@ auto DownloadManager::readShaderToyEntry(const QUrl &uri) noexcept(false) -> Sha
     }
 
     return std::move(entry);
+}
+
+auto DownloadManager::setDownloadedBytes(qint64 downloadedBytes) -> void
+{
+    if (m_downloadedBytes == downloadedBytes)
+        return;
+
+    m_downloadedBytes = downloadedBytes;
+    emit downloadedBytesChanged();
+}
+
+auto DownloadManager::setDownloadSize(qint64 downloadSize) -> void
+{
+    if (m_downloadSize == downloadSize)
+        return;
+
+    m_downloadSize = downloadSize;
+    emit downloadSizeChanged();
 }

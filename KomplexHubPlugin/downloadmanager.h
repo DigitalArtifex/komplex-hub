@@ -17,6 +17,7 @@
 #include "common/komplex_global.h"
 #include "common/shadertoymetadata.h"
 #include "common/shaderpackmetadata.h"
+#include "packcompiler.h"
 
 class KOMPLEX_EXPORT DownloadManager : public QObject
 {
@@ -34,6 +35,12 @@ public:
         Error
     };
     Q_ENUM(State)
+
+    enum RequestType
+    {
+        Get,
+        Post
+    };
 
     explicit DownloadManager(QObject *parent = nullptr);
 
@@ -59,7 +66,15 @@ public:
     auto state() const -> State { return m_state; }
     auto reset() -> void;
     auto downloadProgress() -> qreal { return m_downloadProgress; }
-    auto compileProgress() -> qreal { return m_compileProgress; }
+    auto compileProgress() -> qreal;
+    auto compileSteps() -> qint64;
+    auto compileStepsCompleted() -> qint64;
+
+    auto downloadSize() const -> qint64 { return m_downloadSize; }
+    auto setDownloadSize(qint64 downloadSize) -> void;
+
+    auto downloadedBytes() const -> qint64 { return m_downloadedBytes; }
+    auto setDownloadedBytes(qint64 downloadedBytes) -> void;
 
 protected:
     auto setError(const QString &title, const QString &message) -> void;
@@ -74,12 +89,15 @@ signals:
     auto downloadProgressChanged() -> void;
     auto compileProgressChanged() -> void;
     auto downloadComplete(const QString &uri) -> void;
+    auto downloadSizeChanged() -> void;
+    auto downloadedBytesChanged() -> void;
+    auto compileStepsChanged() -> void;
+    auto compileStepsCompletedChanged() -> void;
 
 private:
-    auto decompress(const QUrl &uri) noexcept(false) -> QUrl;
     auto compile(const QUrl &uri) noexcept(false) -> QUrl;
     auto install(const QUrl &uri) noexcept(false) -> QUrl;
-    auto download(const QNetworkRequest &request, const QString &id) noexcept(false) -> QUrl;
+    auto download(const QNetworkRequest &request, const QString &id, RequestType type = Get) -> QFuture<QUrl>;
     auto readShaderToyEntry(const QUrl &uri) noexcept(false) -> ShaderToyEntry;
 
     QString m_compilerOutput;
@@ -87,10 +105,14 @@ private:
     QString m_errorMessage;
 
     qreal m_downloadProgress = 0;
+    qint64 m_downloadSize = 0;
+    qint64 m_downloadedBytes = 0;
     qreal m_compileProgress = 0;
     State m_state;
 
     QMutex m_downloadMutex;
+
+    PackCompiler *m_compiler = nullptr;
 
     Q_PROPERTY(QString compilerOutput READ compilerOutput WRITE setCompilerOutput NOTIFY compilerOutputChanged FINAL)
     Q_PROPERTY(QString errorTitle READ errorTitle NOTIFY errorChanged FINAL)
@@ -98,6 +120,10 @@ private:
     Q_PROPERTY(qreal downloadProgress READ downloadProgress NOTIFY downloadProgressChanged FINAL)
     Q_PROPERTY(qreal compileProgress READ compileProgress NOTIFY compileProgressChanged FINAL)
     Q_PROPERTY(State state READ state NOTIFY stateChanged FINAL)
+    Q_PROPERTY(qint64 downloadSize READ downloadSize WRITE setDownloadSize NOTIFY downloadSizeChanged FINAL)
+    Q_PROPERTY(qint64 downloadedBytes READ downloadedBytes WRITE setDownloadedBytes NOTIFY downloadedBytesChanged FINAL)
+    Q_PROPERTY(qint64 compileSteps READ compileSteps NOTIFY compileStepsChanged FINAL)
+    Q_PROPERTY(qint64 compileStepsCompleted READ compileStepsCompleted NOTIFY compileStepsCompletedChanged FINAL)
 };
 Q_DECLARE_METATYPE(DownloadManager)
 
