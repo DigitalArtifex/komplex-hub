@@ -50,6 +50,7 @@ public:
      * @param url
      */
     auto downloadImage(const QString &author, const QString &authorId, const QString &description, const QUrl &url) noexcept(false) -> void;
+    auto downloadVideo(const QString &author, const QString &authorId, const QString &description, const QUrl &url) noexcept(false) -> void;
 
     /**
      * @brief downloadPack
