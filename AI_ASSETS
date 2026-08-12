@@ -1,0 +1,79 @@
+;This file is used to denote what files have generative content
+;Format: {file, class, model/version, ["message"]}
+
+;Kero
+{
+    images/kero/kero_build_1.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_build_2.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_build_3.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_build_4.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_build_error.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_choice.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_hello.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_login.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_no_results.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_run_1.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_run_2.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_run_3.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_run_4.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_warning.png,
+    placeholders,
+    chatgpt5
+}
+{
+    images/kero/kero_success.png,
+    placeholders,
+    chatgpt5
+}
