@@ -109,12 +109,12 @@ public:
 
         qsizetype internalIndex = this->internalIndex(index);
 
-        if(!internalBoundaryCheck(index))
+        if(!internalBoundaryCheck(internalIndex))
         {
             return defaultValue;
         }
 
-        return m_cache.at(index);
+        return m_cache.at(internalIndex);
     }
 
     /**
@@ -142,17 +142,17 @@ public:
 
         qsizetype internalIndex = this->internalIndex(index);
 
-        if(!internalBoundaryCheck(index))
+        if(!internalBoundaryCheck(internalIndex))
         {
             return {};
         }
 
         if(!internalBoundaryCheck(count - 1))
         {
-            count = m_cache.count() - index;
+            count = m_cache.count() - internalIndex;
         }
 
-        return m_cache.mid(index, count);
+        return m_cache.mid(internalIndex, count);
     }
 
     /**
@@ -235,7 +235,8 @@ public:
             return;
         }
 
-
+        m_windowSize = windowSize;
+        Q_EMIT windowSizeChanged();
     }
 
 protected:
@@ -318,7 +319,7 @@ private:
         );
 
         bool safe = false;
-        ((safe = index >= 0 && index < m_cache.count()), ...);
+        ((safe = ((index >= 0) && (index < m_cache.count()))), ...);
         return safe;
     }
 
@@ -344,7 +345,7 @@ private:
             }
         }
 
-        while (index <= m_windowOffset - (SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD))
+        while (index < m_windowOffset)
         {
             if(!slideBackward())
             {
@@ -587,7 +588,7 @@ private:
      * @brief m_windowSize
      * Override for window size
      */
-    qsizetype m_windowSize = nullsize;
+    qsizetype m_windowSize = SLIDING_CACHE_WINDOW_SIZE;
 
     T defaultValue;
 };
