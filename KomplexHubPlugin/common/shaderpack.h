@@ -372,7 +372,7 @@ private:
     Q_PROPERTY(ShaderChannel *channel1 READ channel1 WRITE setChannel1 NOTIFY channel1Changed FINAL)
     Q_PROPERTY(ShaderChannel *channel2 READ channel2 WRITE setChannel2 NOTIFY channel2Changed FINAL)
     Q_PROPERTY(ShaderChannel *channel3 READ channel3 WRITE setChannel3 NOTIFY channel3Changed FINAL)
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged FINAL)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged FINAL)
     Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged FINAL)
     Q_PROPERTY(MirrorMode mirrorMode READ mirrorMode WRITE setMirrorMode NOTIFY mirrorModeChanged FINAL)
     Q_PROPERTY(TextureRepeat textureRepeat READ textureRepeat WRITE setTextureRepeat NOTIFY textureRepeatChanged FINAL)
@@ -516,14 +516,13 @@ public:
         rootObject[QStringLiteral("license")] = license();
 
         QJsonObject bufferObject = bufferJson(this);
-        QJsonObject channelObject = channelJson(this);
-
         const QStringList bufferKeys = bufferObject.keys();
         for(const QString &key : bufferKeys)
         {
             rootObject[key] = bufferObject[key];
         }
 
+        QJsonObject channelObject = channelJson(this);
         const QStringList channelKeys = channelObject.keys();
         for(const QString &key : channelKeys)
         {

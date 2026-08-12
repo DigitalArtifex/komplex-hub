@@ -1,8 +1,7 @@
 #include "downloadmanager.h"
 #include "common/coreservices.h"
 #include "common/exceptions.h"
-#include "common/logging.h"
-#include "common/ShaderPack.h"
+#include "common/shaderpack.h"
 
 DownloadManager::DownloadManager(QObject *parent)
     : QObject{parent}
@@ -47,7 +46,6 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
         [this, url, author, authorId, description]()
         {
             QNetworkRequest request(url);
-            QUrl localUri;
             QString id = QUuid::createUuidV7().toString(QUuid::WithoutBraces);
 
             QFuture<QUrl> downloadUri = download(request, id);

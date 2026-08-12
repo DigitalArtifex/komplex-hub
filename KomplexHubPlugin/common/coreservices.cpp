@@ -12,6 +12,7 @@ auto CoreServices::networkAccessManager() -> QWeakPointer<QNetworkAccessManager>
     if(!s_networkAccessPointer)
     {
         s_networkAccessManager = new QNetworkAccessManager;
+        s_networkAccessManager->setAutoDeleteReplies(true);
 
         QObject::connect(
             s_networkAccessManager,
