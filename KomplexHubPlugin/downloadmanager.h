@@ -16,7 +16,7 @@
 
 #include "common/komplex_global.h"
 #include "common/shadertoymetadata.h"
-#include "common/shaderpackmetadata.h"
+#include "common/shaderpack.h"
 #include "packcompiler.h"
 
 class KOMPLEX_EXPORT DownloadManager : public QObject
@@ -46,11 +46,34 @@ public:
 
     /**
      * @brief downloadImage
-     * Downloads the image to tmp from the given url
+     * Downloads the image to tmp from the given url and generates a pack
+     * out of it
      * @param url
      */
-    auto downloadImage(const QString &author, const QString &authorId, const QString &description, const QUrl &url) noexcept(false) -> void;
-    auto downloadVideo(const QString &author, const QString &authorId, const QString &description, const QUrl &url) noexcept(false) -> void;
+    auto downloadImage
+    (
+        const QString &author,
+        const QString &authorId,
+        const QString &description,
+        const QUrl &url
+    ) noexcept(false) -> void;
+
+    /**
+     * @brief downloadVideo
+     * Downloads the video to tmp from the given url and generates a pack
+     * out of it
+     * @param author
+     * @param authorId
+     * @param description
+     * @param url
+     */
+    auto downloadVideo
+    (
+        const QString &author,
+        const QString &authorId,
+        const QString &description,
+        const QUrl &url
+    ) noexcept(false) -> void;
 
     /**
      * @brief downloadPack

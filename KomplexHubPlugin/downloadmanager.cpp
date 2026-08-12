@@ -2,7 +2,7 @@
 #include "common/coreservices.h"
 #include "common/exceptions.h"
 #include "common/logging.h"
-#include "common/shaderpackmetadata.h"
+#include "common/ShaderPack.h"
 
 DownloadManager::DownloadManager(QObject *parent)
     : QObject{parent}
@@ -57,7 +57,7 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
                 (
                     [this, author, description, id](QUrl result) -> QUrl
                     {
-                        ShaderPackMetadata metadata;
+                        ShaderPack metadata;
                         metadata.setAuthor(author);
                         metadata.setDescription(description);
                         metadata.setName(QStringLiteral("Pexels Image (%1)").arg(id));
@@ -155,10 +155,11 @@ auto DownloadManager::downloadVideo(const QString &author, const QString &author
                 (
                     [this, author, description, id](QUrl result) -> QUrl
                     {
-                        ShaderPackMetadata metadata;
+                        ShaderPack metadata;
                         metadata.setAuthor(author);
                         metadata.setDescription(description);
                         metadata.setName(QStringLiteral("Pexels Video (%1)").arg(id));
+                        metadata.setType(ShaderPack::Video);
 
                         QUrl packUri
                         (

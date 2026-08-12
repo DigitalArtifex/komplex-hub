@@ -59,7 +59,7 @@ qt_add_qml_module(
         downloadmanager.h downloadmanager.cpp
         common/exceptions.h
         common/shadertoymetadata.h
-        common/shaderpackmetadata.h
+        common/shaderpack.h
         SOURCES packcompiler.h packcompiler.cpp
 )
 

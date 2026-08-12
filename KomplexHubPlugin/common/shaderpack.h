@@ -1,5 +1,5 @@
-#ifndef SHADERPACKMETADATA
-#define SHADERPACKMETADATA
+#ifndef SHADERPACK_H
+#define SHADERPACK_H
 
 #include <QObject>
 #include <QString>
@@ -18,7 +18,7 @@
 
 #include "komplex_global.h"
 
-class KOMPLEX_EXPORT ShaderPackChannel : public QObject
+class KOMPLEX_EXPORT ShaderChannel : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
@@ -169,8 +169,8 @@ public:
         Q_EMIT mouseSpeedBiasChanged();
     }
 
-    inline auto bufferA() const -> ShaderPackChannel* { return m_bufferA; }
-    inline auto setBufferA(ShaderPackChannel *buffer) -> void
+    inline auto bufferA() const -> ShaderChannel* { return m_bufferA; }
+    inline auto setBufferA(ShaderChannel *buffer) -> void
     {
         if (m_bufferA == buffer)
         {
@@ -181,8 +181,8 @@ public:
         Q_EMIT bufferAChanged();
     }
 
-    inline auto bufferB() const -> ShaderPackChannel* { return m_bufferB; }
-    inline auto setBufferB(ShaderPackChannel *buffer) -> void
+    inline auto bufferB() const -> ShaderChannel* { return m_bufferB; }
+    inline auto setBufferB(ShaderChannel *buffer) -> void
     {
         if (m_bufferB == buffer)
         {
@@ -193,8 +193,8 @@ public:
         Q_EMIT bufferBChanged();
     }
 
-    inline auto bufferC() const -> ShaderPackChannel* { return m_bufferC; }
-    inline auto setBufferC(ShaderPackChannel *buffer) -> void
+    inline auto bufferC() const -> ShaderChannel* { return m_bufferC; }
+    inline auto setBufferC(ShaderChannel *buffer) -> void
     {
         if (m_bufferC == buffer)
         {
@@ -205,8 +205,8 @@ public:
         Q_EMIT bufferCChanged();
     }
 
-    inline auto bufferD() const -> ShaderPackChannel* { return m_bufferD; }
-    inline auto setBufferD(ShaderPackChannel *buffer) -> void
+    inline auto bufferD() const -> ShaderChannel* { return m_bufferD; }
+    inline auto setBufferD(ShaderChannel *buffer) -> void
     {
         if (m_bufferD == buffer)
         {
@@ -217,8 +217,8 @@ public:
         Q_EMIT bufferDChanged();
     }
 
-    inline auto channel0() const -> ShaderPackChannel* { return m_channel0; }
-    inline auto setChannel0(ShaderPackChannel *channel) -> void
+    inline auto channel0() const -> ShaderChannel* { return m_channel0; }
+    inline auto setChannel0(ShaderChannel *channel) -> void
     {
         if (m_channel0 == channel)
         {
@@ -229,8 +229,8 @@ public:
         Q_EMIT channel0Changed();
     }
 
-    inline auto channel1() const -> ShaderPackChannel* { return m_channel1; }
-    inline auto setChannel1(ShaderPackChannel *channel) -> void
+    inline auto channel1() const -> ShaderChannel* { return m_channel1; }
+    inline auto setChannel1(ShaderChannel *channel) -> void
     {
         if (m_channel1 == channel)
         {
@@ -241,8 +241,8 @@ public:
         Q_EMIT channel1Changed();
     }
 
-    inline auto channel2() const -> ShaderPackChannel* { return m_channel2; }
-    inline auto setChannel2(ShaderPackChannel *channel) -> void
+    inline auto channel2() const -> ShaderChannel* { return m_channel2; }
+    inline auto setChannel2(ShaderChannel *channel) -> void
     {
         if (m_channel2 == channel)
         {
@@ -253,8 +253,8 @@ public:
         Q_EMIT channel2Changed();
     }
 
-    inline auto channel3() const -> ShaderPackChannel* { return m_channel3; }
-    inline auto setChannel3(ShaderPackChannel *channel) -> void
+    inline auto channel3() const -> ShaderChannel* { return m_channel3; }
+    inline auto setChannel3(ShaderChannel *channel) -> void
     {
         if (m_channel3 == channel)
         {
@@ -338,15 +338,15 @@ Q_SIGNALS:
     auto formatChanged() -> void;
 
 private:
-    ShaderPackChannel *m_bufferA = nullptr;
-    ShaderPackChannel *m_bufferB = nullptr;
-    ShaderPackChannel *m_bufferC = nullptr;
-    ShaderPackChannel *m_bufferD = nullptr;
+    ShaderChannel *m_bufferA = nullptr;
+    ShaderChannel *m_bufferB = nullptr;
+    ShaderChannel *m_bufferC = nullptr;
+    ShaderChannel *m_bufferD = nullptr;
 
-    ShaderPackChannel *m_channel0 = nullptr;
-    ShaderPackChannel *m_channel1 = nullptr;
-    ShaderPackChannel *m_channel2 = nullptr;
-    ShaderPackChannel *m_channel3 = nullptr;
+    ShaderChannel *m_channel0 = nullptr;
+    ShaderChannel *m_channel1 = nullptr;
+    ShaderChannel *m_channel2 = nullptr;
+    ShaderChannel *m_channel3 = nullptr;
 
     QString m_source;
     Type m_type = Image;
@@ -364,14 +364,14 @@ private:
     bool m_invert = false;
     bool m_mipmap = false;
 
-    Q_PROPERTY(ShaderPackChannel *bufferA READ bufferA WRITE setBufferA NOTIFY bufferAChanged FINAL)
-    Q_PROPERTY(ShaderPackChannel *bufferB READ bufferB WRITE setBufferB NOTIFY bufferBChanged FINAL)
-    Q_PROPERTY(ShaderPackChannel *bufferC READ bufferC WRITE setBufferC NOTIFY bufferCChanged FINAL)
-    Q_PROPERTY(ShaderPackChannel *bufferD READ bufferD WRITE setBufferD NOTIFY bufferDChanged FINAL)
-    Q_PROPERTY(ShaderPackChannel *channel0 READ channel0 WRITE setChannel0 NOTIFY channel0Changed FINAL)
-    Q_PROPERTY(ShaderPackChannel *channel1 READ channel1 WRITE setChannel1 NOTIFY channel1Changed FINAL)
-    Q_PROPERTY(ShaderPackChannel *channel2 READ channel2 WRITE setChannel2 NOTIFY channel2Changed FINAL)
-    Q_PROPERTY(ShaderPackChannel *channel3 READ channel3 WRITE setChannel3 NOTIFY channel3Changed FINAL)
+    Q_PROPERTY(ShaderChannel *bufferA READ bufferA WRITE setBufferA NOTIFY bufferAChanged FINAL)
+    Q_PROPERTY(ShaderChannel *bufferB READ bufferB WRITE setBufferB NOTIFY bufferBChanged FINAL)
+    Q_PROPERTY(ShaderChannel *bufferC READ bufferC WRITE setBufferC NOTIFY bufferCChanged FINAL)
+    Q_PROPERTY(ShaderChannel *bufferD READ bufferD WRITE setBufferD NOTIFY bufferDChanged FINAL)
+    Q_PROPERTY(ShaderChannel *channel0 READ channel0 WRITE setChannel0 NOTIFY channel0Changed FINAL)
+    Q_PROPERTY(ShaderChannel *channel1 READ channel1 WRITE setChannel1 NOTIFY channel1Changed FINAL)
+    Q_PROPERTY(ShaderChannel *channel2 READ channel2 WRITE setChannel2 NOTIFY channel2Changed FINAL)
+    Q_PROPERTY(ShaderChannel *channel3 READ channel3 WRITE setChannel3 NOTIFY channel3Changed FINAL)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged FINAL)
     Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged FINAL)
     Q_PROPERTY(MirrorMode mirrorMode READ mirrorMode WRITE setMirrorMode NOTIFY mirrorModeChanged FINAL)
@@ -387,9 +387,9 @@ private:
     Q_PROPERTY(Format format READ format WRITE setFormat NOTIFY formatChanged FINAL)
 };
 
-Q_DECLARE_METATYPE(ShaderPackChannel)
+Q_DECLARE_METATYPE(ShaderChannel)
 
-class KOMPLEX_EXPORT ShaderPackMetadata : public ShaderPackChannel
+class KOMPLEX_EXPORT ShaderPack : public ShaderChannel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -538,7 +538,7 @@ public:
 
 private:
 
-    auto bufferJson(ShaderPackChannel *channel) -> QJsonObject
+    auto bufferJson(ShaderChannel *channel) -> QJsonObject
     {
         QJsonObject channelObject;
 
@@ -562,7 +562,7 @@ private:
         return channelObject;
     }
 
-    auto channelJson(ShaderPackChannel *channel) -> QJsonObject
+    auto channelJson(ShaderChannel *channel) -> QJsonObject
     {
         if(channel == nullptr)
         {
@@ -609,5 +609,5 @@ private:
     }
 };
 
-Q_DECLARE_METATYPE(ShaderPackMetadata)
+Q_DECLARE_METATYPE(ShaderPack)
 #endif
