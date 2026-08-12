@@ -34,6 +34,12 @@ AI tools may not be used for:
 - Produce a complete file replacement, complete module, or end-to-end implementation of a feature.
 - Generate bug report details or where the bug report content would be primarily AI-authored.
 
+### “Agentic” Automation
+You may not use AI tools that can take actions on your behalf without intentional invocation. For example browsing, running commands, editing files and repositories, or opening pull requests automatically.
+
+### Misrepresentation and undisclosed material contribution
+Misrepresentation of AI-assisted work as human-authored where disclosure is required by this policy is subject to enforcement policies.
+
 ## Acceptable uses of AI
 AI tools may be used to:
 - Assist with writing or refactoring code, provided the resulting code changes are implemented, reviewed and verified by a human contributor.
@@ -51,48 +57,27 @@ For reporting AI may be used only to:
 - Reformat or rewrite for clarity while preserving the original factual content
 - Help translate the human-authored report into a different structure, language, or style
 
-### Misrepresentation and undisclosed material contribution
-Misrepresentation of AI-assisted work as purely human-authored where disclosure is required by this policy is subject to enforcement policies.
-
-### “Agentic” Automation
-You may not use AI tools that can take actions on your behalf without intentional invocation. For example browsing, running commands, editing files and repositories, or opening pull requests automatically.
-
-## Allowed AI uses (how to apply the restrictions)
-
 ### Implementation
-Allowable AI usage still requires human authorship, review and verification.
-
 - You must implement changes yourself.
 - You must verify changes via tests, linting/type checks, and/or manual validation consistent with project standards.
 - Do not copy/paste AI-generated patches as the final solution.
 
-### Media placeholders (allowed)
+### Media placeholders
 AI-generated images/icons may be used only as placeholders with the intention to replace them.
 
-Placeholder rules:
-- Placeholder files must be clearly marked in an AI_ASSETS file.
+- Placeholder files must be clearly marked in the AI_ASSETS file.
 - Placeholders should be replaced when possible, but may require artist contribution and may not always be immediately feasible.
 
 ### Qt Translation Files
-AI may be used to generate translation files.
+- AI may be used to generate translation files.
+- AI generated translation files must be noted in AI_ASSETS
 
 ## Transparency and disclosure
-When AI materially contributes to work, you must disclose it in one of:
-
-- The pull request description
-- Commit messages
-- A related comment on the pull request
-
-Disclosure must cover:
-
+When disclosing the use of AI generated assets, you must disclose:
+- The file name and path relative to the project root
 - Which allowed category was used (e.g., translation file generation, bug report translation, placeholder media)
 - What tool/version was used for generation
-
-## Review and verification requirements
-For changes that include AI-assisted suggestions:
-- Run the project’s standard checks (tests, linting, formatting, and/or type checks).
-- Ensure reviewers can understand the human rationale for changes.
-- Ensure the final code and translations meet project quality standards.
+- Optionally can include a short message about the asset
 
 ## Enforcement
 Failure to comply with this policy may result in:
