@@ -2,7 +2,8 @@
 
 | Applies To | Effective Date | Revision Date |
 | ------ | --- | --- |
-| Internal & Contributors | August 12, 2026 | August 12, 2026 
+| Internal & Contributors | August 12, 2026 | August 12, 2026 |
+
 This policy may be updated in the future. The updated date will be reflected on this file.
 
 ## Applies to
