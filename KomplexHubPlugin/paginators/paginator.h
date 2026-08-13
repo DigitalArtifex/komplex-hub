@@ -27,8 +27,8 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 
-#include "komplex_global.h"
-#include "slidingcachecontroller.h"
+#include "common/komplex_global.h"
+#include "common/slidingcachecontroller.h"
 
 /**
  * @brief The PaginationNotifier class

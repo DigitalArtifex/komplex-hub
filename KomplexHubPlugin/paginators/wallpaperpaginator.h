@@ -30,9 +30,9 @@
 #include <QJsonObject>
 
 #include "common/logging.h"
-#include "common/paginator.h"
 #include "common/wallpapercache.h"
 #include "common/coreservices.h"
+#include "paginator.h"
 
 /**
  * @brief The WallpaperPaginator class

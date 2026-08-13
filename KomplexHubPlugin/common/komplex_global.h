@@ -19,6 +19,7 @@
 #ifndef KOMPLEX_GLOBAL_H
 #define KOMPLEX_GLOBAL_H
 #include <QtTypes>
+#include <QString>
 #include <chrono>
 
 #ifdef KOMPLEX_PLUGIN
@@ -66,5 +67,14 @@
 
 inline static qsizetype nullsize = std::numeric_limits<qsizetype>::min();
 inline static std::chrono::milliseconds KOMPLEX_RATE_LIMIT(500);
+inline static QString KOMPLEX_KEYCHAIN_PASSWORD_KEY = QStringLiteral
+(
+    "com.digitalartifex.komplex.keychain.password"
+);
+
+inline static QString KOMPLEX_KEYCHAIN_TOKEN_KEY = QStringLiteral
+(
+    "com.digitalartifex.komplex.keychain.token"
+);
 
 #endif // KOMPLEX_GLOBAL_H

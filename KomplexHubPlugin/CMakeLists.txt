@@ -10,57 +10,52 @@ qt_add_qml_module(
     VERSION
         1.0
     SOURCES
-    settingsmanager.h
-        settingsmanager.cpp
-        installedpackmanager.h
-        installedpackmanager.cpp
-        common/wallpapercache.h
-        newestpacksmodel.h
-        newestpacksmodel.cpp
-        common/komplex_global.h
-        common/slidingcachecontroller.h
-        common/paginator.h
-        common/coreservices.h
-        common/coreservices.cpp
-        common/logging.h
-        common/fetchresult.h
-        paginators/newestpackspaginator.h
-        paginators/featuredpackspaginator.h
-        paginators/featuredimagespaginator.h
-        paginators/wallpaperpaginator.h
-        paginators/packsearchpaginator.h
-        paginators/imagesearchpaginator.h
-        paginators/newestshaderspaginator.h
-        paginators/newestcubemapspaginator.h
-        paginators/featuredshaderspaginator.h
-        paginators/featuredcubemapspaginator.h
-        paginators/searchshaderspaginator.h
-        paginators/searchcubemapspaginator.h
-        paginators/videosearchpaginator.h
-        featuredpacksmodel.h
-        featuredpacksmodel.cpp
-        featuredimagesmodel.h
-        featuredimagesmodel.cpp
-        featuredvideosmodel.h
-        featuredvideosmodel.cpp
-        paginators/featuredvideospaginator.h
-        common/imagecache.h
-        paginators/imagepaginator.h
-        common/videocache.h
-        paginators/videopaginator.h
-        imagesearchmodel.cpp
-        imagesearchmodel.h
-        videosearchmodel.h
-        videosearchmodel.cpp
-        packsearchmodel.cpp
-        packsearchmodel.h
-        videoitemmodel.h
-        videoitemmodel.cpp
-        downloadmanager.h downloadmanager.cpp
-        common/exceptions.h
-        common/shadertoymetadata.h
-        common/shaderpack.h
-        SOURCES packcompiler.h packcompiler.cpp
+      settingsmanager.h
+      settingsmanager.cpp
+      installedpackmanager.h
+      installedpackmanager.cpp
+      common/wallpapercache.h
+      newestpacksmodel.h
+      newestpacksmodel.cpp
+      common/komplex_global.h
+      common/slidingcachecontroller.h
+      common/coreservices.h
+      common/coreservices.cpp
+      common/logging.h
+      common/fetchresult.h
+      paginators/paginator.h
+      paginators/newestpackspaginator.h
+      paginators/featuredpackspaginator.h
+      paginators/featuredimagespaginator.h
+      paginators/wallpaperpaginator.h
+      paginators/packsearchpaginator.h
+      paginators/imagesearchpaginator.h
+      paginators/videosearchpaginator.h
+      featuredpacksmodel.h
+      featuredpacksmodel.cpp
+      featuredimagesmodel.h
+      featuredimagesmodel.cpp
+      featuredvideosmodel.h
+      featuredvideosmodel.cpp
+      paginators/featuredvideospaginator.h
+      common/imagecache.h
+      paginators/imagepaginator.h
+      common/videocache.h
+      paginators/videopaginator.h
+      imagesearchmodel.cpp
+      imagesearchmodel.h
+      videosearchmodel.h
+      videosearchmodel.cpp
+      packsearchmodel.cpp
+      packsearchmodel.h
+      videoitemmodel.h
+      videoitemmodel.cpp
+      downloadmanager.h downloadmanager.cpp
+      common/exceptions.h
+      common/shadertoymetadata.h
+      common/shaderpack.h
+      packcompiler.h
+      packcompiler.cpp
 )
 
 target_compile_definitions(
@@ -69,9 +64,12 @@ target_compile_definitions(
         KOMPLEX_PLUGIN
 )
 
+add_subdirectory(3rdparty/qtkeychain)
+
 target_link_libraries(KomplexHubPlugin PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Gui
+    qt6keychain
 )
 
 if(ENABLE_ASAN)

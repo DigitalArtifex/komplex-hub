@@ -20,78 +20,91 @@ set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
     FORCE
 )
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Qml Quick QuickControls2 QuickTimeline ShaderTools Concurrent)
+find_package(
+  Qt6 6.8
+    REQUIRED COMPONENTS
+      Core
+      Gui
+      Widgets
+      Qml
+      Quick
+      QuickControls2
+      QuickTimeline
+      ShaderTools
+      Concurrent
+)
+
 qt_standard_project_setup()
 
 qt_add_executable(${CMAKE_PROJECT_NAME}
 )
 
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
-    PREFIX "/"
-    FILES
-        qtquickcontrols2.conf
+  PREFIX "/"
+  FILES
+      qtquickcontrols2.conf
 )
 
 qt_add_resources(${CMAKE_PROJECT_NAME} "app_images"
-    FILES
-        "images/icons/icons8-back.svg"
-        "images/icons/icons8-bill.svg"
-        "images/icons/icons8-biotech.svg"
-        "images/icons/icons8-cancel.svg"
-        "images/icons/icons8-check-mark.svg"
-        "images/icons/icons8-close-window.svg"
-        "images/icons/icons8-famous.svg"
-        "images/icons/icons8-filter.svg"
-        "images/icons/icons8-forward.svg"
-        "images/icons/icons8-hdd.svg"
-        "images/icons/icons8-image.svg"
-        "images/icons/icons8-login.svg"
-        "images/icons/icons8-logout-rounded-left.svg"
-        "images/icons/icons8-next.svg"
-        "images/icons/icons8-reply-arrow.svg"
-        "images/icons/icons8-search.svg"
-        "images/icons/icons8-settings.svg"
-        "images/icons/icons8-shopping-cart.svg"
-        "images/icons/icons8-star-filled.svg"
-        "images/icons/icons8-store.svg"
-        "images/icons/icons8-user-account.svg"
-        "images/icons/icons8-view-more.svg"
-        "images/icons/icons8-video.svg"
-        "images/icons/pexels-icon-filled-256.svg"
-        "images/icons/icons8-trash.svg"
-        "images/icons/icons8-download.svg"
-        "images/icons/icons8-play.svg"
-        "images/icons/icons8-stop.svg"
-        "images/icons/icons8-codepen.svg"
-        "images/icons/icons8-cube.svg"
-        "images/icons/icons8-camera.svg"
-        "images/icons/icons8-audio.svg"
-        "images/icons/icons8-3d-model.svg"
-        "images/icons/icons8-3d-glasses.svg"
-        "images/icons/kofi.gif"
-        "images/kero/kero_build_1.png"
-        "images/kero/kero_build_2.png"
-        "images/kero/kero_build_3.png"
-        "images/kero/kero_build_4.png"
-        "images/kero/kero_build_error.png"
-        "images/kero/kero_choice.png"
-        "images/kero/kero_error.png"
-        "images/kero/kero_hello.png"
-        "images/kero/kero_login.png"
-        "images/kero/kero_no_results.png"
-        "images/kero/kero_run_1.png"
-        "images/kero/kero_run_2.png"
-        "images/kero/kero_run_3.png"
-        "images/kero/kero_run_4.png"
-        "images/kero/kero_success.png"
-        "images/kero/kero_warning.png"
-    )
+  FILES
+    "images/icons/icons8-back.svg"
+    "images/icons/icons8-bill.svg"
+    "images/icons/icons8-biotech.svg"
+    "images/icons/icons8-cancel.svg"
+    "images/icons/icons8-check-mark.svg"
+    "images/icons/icons8-close-window.svg"
+    "images/icons/icons8-famous.svg"
+    "images/icons/icons8-filter.svg"
+    "images/icons/icons8-forward.svg"
+    "images/icons/icons8-hdd.svg"
+    "images/icons/icons8-image.svg"
+    "images/icons/icons8-login.svg"
+    "images/icons/icons8-logout-rounded-left.svg"
+    "images/icons/icons8-next.svg"
+    "images/icons/icons8-reply-arrow.svg"
+    "images/icons/icons8-search.svg"
+    "images/icons/icons8-settings.svg"
+    "images/icons/icons8-shopping-cart.svg"
+    "images/icons/icons8-star-filled.svg"
+    "images/icons/icons8-store.svg"
+    "images/icons/icons8-user-account.svg"
+    "images/icons/icons8-view-more.svg"
+    "images/icons/icons8-video.svg"
+    "images/icons/pexels-icon-filled-256.svg"
+    "images/icons/icons8-trash.svg"
+    "images/icons/icons8-download.svg"
+    "images/icons/icons8-play.svg"
+    "images/icons/icons8-stop.svg"
+    "images/icons/icons8-codepen.svg"
+    "images/icons/icons8-cube.svg"
+    "images/icons/icons8-camera.svg"
+    "images/icons/icons8-audio.svg"
+    "images/icons/icons8-3d-model.svg"
+    "images/icons/icons8-3d-glasses.svg"
+    "images/icons/kofi.gif"
+    "images/kero/kero_build_1.png"
+    "images/kero/kero_build_2.png"
+    "images/kero/kero_build_3.png"
+    "images/kero/kero_build_4.png"
+    "images/kero/kero_build_error.png"
+    "images/kero/kero_choice.png"
+    "images/kero/kero_error.png"
+    "images/kero/kero_hello.png"
+    "images/kero/kero_login.png"
+    "images/kero/kero_no_results.png"
+    "images/kero/kero_run_1.png"
+    "images/kero/kero_run_2.png"
+    "images/kero/kero_run_3.png"
+    "images/kero/kero_run_4.png"
+    "images/kero/kero_success.png"
+    "images/kero/kero_warning.png"
+)
 
-  target_compile_definitions(
-    ${CMAKE_PROJECT_NAME}
-    PUBLIC
-      KOMPLEX_LOCAL_DEV
-  )
+target_compile_definitions(
+  ${CMAKE_PROJECT_NAME}
+  PUBLIC
+    KOMPLEX_LOCAL_DEV
+)
 
 include(qds)
 
