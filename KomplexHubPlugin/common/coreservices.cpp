@@ -1,7 +1,7 @@
 #include "coreservices.h"
 #include "logging.h"
 
-QNetworkAccessManager *CoreServices::s_networkAccessManager = new QNetworkAccessManager();
+QNetworkAccessManager *CoreServices::s_networkAccessManager = nullptr;
 QMutex CoreServices::s_networkAccessMutex;
 QSharedPointer<QNetworkAccessManager> CoreServices::s_networkAccessPointer;
 
@@ -11,7 +11,7 @@ auto CoreServices::networkAccessManager() -> QWeakPointer<QNetworkAccessManager>
 
     if(!s_networkAccessPointer)
     {
-        s_networkAccessManager = new QNetworkAccessManager;
+        s_networkAccessManager = new QNetworkAccessManager(QCoreApplication::instance());
         s_networkAccessManager->setAutoDeleteReplies(true);
 
         QObject::connect(
