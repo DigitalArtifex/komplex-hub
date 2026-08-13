@@ -205,6 +205,24 @@ auto FeaturedVideosModel::itemModel() const -> VideoItemModel*
     return m_itemModel;
 }
 
+auto FeaturedVideosModel::windowSize() const -> qsizetype
+{
+    if(m_paginator == nullptr)
+    {
+        return 0;
+    }
+
+    return m_paginator->windowSize();
+}
+
+auto FeaturedVideosModel::setWindowSize(qsizetype size) -> void
+{
+    if(m_paginator != nullptr)
+    {
+        m_paginator->setWindowSize(size);
+    }
+}
+
 auto FeaturedVideosModel::roleNames() const -> QHash<int, QByteArray>
 {
     return m_dataRoles;

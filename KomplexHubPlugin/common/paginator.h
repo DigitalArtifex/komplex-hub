@@ -120,6 +120,7 @@ public:
      * @brief resultsPerPage
      * @return
      */
+    [[nodiscard]]
     auto resultsPerPage() const -> qsizetype
     {
         return m_resultsPerPage;
@@ -204,6 +205,7 @@ public:
      * @brief data
      * @return
      */
+    [[nodiscard]]
     auto data() const -> const QList<T>
     {
         if(boundaryCheck(m_resultsPerPage))
@@ -219,6 +221,7 @@ public:
      * @brief count
      * @return
      */
+    [[nodiscard]]
     auto count() const -> qsizetype
     {
         if(m_offset == nullsize)
@@ -240,6 +243,7 @@ public:
      * @param index
      * @return
      */
+    [[nodiscard]]
     auto at(qsizetype index) const -> const T&
     {
         return m_cacheController.at(m_offset + index);
@@ -251,6 +255,7 @@ public:
      * The total number of results as reported by the controller
      * @return
      */
+    [[nodiscard]]
     auto totalResults() const -> qsizetype
     {
         return m_cacheController.totalCount();
@@ -261,6 +266,7 @@ public:
      * Calculates the current page
      * @return
      */
+    [[nodiscard]]
     auto page() const -> qsizetype
     {
         return std::floor(
@@ -273,11 +279,28 @@ public:
      * Calculates the total number of pages available
      * @return
      */
+    [[nodiscard]]
     auto totalPages() const -> qsizetype
     {
         return std::ceil(
             static_cast<qreal>(totalResults()) / m_resultsPerPage
         );
+    }
+
+    /**
+     * @brief setWindowSize
+     * Sets the controller window size
+     * @return
+     */
+    auto setWindowSize(qsizetype size) -> void
+    {
+        m_cacheController.setWindowSize(size);
+    }
+
+    [[nodiscard]]
+    auto windowSize() const -> qsizetype
+    {
+        return m_cacheController.windowSize();
     }
 
 protected:

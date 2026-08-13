@@ -25,6 +25,8 @@ Item
 
     property Component delegate
 
+    signal viewMoreTriggered()
+
     id: rootItem
 
     Item
@@ -162,6 +164,8 @@ Item
                     icon.source: "qrc:/images/icons/icons8-forward.svg"
                     icon.height: 24
                     icon.width: 24
+
+                    onTriggered: () => viewMoreTriggered()
                 }
             }
         }

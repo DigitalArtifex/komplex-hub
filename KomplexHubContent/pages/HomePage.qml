@@ -116,6 +116,11 @@ Item
                         }
                     }
                 }
+
+                onViewMoreTriggered: () =>
+                {
+                    showFeaturedPacksPage()
+                }
             }
 
             Text
@@ -168,6 +173,11 @@ Item
                         }
                     }
                 }
+
+                onViewMoreTriggered: () =>
+                {
+                    showFeaturedImagesPage()
+                }
             }
 
             Text
@@ -214,6 +224,11 @@ Item
                         onTriggered: () => videosPaginator.currentIndex = parent.index
                         onViewMoreTriggered:() => showVideoPopup(parent.index)
                     }
+                }
+
+                onViewMoreTriggered: () =>
+                {
+                    showFeaturedVideosPage()
                 }
             }
 
@@ -301,6 +316,51 @@ Item
         }
     }
 
+    FeaturedVideosPage
+    {
+        id: featuredVideosPage
+        anchors.fill: parent
+        opacity: 0
+        visible: opacity > 0.01
+
+        Behavior on opacity {
+            NumberAnimation
+            {
+                duration: 250
+            }
+        }
+    }
+
+    FeaturedPacksPage
+    {
+        id: featuredPacksPage
+        anchors.fill: parent
+        opacity: 0
+        visible: opacity > 0.01
+
+        Behavior on opacity {
+            NumberAnimation
+            {
+                duration: 250
+            }
+        }
+    }
+
+    FeaturedImagesPage
+    {
+        id: featuredImagesPage
+        anchors.fill: parent
+        opacity: 0
+        visible: opacity > 0.01
+
+        Behavior on opacity {
+            NumberAnimation
+            {
+                duration: 250
+            }
+        }
+    }
+
     states: [
         State {
             name: "loading"
@@ -364,6 +424,27 @@ Item
         }
     ]
 
+    function showFeaturedVideosPage()
+    {
+        resultsLayout.opacity = 0
+        featuredVideosPage.opacity = 1
+        popup = true
+    }
+
+    function showFeaturedPacksPage()
+    {
+        resultsLayout.opacity = 0
+        featuredPacksPage.opacity = 1
+        popup = true
+    }
+
+    function showFeaturedImagesPage()
+    {
+        resultsLayout.opacity = 0
+        featuredImagesPage.opacity = 1
+        popup = true
+    }
+
     function showImagePopup(index)
     {
         viewMoreImagePopup.author = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.AuthorRole)
@@ -415,6 +496,25 @@ Item
 
     function closePopup()
     {
+        if(featuredVideosPage.popup)
+        {
+            featuredVideosPage.closePopup()
+            return
+        }
+        if(featuredImagesPage.popup)
+        {
+            featuredImagesPage.closePopup()
+            return
+        }
+        if(featuredPacksPage.popup)
+        {
+            featuredPacksPage.closePopup()
+            return
+        }
+
+        featuredVideosPage.opacity = 0
+        featuredImagesPage.opacity = 0
+        featuredPacksPage.opacity = 0
         viewMoreImagePopup.opacity = 0
         viewMoreVideoPopup.opacity = 0
         viewMoreWallpaperPopup.opacity = 0

@@ -217,6 +217,20 @@ public:
 
     VideoItemModel *itemModel() const;
 
+    /**
+     * @brief windowSize
+     * Paginator cache size
+     * @return
+     */
+    auto windowSize() const -> qsizetype;
+
+    /**
+     * @brief setWindowSize
+     * Set the paginator cache size
+     * @param size
+     */
+    auto setWindowSize(qsizetype size) -> void;
+
 protected:
     /**
      * @brief setErrorString
@@ -243,7 +257,7 @@ signals:
     auto stateChanged() -> void;
     auto errorStringChanged() -> void;
     auto resultsPerPageChanged() -> void;
-
+    auto windowSizeChanged() -> void;
     auto pageChanged() -> void;
     auto totalResultsChanged() -> void;
     auto totalPagesChanged() -> void;
@@ -314,6 +328,7 @@ private:
     Q_PROPERTY(qsizetype totalPages READ totalPages NOTIFY totalPagesChanged FINAL)
     Q_PROPERTY(qsizetype page READ page NOTIFY pageChanged FINAL)
     Q_PROPERTY(VideoItemModel *itemModel READ itemModel CONSTANT FINAL)
+    Q_PROPERTY(qsizetype windowSize READ windowSize WRITE setWindowSize NOTIFY windowSizeChanged FINAL)
 };
 Q_DECLARE_METATYPE(FeaturedVideosModel)
 

@@ -337,6 +337,13 @@ private:
             return false;
         }
 
+        qsizetype windowSize = this->windowSize();
+
+        if(windowSize == 0)
+        {
+            windowSize = SLIDING_CACHE_WINDOW_SIZE;
+        }
+
         while (index >= m_windowOffset + (SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD))
         {
             if(!slideForward())

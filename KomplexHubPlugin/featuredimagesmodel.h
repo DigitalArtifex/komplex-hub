@@ -248,7 +248,6 @@ signals:
     auto stateChanged() -> void;
     auto errorStringChanged() -> void;
     auto resultsPerPageChanged() -> void;
-
     auto pageChanged() -> void;
     auto totalResultsChanged() -> void;
     auto totalPagesChanged() -> void;

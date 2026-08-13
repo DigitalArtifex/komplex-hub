@@ -18,6 +18,9 @@ qt6_add_qml_module(KomplexHubContent
         "pages/UserProfilePage.qml"
         "pages/WallpaperSettingsPage.qml"
         "pages/VideoSearchPage.qml"
+        QML_FILES pages/FeaturedVideosPage.qml
+        QML_FILES pages/FeaturedPacksPage.qml
+        QML_FILES pages/FeaturedImagesPage.qml
 )
 
 

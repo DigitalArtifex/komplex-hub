@@ -245,7 +245,6 @@ auto FeaturedImagesModel::resultsPerPage() const -> qsizetype
 
 auto FeaturedImagesModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
-
     if(m_paginator != nullptr)
     {
         QFuture<void> future = QtConcurrent::run
