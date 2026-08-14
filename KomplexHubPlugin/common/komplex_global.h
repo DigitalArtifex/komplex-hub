@@ -42,37 +42,39 @@
 
 #define KOMPLEX_API_VERSION                     "v2"
 
-#define KOMPLEX_ENDPOINT_IMAGES_SEARCH          "images/search"
-#define KOMPLEX_ENDPOINT_IMAGES_FEATURED        "featured/images"
-#define KOMPLEX_ENDPOINT_IMAGES_ITEM            "images/item"
+inline QString KOMPLEX_ENDPOINT_IMAGES_SEARCH           = QStringLiteral("images/search");
+inline QString KOMPLEX_ENDPOINT_IMAGES_FEATURED         = QStringLiteral("featured/images");
+inline QString KOMPLEX_ENDPOINT_IMAGES_ITEM             = QStringLiteral("images/item");
 
-#define KOMPLEX_ENDPOINT_VIDEOS_SEARCH          "videos/search"
-#define KOMPLEX_ENDPOINT_VIDEOS_FEATURED        "featured/videos"
-#define KOMPLEX_ENDPOINT_VIDEOS_ITEM            "videos/item"
+inline QString KOMPLEX_ENDPOINT_VIDEOS_SEARCH           = QStringLiteral("videos/search");
+inline QString KOMPLEX_ENDPOINT_VIDEOS_FEATURED         = QStringLiteral("featured/videos");
+inline QString KOMPLEX_ENDPOINT_VIDEOS_ITEM             = QStringLiteral("videos/item");
 
-#define KOMPLEX_ENDPOINT_SHADERS_SEARCH         "shaders/search"
-#define KOMPLEX_ENDPOINT_SHADERS_FEATURED       "shaders/featured"
-#define KOMPLEX_ENDPOINT_SHADERS_ITEM           "shaders/item"
-#define KOMPLEX_ENDPOINT_SHADERS_NEWEST         "shaders/newest"
+inline QString KOMPLEX_ENDPOINT_SHADERS_SEARCH          = QStringLiteral("shaders/search");
+inline QString KOMPLEX_ENDPOINT_SHADERS_FEATURED        = QStringLiteral("shaders/featured");
+inline QString KOMPLEX_ENDPOINT_SHADERS_ITEM            = QStringLiteral("shaders/item");
+inline QString KOMPLEX_ENDPOINT_SHADERS_NEWEST          = QStringLiteral("shaders/newest");
 
-#define KOMPLEX_ENDPOINT_CUBEMAPS_SEARCH        "cubemaps/search"
-#define KOMPLEX_ENDPOINT_CUBEMAPS_FEATURED      "cubemaps/featured"
-#define KOMPLEX_ENDPOINT_CUBEMAPS_ITEM          "cubemaps/item"
-#define KOMPLEX_ENDPOINT_CUBEMAPS_NEWEST        "cubemaps/newest"
+inline QString KOMPLEX_ENDPOINT_CUBEMAPS_SEARCH         = QStringLiteral("cubemaps/search");
+inline QString KOMPLEX_ENDPOINT_CUBEMAPS_FEATURED       = QStringLiteral("cubemaps/featured");
+inline QString KOMPLEX_ENDPOINT_CUBEMAPS_ITEM           = QStringLiteral("cubemaps/item");
+inline QString KOMPLEX_ENDPOINT_CUBEMAPS_NEWEST         = QStringLiteral("cubemaps/newest");
 
-#define KOMPLEX_ENDPOINT_PACKS_SEARCH           "packs/search"
-#define KOMPLEX_ENDPOINT_PACKS_FEATURED         "packs/featured"
-#define KOMPLEX_ENDPOINT_PACKS_ITEM             "packs/item"
-#define KOMPLEX_ENDPOINT_PACKS_NEWEST           "packs/newest"
+inline QString KOMPLEX_ENDPOINT_PACKS_SEARCH            = QStringLiteral("packs/search");
+inline QString KOMPLEX_ENDPOINT_PACKS_FEATURED          = QStringLiteral("packs/featured");
+inline QString KOMPLEX_ENDPOINT_PACKS_ITEM              = QStringLiteral("packs/item");
+inline QString KOMPLEX_ENDPOINT_PACKS_NEWEST            = QStringLiteral("packs/newest");
 
-inline static qsizetype nullsize = std::numeric_limits<qsizetype>::min();
-inline static std::chrono::milliseconds KOMPLEX_RATE_LIMIT(500);
-inline static QString KOMPLEX_KEYCHAIN_PASSWORD_KEY = QStringLiteral
+inline QString KOMPLEX_ENDPOINT_USER_AUTH               = QStringLiteral("user/auth");
+
+inline qsizetype nullsize                               = std::numeric_limits<qsizetype>::min();
+inline std::chrono::milliseconds KOMPLEX_RATE_LIMIT(500);
+inline QString KOMPLEX_KEYCHAIN_PASSWORD_KEY = QStringLiteral
 (
     "com.digitalartifex.komplex.keychain.password"
 );
 
-inline static QString KOMPLEX_KEYCHAIN_TOKEN_KEY = QStringLiteral
+inline QString KOMPLEX_KEYCHAIN_TOKEN_KEY = QStringLiteral
 (
     "com.digitalartifex.komplex.keychain.token"
 );
