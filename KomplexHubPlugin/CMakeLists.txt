@@ -56,6 +56,9 @@ qt_add_qml_module(
       common/shaderpack.h
       packcompiler.h
       packcompiler.cpp
+      SOURCES common/userservices.h
+      SOURCES common/userservices.cpp
+      SOURCES common/qwallet.h common/qwallet.cpp
 )
 
 target_compile_definitions(

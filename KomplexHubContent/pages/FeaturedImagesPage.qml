@@ -107,10 +107,10 @@ Rectangle
     function showVideoPopup(index)
     {
         imagesModel.setItem(index)
-        imageDetailsPopup.author = searchModel.data(searchModel.index(index,0), VideoSearchModel.AuthorRole)
-        imageDetailsPopup.authorUrl = searchModel.data(searchModel.index(index,0), VideoSearchModel.AuthorUrlRole)
-        imageDetailsPopup.uuid = searchModel.data(searchModel.index(index,0), VideoSearchModel.UuidRole)
-        imageDetailsPopup.thumbnail = searchModel.data(searchModel.index(index,0), VideoSearchModel.ThumbnailRole)
+        imageDetailsPopup.author = searchModel.data(searchModel.index(index,0), ImageSearchModel.AuthorRole)
+        imageDetailsPopup.authorUrl = searchModel.data(searchModel.index(index,0), ImageSearchModel.AuthorUrlRole)
+        imageDetailsPopup.uuid = searchModel.data(searchModel.index(index,0), ImageSearchModel.UuidRole)
+        imageDetailsPopup.thumbnail = searchModel.data(searchModel.index(index,0), ImageSearchModel.ThumbnailRole)
         imageDetailsPopup.modelIndex = index
         imageDetailsPopup.model = searchModel.itemModel
         imageDetailsPopup.opacity = 1
