@@ -11,7 +11,8 @@ Rectangle
 {
     id: rootItem
 
-    readonly property bool searchable: false
+    property string query
+    readonly property bool searchable: paginator.searchable
     property bool popup: false
     property int resultWidth: 256
     property int resultHeight: 245
@@ -20,48 +21,85 @@ Rectangle
 
     FeaturedImagesModel
     {
-        id: imagesModel
+        id: searchModel
+        //query: rootItem.query
         resultsPerPage: paginator.resultsPerPage
-        // windowSize: 80
+
+        Component.onCompleted: () => nextPage()
     }
 
-    PaginatorGrid
+    ColumnLayout
     {
-        id: paginator
-        anchors.fill: parent
-        model: imagesModel
-        loading: imagesModel.state === FeaturedImagesModel.Loading
+        id: resultsLayout
         visible: opacity > 0.01
+        anchors.fill: parent
+        anchors.margins: Constants.mediumMargin
 
-        delegate: ItemDelegate
+        Text
         {
-            id: resultDelegate
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredHeight: 50
 
-            width: resultWidth
-            height: resultHeight
+            color: palette.text
+            font.pixelSize: Constants.h2Font.pixelSize
+            font.bold: true
+            text: qsTr("Featured Images")
+            verticalAlignment: Qt.AlignVCenter
+        }
 
-            required property string uuid
-            required property string author
-            required property string authorId
-            required property string authorUrl
-            required property string thumbnail
-            required property int index
+        Text
+        {
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredHeight: 50
 
-            SearchResultItem
+            color: palette.text
+            font.pixelSize: Constants.h4Font.pixelSize
+            font.bold: true
+            text: qsTr("A specially curated collection of images, courtesy of Pexels")
+            verticalAlignment: Qt.AlignVCenter
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+        }
+
+        PaginatorGrid
+        {
+            Layout.alignment: Qt.AlignTop
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
+            id: paginator
+            model: searchModel
+            loading: model.state === FeaturedImagesModel.Loading
+
+            delegate: ItemDelegate
             {
-                anchors.fill: parent
-                author: parent.author
-                description: qsTr("No description available")
-                thumbnail: parent.thumbnail
-                uuid: parent.uuid
-                pexels: true
-                selected: paginator.currentIndex === parent.index
+                id: resultDelegate
 
-                onTriggered: () => paginator.currentIndex = parent.index
+                width: resultWidth
+                height: resultHeight
 
-                onViewMoreTriggered: () =>
+                required property string author
+                required property string description
+                required property string uuid
+                required property string thumbnail
+                required property string authorId
+                required property int index
+
+                SearchResultItem
                 {
-                    showVideoPopup(parent.index)
+                    anchors.fill: parent
+                    title: parent.author
+                    description: parent.description
+                    thumbnail: parent.thumbnail
+                    uuid: parent.uuid
+                    pexels: true
+                    selected: paginator.currentIndex === parent.index
+
+                    onTriggered: () => paginator.currentIndex = parent.index
+
+                    onViewMoreTriggered: () =>
+                    {
+                        showImagePopup(parent.index)
+                    }
                 }
             }
         }
@@ -77,12 +115,12 @@ Rectangle
 
         ImageView
         {
-            id: imageDetailsPopup
+            id: viewMoreImagePopup
             anchors.fill: parent
             opacity: 0
+            visible: opacity > 0.01
 
-            Behavior on opacity
-            {
+            Behavior on opacity {
                 NumberAnimation
                 {
                     duration: 250
@@ -90,8 +128,7 @@ Rectangle
             }
         }
 
-        Behavior on opacity
-        {
+        Behavior on opacity {
             NumberAnimation
             {
                 duration: 250
@@ -99,31 +136,33 @@ Rectangle
         }
     }
 
-    Component.onCompleted: () =>
+    function showImagePopup(index)
     {
-        imagesModel.nextPage()
-    }
-
-    function showVideoPopup(index)
-    {
-        imagesModel.setItem(index)
-        imageDetailsPopup.author = searchModel.data(searchModel.index(index,0), ImageSearchModel.AuthorRole)
-        imageDetailsPopup.authorUrl = searchModel.data(searchModel.index(index,0), ImageSearchModel.AuthorUrlRole)
-        imageDetailsPopup.uuid = searchModel.data(searchModel.index(index,0), ImageSearchModel.UuidRole)
-        imageDetailsPopup.thumbnail = searchModel.data(searchModel.index(index,0), ImageSearchModel.ThumbnailRole)
-        imageDetailsPopup.modelIndex = index
-        imageDetailsPopup.model = searchModel.itemModel
-        imageDetailsPopup.opacity = 1
-        paginator.opacity = 0
+        viewMoreImagePopup.author = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.AuthorRole)
+        viewMoreImagePopup.authorUrl = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.AuthorUrlRole)
+        viewMoreImagePopup.description = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.DescriptionRole)
+        viewMoreImagePopup.uuid = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.UuidRole)
+        viewMoreImagePopup.thumbnail = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.LargeThumbnailRole)
+        viewMoreImagePopup.original = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.OriginalUrlRole)
+        viewMoreImagePopup.portrait = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.PortraitUrlRole)
+        viewMoreImagePopup.landscape = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.LandscapeUrlRole)
+        viewMoreImagePopup.backgroundPortrait = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.BackgroundPortraitRole)
+        viewMoreImagePopup.backgroundLandscape = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.BackgroundLandscapeRole)
+        viewMoreImagePopup.fullScreen = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.ScreenUrlRole)
+        viewMoreImagePopup.portraitSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.PortraitSizeRole)
+        viewMoreImagePopup.landscapeSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.LandscapeSizeRole)
+        viewMoreImagePopup.fullScreenSize = searchModel.data(searchModel.index(index,0), FeaturedImagesModel.ScreenSizeRole)
+        viewMoreImagePopup.opacity = 1
         popupContainer.opacity = 1
+        resultsLayout.opacity = 0
         rootItem.popup = true
     }
 
     function closePopup()
     {
-        imageDetailsPopup.opacity = 0
+        viewMoreImagePopup.opacity = 0
         popupContainer.opacity = 0
-        paginator.opacity = 1
+        resultsLayout.opacity = 1
         rootItem.popup = false
     }
 }

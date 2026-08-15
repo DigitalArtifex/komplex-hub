@@ -25,43 +25,79 @@ Rectangle
         windowSize: 80
     }
 
-    PaginatorGrid
+    ColumnLayout
     {
-        id: paginator
-        anchors.fill: parent
-        model: videosModel
-        loading: videosModel.state === FeaturedVideosModel.Loading
+        id: resultsLayout
         visible: opacity > 0.01
+        anchors.fill: parent
+        anchors.margins: Constants.mediumMargin
 
-        delegate: ItemDelegate
+        Text
         {
-            id: resultDelegate
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredHeight: 50
 
-            width: resultWidth
-            height: resultHeight
+            color: palette.text
+            font.pixelSize: Constants.h2Font.pixelSize
+            font.bold: true
+            text: qsTr("Most Popular Videos")
+            verticalAlignment: Qt.AlignVCenter
+        }
 
-            required property string uuid
-            required property string author
-            required property string authorId
-            required property string authorUrl
-            required property string thumbnail
-            required property int index
+        Text
+        {
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredHeight: 50
 
-            SearchResultItem
+            color: palette.text
+            font.pixelSize: Constants.h4Font.pixelSize
+            font.bold: true
+            text: qsTr("Most popular videos, provided courtesy of Pexels")
+            verticalAlignment: Qt.AlignVCenter
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+        }
+
+        PaginatorGrid
+        {
+            Layout.alignment: Qt.AlignTop
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
+            id: paginator
+            model: videosModel
+            loading: videosModel.state === FeaturedVideosModel.Loading
+            visible: opacity > 0.01
+
+            delegate: ItemDelegate
             {
-                anchors.fill: parent
-                author: parent.author
-                description: qsTr("No description available")
-                thumbnail: parent.thumbnail
-                uuid: parent.uuid
-                pexels: true
-                selected: paginator.currentIndex === parent.index
+                id: resultDelegate
 
-                onTriggered: () => paginator.currentIndex = parent.index
+                width: resultWidth
+                height: resultHeight
 
-                onViewMoreTriggered: () =>
+                required property string uuid
+                required property string author
+                required property string authorId
+                required property string authorUrl
+                required property string thumbnail
+                required property int index
+
+                SearchResultItem
                 {
-                    showVideoPopup(parent.index)
+                    anchors.fill: parent
+                    author: parent.author
+                    description: qsTr("")
+                    thumbnail: parent.thumbnail
+                    uuid: parent.uuid
+                    pexels: true
+                    selected: paginator.currentIndex === parent.index
+
+                    onTriggered: () => paginator.currentIndex = parent.index
+
+                    onViewMoreTriggered: () =>
+                    {
+                        showVideoPopup(parent.index)
+                    }
                 }
             }
         }
@@ -80,6 +116,7 @@ Rectangle
             id: videoDetailsPopup
             anchors.fill: parent
             opacity: 0
+            visible: opacity > 0.01
 
             Behavior on opacity
             {
@@ -114,7 +151,7 @@ Rectangle
         videoDetailsPopup.modelIndex = index
         videoDetailsPopup.model = searchModel.itemModel
         videoDetailsPopup.opacity = 1
-        paginator.opacity = 0
+        resultsLayout.opacity = 0
         popupContainer.opacity = 1
         rootItem.popup = true
     }
@@ -123,7 +160,7 @@ Rectangle
     {
         videoDetailsPopup.opacity = 0
         popupContainer.opacity = 0
-        paginator.opacity = 1
+        resultsLayout.opacity = 1
         rootItem.popup = false
     }
 }

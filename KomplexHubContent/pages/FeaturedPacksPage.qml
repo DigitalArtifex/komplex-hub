@@ -11,6 +11,7 @@ Rectangle
 {
     id: rootItem
 
+    property string query
     readonly property bool searchable: false
     property bool popup: false
     property int resultWidth: 256
@@ -18,50 +19,87 @@ Rectangle
 
     color: palette.base
 
-    FeaturedPacksModel
+    NewestPacksModel
     {
         id: packsModel
         resultsPerPage: paginator.resultsPerPage
-        // windowSize: 80
+
+        Component.onCompleted: () => nextPage()
     }
 
-    PaginatorGrid
+    ColumnLayout
     {
-        id: paginator
-        anchors.fill: parent
-        model: packsModel
-        loading: packsModel.state === FeaturedPacksModel.Loading
+        id: resultsLayout
         visible: opacity > 0.01
+        anchors.fill: parent
+        anchors.margins: Constants.mediumMargin
 
-        delegate: ItemDelegate
+        Text
         {
-            id: resultDelegate
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredHeight: 50
 
-            width: resultWidth
-            height: resultHeight
+            color: palette.text
+            font.pixelSize: Constants.h2Font.pixelSize
+            font.bold: true
+            text: qsTr("Featured Images")
+            verticalAlignment: Qt.AlignVCenter
+        }
 
-            required property string uuid
-            required property string author
-            required property string authorId
-            required property string authorUrl
-            required property string thumbnail
-            required property int index
+        Text
+        {
+            Layout.alignment: Qt.AlignTop
+            Layout.preferredHeight: 50
 
-            SearchResultItem
+            color: palette.text
+            font.pixelSize: Constants.h4Font.pixelSize
+            font.bold: true
+            text: qsTr("Newest packs submitted to Komplex.dev")
+            verticalAlignment: Qt.AlignVCenter
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+        }
+
+        PaginatorGrid
+        {
+            Layout.alignment: Qt.AlignTop
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
+            id: paginator
+            model: packsModel
+            loading: model.state === NewestPacksModel.Loading
+
+            delegate: ItemDelegate
             {
-                anchors.fill: parent
-                author: parent.author
-                description: qsTr("No description available")
-                thumbnail: parent.thumbnail
-                uuid: parent.uuid
-                pexels: true
-                selected: paginator.currentIndex === parent.index
+                id: resultDelegate
 
-                onTriggered: () => paginator.currentIndex = parent.index
+                width: resultWidth
+                height: resultHeight
 
-                onViewMoreTriggered: () =>
+                required property string name
+                required property string author
+                required property string description
+                required property string uuid
+                required property string thumbnail
+                required property string authorId
+                required property int index
+
+                SearchResultItem
                 {
-                    showVideoPopup(parent.index)
+                    anchors.fill: parent
+                    title: parent.name
+                    author: parent.author
+                    description: parent.description
+                    thumbnail: parent.thumbnail
+                    uuid: parent.uuid
+                    selected: paginator.currentIndex === parent.index
+
+                    onTriggered: () => paginator.currentIndex = parent.index
+
+                    onViewMoreTriggered: () =>
+                    {
+                        showWallpaperPopup(parent.index)
+                    }
                 }
             }
         }
@@ -77,12 +115,12 @@ Rectangle
 
         PackView
         {
-            id: packDetailsPopup
+            id: viewMoreWallpaperPopup
             anchors.fill: parent
             opacity: 0
+            visible: opacity > 0.01
 
-            Behavior on opacity
-            {
+            Behavior on opacity {
                 NumberAnimation
                 {
                     duration: 250
@@ -90,8 +128,7 @@ Rectangle
             }
         }
 
-        Behavior on opacity
-        {
+        Behavior on opacity {
             NumberAnimation
             {
                 duration: 250
@@ -99,31 +136,23 @@ Rectangle
         }
     }
 
-    Component.onCompleted: () =>
-    {
-        packsModel.nextPage()
-    }
-
-    function showVideoPopup(index)
-    {
-        packsModel.setItem(index)
-        packDetailsPopup.author = searchModel.data(searchModel.index(index,0), VideoSearchModel.AuthorRole)
-        packDetailsPopup.authorUrl = searchModel.data(searchModel.index(index,0), VideoSearchModel.AuthorUrlRole)
-        packDetailsPopup.uuid = searchModel.data(searchModel.index(index,0), VideoSearchModel.UuidRole)
-        packDetailsPopup.thumbnail = searchModel.data(searchModel.index(index,0), VideoSearchModel.ThumbnailRole)
-        packDetailsPopup.modelIndex = index
-        packDetailsPopup.model = searchModel.itemModel
-        packDetailsPopup.opacity = 1
-        paginator.opacity = 0
-        popupContainer.opacity = 1
-        rootItem.popup = true
-    }
-
     function closePopup()
     {
-        packDetailsPopup.opacity = 0
+        viewMoreWallpaperPopup.opacity = 0
         popupContainer.opacity = 0
-        paginator.opacity = 1
+        resultsLayout.opacity = 1
         rootItem.popup = false
+    }
+
+    function showWallpaperPopup(index)
+    {
+        viewMoreWallpaperPopup.author = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorRole)
+        viewMoreWallpaperPopup.authorId = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorIdRole)
+        viewMoreWallpaperPopup.description = packsModel.data(packsModel.index(index,0), NewestPacksModel.DescriptionRole)
+        viewMoreWallpaperPopup.thumbnail = packsModel.data(packsModel.index(index,0), NewestPacksModel.ThumbnailRole)
+        viewMoreWallpaperPopup.opacity = 1
+        popupContainer.opacity = 1
+        resultsLayout.opacity = 0
+        rootItem.popup = true
     }
 }
