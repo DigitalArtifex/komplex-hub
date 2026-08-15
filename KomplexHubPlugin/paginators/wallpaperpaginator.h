@@ -248,6 +248,8 @@ protected:
             loop.exec();
         }
 
+        manager.clear();
+
         LOG_ERROR_X(reply->error() != QNetworkReply::NoError,
             "NewestPacksPaginator::getNetworkReply",
             reply->errorString().toStdString().c_str(),
