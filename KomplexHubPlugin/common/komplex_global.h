@@ -69,14 +69,9 @@ inline const QString KOMPLEX_ENDPOINT_USER_AUTH               = QStringLiteral("
 
 inline const qsizetype nullsize                               = std::numeric_limits<qsizetype>::min();
 inline const std::chrono::milliseconds KOMPLEX_RATE_LIMIT(500);
-inline const QString KOMPLEX_KEYCHAIN_PASSWORD_KEY = QStringLiteral
+inline const QString KOMPLEX_KEYCHAIN_SERVICE_NAME = QStringLiteral
 (
-    "com.digitalartifex.komplex.keychain.password"
-);
-
-inline const QString KOMPLEX_KEYCHAIN_TOKEN_KEY = QStringLiteral
-(
-    "com.digitalartifex.komplex.keychain.token"
+    "com.digitalartifex.komplex"
 );
 
 #endif // KOMPLEX_GLOBAL_H
