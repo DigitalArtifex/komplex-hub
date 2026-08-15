@@ -47,8 +47,6 @@ Item
                     height: 245
                     color: palette.accent
                     radius: 5
-                    // x: resultsView.currentItem.x
-                    // y: resultsView.currentItem.y
                     Behavior on x { SpringAnimation { spring: 3; damping: 0.2 } }
                     Behavior on y { SpringAnimation { spring: 3; damping: 0.2 } }
                 }
