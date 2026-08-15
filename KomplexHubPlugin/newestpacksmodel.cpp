@@ -320,3 +320,24 @@ auto NewestPacksModel::totalPages() const -> qsizetype
 
     return 0;
 }
+
+auto NewestPacksModel::hasNextPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() < m_paginator->totalPages();
+
+}
+
+auto NewestPacksModel::hasPreviousPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() > 0;
+}

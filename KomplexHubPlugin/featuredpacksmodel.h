@@ -208,6 +208,20 @@ public:
      */
     Q_INVOKABLE auto previousPage() -> void;
 
+    /**
+     * @brief hasNextPage
+     * Calculates if there are more pages based on the current page calculation
+     * @return
+     */
+    auto hasNextPage() const -> bool;
+
+    /**
+     * @brief hasPreviousPage
+     * If page is greater than 1, returns true
+     * @return
+     */
+    auto hasPreviousPage() const -> bool;
+
 protected:
     /**
      * @brief setErrorString
@@ -310,6 +324,8 @@ private:
     Q_PROPERTY(qsizetype resultsPerPage READ resultsPerPage WRITE setResultsPerPage NOTIFY resultsPerPageChanged FINAL)
     Q_PROPERTY(qsizetype totalResults READ totalResults NOTIFY totalResultsChanged FINAL)
     Q_PROPERTY(qsizetype totalPages READ totalPages NOTIFY totalPagesChanged FINAL)
+    Q_PROPERTY(bool hasNextPage READ hasNextPage NOTIFY pageChanged FINAL)
+    Q_PROPERTY(bool hasPreviousPage READ hasPreviousPage NOTIFY pageChanged FINAL)
     Q_PROPERTY(qsizetype page READ page NOTIFY pageChanged FINAL)
 };
 Q_DECLARE_METATYPE(FeaturedPacksModel)

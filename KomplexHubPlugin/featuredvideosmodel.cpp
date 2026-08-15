@@ -365,3 +365,23 @@ auto FeaturedVideosModel::totalPages() const -> qsizetype
 
     return 0;
 }
+
+auto FeaturedVideosModel::hasNextPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() < m_paginator->totalPages();
+}
+
+auto FeaturedVideosModel::hasPreviousPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() > 0;
+}

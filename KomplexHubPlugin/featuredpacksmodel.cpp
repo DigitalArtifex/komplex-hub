@@ -311,6 +311,26 @@ auto FeaturedPacksModel::previousPage() -> void
     }
 }
 
+auto FeaturedPacksModel::hasNextPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() < m_paginator->totalPages();
+}
+
+auto FeaturedPacksModel::hasPreviousPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() > 0;
+}
+
 qsizetype FeaturedPacksModel::page() const
 {
     if(m_paginator != nullptr)

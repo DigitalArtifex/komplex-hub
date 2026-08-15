@@ -343,3 +343,23 @@ auto FeaturedImagesModel::totalPages() const -> qsizetype
 
     return 0;
 }
+
+auto FeaturedImagesModel::hasNextPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() < m_paginator->totalPages();
+}
+
+auto FeaturedImagesModel::hasPreviousPage() const -> bool
+{
+    if(m_paginator == nullptr)
+    {
+        return false;
+    }
+
+    return m_paginator->page() > 0;
+}
