@@ -1,5 +1,6 @@
 #include "coreservices.h"
 #include "logging.h"
+#include "userservices.h"
 
 QNetworkAccessManager *CoreServices::s_networkAccessManager = nullptr;
 QMutex CoreServices::s_networkAccessMutex;
@@ -45,11 +46,7 @@ auto CoreServices::networkAccessManager() -> QWeakPointer<QNetworkAccessManager>
 
 auto CoreServices::sessionToken() -> QByteArray
 {
-    LOG_ERROR_X(true,
-        "CoreServices::sessionToken",
-        "User services not yet implemented",
-        {}
-    );
+    return UserServices::userCredentials().sessionToken;
 }
 
 auto CoreServices::screenSize() -> QSize
