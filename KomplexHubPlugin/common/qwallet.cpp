@@ -133,3 +133,8 @@ auto QWallet::errorString() const -> const QString &
 {
     return m_errorString;
 }
+
+auto QWallet::setErrorString(const QString &errorString) const -> void
+{
+    m_errorString = errorString;
+}
