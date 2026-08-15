@@ -30,7 +30,7 @@
  * @brief The QWallet class
  * QWallet is a QFuture wrapper for QtKeychain to make interaction with the keychain easier
  */
-class KOMPLEX_EXPORT QWallet : QObject
+class KOMPLEX_EXPORT QWallet : public QObject
 {
     Q_OBJECT
 
