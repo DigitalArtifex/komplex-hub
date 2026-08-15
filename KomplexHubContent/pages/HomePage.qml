@@ -282,7 +282,6 @@ Item
             anchors.fill: parent
             opacity: 0
             visible: opacity > 0.01
-            //model: videosModel.itemModel
 
             Behavior on opacity {
                 NumberAnimation
@@ -298,7 +297,6 @@ Item
             anchors.fill: parent
             opacity: 0
             visible: opacity > 0.01
-            //model: videosModel.itemModel
 
             Behavior on opacity {
                 NumberAnimation
@@ -316,48 +314,83 @@ Item
         }
     }
 
-    FeaturedVideosPage
+    Component
     {
-        id: featuredVideosPage
-        anchors.fill: parent
-        opacity: 0
-        visible: opacity > 0.01
+        id: featuredVideosComponent
 
-        Behavior on opacity {
-            NumberAnimation
-            {
-                duration: 250
+        FeaturedVideosPage
+        {
+            id: featuredVideosPage
+            anchors.fill: parent
+            opacity: 0
+
+            Behavior on opacity {
+                NumberAnimation
+                {
+                    duration: 250
+                }
             }
+
+            Component.onCompleted: () => featuredVideosPage.opacity = 1
         }
     }
 
-    FeaturedPacksPage
+    Component
     {
-        id: featuredPacksPage
-        anchors.fill: parent
-        opacity: 0
-        visible: opacity > 0.01
+        id: featuredPacksComponent
 
-        Behavior on opacity {
-            NumberAnimation
+        FeaturedPacksPage
+        {
+            id: featuredPacksPage
+            anchors.fill: parent
+            opacity: 0
+
+            Behavior on opacity
             {
-                duration: 250
+                NumberAnimation
+                {
+                    duration: 250
+                }
             }
+
+            Component.onCompleted: () => featuredPacksPage.opacity = 1
         }
     }
 
-    FeaturedImagesPage
+    Component
     {
-        id: featuredImagesPage
+        id: featuredImagesComponent
+
+        FeaturedImagesPage
+        {
+            id: featuredImagesPage
+            anchors.fill: parent
+            opacity: 0
+
+            Behavior on opacity
+            {
+                NumberAnimation
+                {
+                    duration: 250
+                }
+            }
+
+            Component.onCompleted: () => featuredImagesPage.opacity = 1
+        }
+    }
+
+    Item
+    {
+        id: featuredLoaderItem
         anchors.fill: parent
         opacity: 0
         visible: opacity > 0.01
+        enabled: visible
 
-        Behavior on opacity {
-            NumberAnimation
-            {
-                duration: 250
-            }
+        Loader
+        {
+            id: featuredLoader
+            anchors.fill: parent
         }
     }
 
@@ -427,21 +460,24 @@ Item
     function showFeaturedVideosPage()
     {
         resultsLayout.opacity = 0
-        featuredVideosPage.opacity = 1
+        featuredLoaderItem.opacity = 1
+        featuredLoader.sourceComponent = featuredVideosComponent
         popup = true
     }
 
     function showFeaturedPacksPage()
     {
         resultsLayout.opacity = 0
-        featuredPacksPage.opacity = 1
+        featuredLoaderItem.opacity = 1
+        featuredLoader.sourceComponent = featuredPacksComponent
         popup = true
     }
 
     function showFeaturedImagesPage()
     {
         resultsLayout.opacity = 0
-        featuredImagesPage.opacity = 1
+        featuredLoaderItem.opacity = 1
+        featuredLoader.sourceComponent = featuredImagesComponent
         popup = true
     }
 
@@ -496,25 +532,13 @@ Item
 
     function closePopup()
     {
-        if(featuredVideosPage.popup)
+        if(featuredLoader.item && featuredLoader.item.popup)
         {
-            featuredVideosPage.closePopup()
-            return
-        }
-        if(featuredImagesPage.popup)
-        {
-            featuredImagesPage.closePopup()
-            return
-        }
-        if(featuredPacksPage.popup)
-        {
-            featuredPacksPage.closePopup()
+            featuredLoader.item.closePopup()
             return
         }
 
-        featuredVideosPage.opacity = 0
-        featuredImagesPage.opacity = 0
-        featuredPacksPage.opacity = 0
+        featuredLoaderItem.opacity = 0
         viewMoreImagePopup.opacity = 0
         viewMoreVideoPopup.opacity = 0
         viewMoreWallpaperPopup.opacity = 0

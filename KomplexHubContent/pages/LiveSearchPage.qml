@@ -33,8 +33,8 @@ Item
         {
             id: resultDelegate
 
-            width: 256
-            height: 245
+            width: resultWidth
+            height: resultHeight
 
             required property string name
             required property string author
@@ -47,7 +47,8 @@ Item
             SearchResultItem
             {
                 anchors.fill: parent
-                title: parent.author
+                title: parent.name
+                author: parent.author
                 description: parent.description
                 thumbnail: parent.thumbnail
                 uuid: parent.uuid
