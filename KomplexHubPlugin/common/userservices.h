@@ -83,7 +83,7 @@ private:
     QString m_errorString;
     inline static UserCredentials s_userCredentials;
 
-    inline const static char PART_SEPARATOR = static_cast<char>('\0x1f');
+    inline const static char PART_SEPARATOR = static_cast<char>('\x1f');
 
     Q_PROPERTY(UserCredentials userCredentials READ userCredentials NOTIFY userCredentialsChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
