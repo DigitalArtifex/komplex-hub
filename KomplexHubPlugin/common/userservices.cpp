@@ -247,14 +247,14 @@ auto UserServices::login(const QString &username, const QByteArray &password) ->
             if(parseError.error != QJsonParseError::NoError)
             {
                 setErrorString(parseError.errorString());
+                throw std::exception();
             }
 
-            QJsonObject rootObject;
+            QJsonObject rootObject = document.object();
+            QJsonObject dataObject = rootObject.value(QStringLiteral("data")).toObject();
 
             if(!rootObject.value("success").toBool())
             {
-                QJsonObject dataObject = rootObject.value(QStringLiteral("data")).toObject();
-
                 setErrorString
                 (
                     QStringLiteral("Login failure (%1): %2").arg
@@ -263,16 +263,27 @@ auto UserServices::login(const QString &username, const QByteArray &password) ->
                         dataObject.value(QStringLiteral("message")).toString()
                     )
                 );
+                throw std::exception();
+            }
+
+            QString expiryData = dataObject.value(QStringLiteral("expires")).toString();
+            bool converted = false;
+            qint64 secsSinceEpoch = expiryData.toLongLong(&converted);
+
+            if(!converted)
+            {
+                setErrorString(QStringLiteral("Malformed expiry data"));
+                throw std::exception();
             }
 
             UserCredentials credentials
             {
                 .username = username.toUtf8(),
-                .sessionToken = rootObject.value
+                .sessionToken = dataObject.value
                 (
                     QStringLiteral("jwt")
                 ).toString().toUtf8(),
-                .expiry = QDateTime::currentDateTime()
+                .expiry = QDateTime::fromSecsSinceEpoch(secsSinceEpoch)
             };
 
             savePassword(username, password);
