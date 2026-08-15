@@ -38,10 +38,7 @@ class KOMPLEX_EXPORT ImageSearchPaginator : public ImagePaginator
 public:
     explicit ImageSearchPaginator(QObject *parent = nullptr) : ImagePaginator(parent)
     {
-        setUri(
-            QString::fromUtf8(KOMPLEX_ENDPOINT_IMAGES_SEARCH)
-        );
-
+        setUri(KOMPLEX_ENDPOINT_IMAGES_SEARCH);
         setQueryable(true);
     }
 };

@@ -36,10 +36,7 @@ class KOMPLEX_EXPORT VideoSearchPaginator : public VideoPaginator
 public:
     explicit VideoSearchPaginator(QObject *parent = nullptr) : VideoPaginator(parent)
     {
-        setUri(
-            QString::fromUtf8(KOMPLEX_ENDPOINT_VIDEOS_SEARCH)
-        );
-
+        setUri(KOMPLEX_ENDPOINT_VIDEOS_SEARCH);
         setQueryable(true);
     }
 };

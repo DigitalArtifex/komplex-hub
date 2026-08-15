@@ -36,11 +36,8 @@ class KOMPLEX_EXPORT FeaturedVideosPaginator : public VideoPaginator
 public:
     explicit FeaturedVideosPaginator(QObject *parent = nullptr) : VideoPaginator(parent)
     {
-        setUri(
-            QString::fromUtf8(KOMPLEX_ENDPOINT_VIDEOS_FEATURED)
-        );
-
-        controller()->setWindowSize(20);
+        setUri(KOMPLEX_ENDPOINT_VIDEOS_FEATURED);
+        controller()->setWindowSize(32);
     }
 };
 

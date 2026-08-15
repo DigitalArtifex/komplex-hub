@@ -36,10 +36,7 @@ class KOMPLEX_EXPORT NewestPacksPaginator : public WallpaperPaginator
 public:
     explicit NewestPacksPaginator(QObject *parent = nullptr) : WallpaperPaginator(parent)
     {
-        setUri(
-            QString::fromUtf8(KOMPLEX_ENDPOINT_PACKS_NEWEST)
-        );
-
+        setUri(KOMPLEX_ENDPOINT_PACKS_NEWEST);
         controller()->setWindowSize(20);
     }
 };

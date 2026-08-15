@@ -36,11 +36,8 @@ class KOMPLEX_EXPORT FeaturedImagesPaginator : public ImagePaginator
 public:
     explicit FeaturedImagesPaginator(QObject *parent = nullptr) : ImagePaginator(parent)
     {
-        setUri(
-            QString::fromUtf8(KOMPLEX_ENDPOINT_IMAGES_FEATURED)
-        );
-
-        controller()->setWindowSize(20);
+        setUri(KOMPLEX_ENDPOINT_IMAGES_FEATURED);
+        controller()->setWindowSize(32);
     }
 };
 
