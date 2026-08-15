@@ -303,12 +303,12 @@ public:
         return m_cacheController.windowSize();
     }
 
-protected:
-
     auto queryable() const -> bool
     {
         return m_queryable;
     }
+
+protected:
 
     auto setQueryable(bool queryable) -> void
     {
