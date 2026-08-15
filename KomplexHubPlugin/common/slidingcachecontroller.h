@@ -337,14 +337,17 @@ private:
             return false;
         }
 
-        qsizetype windowSize = this->windowSize();
+        qsizetype prefetchThreshold = SLIDING_CACHE_PREFETCH_THRESHOLD;
 
-        if(windowSize == 0)
+        if(prefetchThreshold >= windowSize())
         {
-            windowSize = SLIDING_CACHE_WINDOW_SIZE;
+            prefetchThreshold = std::floor
+            (
+                static_cast<qreal>(windowSize()) * 0.8
+            );
         }
 
-        while (index >= m_windowOffset + (SLIDING_CACHE_WINDOW_SIZE - SLIDING_CACHE_PREFETCH_THRESHOLD))
+        while (index >= m_windowOffset + (windowSize() - prefetchThreshold))
         {
             if(!slideForward())
             {
@@ -414,7 +417,7 @@ private:
             m_windowOffset = 0;
         }
 
-        QThread::sleep(KOMPLEX_RATE_LIMIT);
+        // QThread::sleep(KOMPLEX_RATE_LIMIT);
 
         FetchResult<T> result = m_fetch(
             m_windowOffset,
@@ -497,7 +500,7 @@ private:
             false
         );
 
-        QThread::sleep(KOMPLEX_RATE_LIMIT);
+        // QThread::sleep(KOMPLEX_RATE_LIMIT);
 
         m_windowOffset -= movementSize;
 
