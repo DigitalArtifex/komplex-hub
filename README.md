@@ -54,7 +54,7 @@ Most of the development of Komplex and it's associated apps will now happen here
 
 #### Build
 ```console
-$ git clone gitea@git.digitalartifex.dev:digitalartifex/komplex-hub.git
+$ git clone --recursive gitea@git.digitalartifex.dev:digitalartifex/komplex-hub.git
 $ mkdir build
 $ cmake -S ./ -B ./build/
 $ cmake --build ./build
@@ -74,4 +74,8 @@ Content purchases will be processed through the website using Paypal as will art
 
 ## Status
 
-This app is currently under development and is pre-alpha. The API is now being hosted on https://komplex.dev. However, there is no download functionality as of yet. BETA should be here within a few weeks.
+This app is currently under development and is currently alpha. The API is now being hosted on https://komplex.dev. However, there is no download functionality as of yet. 
+
+I have begun adding download functionality, however it is not yet complete.
+"Featured" Live wallpapers is currently a duplicated of "Newest". The featured endpoint will take manual curation, so this will take some time
+BETA should be here within a few weeks.
