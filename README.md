@@ -74,8 +74,71 @@ Content purchases will be processed through the website using Paypal as will art
 
 ## Status
 
-This app is currently under development and is currently alpha. The API is now being hosted on https://komplex.dev. However, there is no download functionality as of yet. 
+### API Status
+|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
+| Newest Packs | |-| |-| | ✅ |
+| Featured Packs | |-| |✔| |-|
+| Search Packs | |-| |-| | ✅ |
+| Submit Packs | |❌| |-| |-|
+| Newest Cubemaps | |-| |-| | ✅ |
+| Featured Cubemaps | |-| |✔| |-|
+| Search Cubemaps | |-| |-| | ✅ |
+| Submit Cubemaps | |❌| |-| |-|
+| Newest Filter Shaders | |-| |-| | ✅ |
+| Featured Filter Shaders | |-| |✔| |-|
+| Search Filter Shaders | |-| |-| | ✅ |
+| Submit Filter Shaders | |❌| |-| |-|
+| Pack Thumbnails | |-| |-| | ✅ |
+| Featured Images | |-| |-| | ✅ |
+| Search Images | |-| |-| | ✅ |
+| Popular Videos | |-| |-| | ✅ |
+| Search Videos | |-| |-| | ✅ |
+| User Accounts | |-| |✔| |-|
+| User Authentication | |-| |✔| |-|
+| User Configuration | |❌| |-| |-|
+| User Media | |❌| |-| |-|
+| Author Profiles | |❌| |-| |-|
+
+### Media Hub Status
+|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
+| UI Design | |-| |-| | ✅ |
+| Spotlight/Homepage | |-| |✔| | - |
+| - Newest Packs | |-| |-| | ✅ |
+| - Featured Packs | |-| |✔| | - |
+| - Featured Images | |-| |-| | ✅ |
+| - Popular Videos | |-| |-| | ✅ |
+| - View More | |-| |-| | ✅ |
+| - Author Profile | |❌| |-| |-|
+| Media Downloader | |-| |✔| | - |
+| - Packs | |❌| |-| |-|
+| - Videos | |❌| |-| |-|
+| - Images | |-| |-| | ✅ |
+| Detailed Views | |-| |-| | ✅ |
+| - Packs | |-| |-| | ✅ |
+| - Videos | |-| |-| | ✅ |
+| - Images | |-| |-| | ✅ |
+| Installed Media Manager | |-| |✔| | - |
+| Settings Manager | |-| |-| | ✅ |
+| User Accounts | |❌| |-| |-|
+| - User Login | |❌| |-| |-|
+| - User Profile | |❌| |-| |-|
+| About Page | |-| |-| | ✅ |
+
+### Pack Builder
+|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
+| All Design & Features | |❌| |-| |-|
+
+### Site
+|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
+| Site Base | |-| |✔| | - |
+| Accounts | |-| |✔| | - |
+| Gallery | |❌| |-| |-|
+| Payment Gateway | |❌| |-| |-|
+| - Artist Payout | |❌| |-| |-|
+| - User Media Purchase | |❌| |-| |-|
+
+This app is currently under development and is currently alpha. The API is now being hosted on https://komplex.dev.
 
 I have begun adding download functionality, however it is not yet complete.
-"Featured" Live wallpapers is currently a duplicated of "Newest". The featured endpoint will take manual curation, so this will take some time
+"Featured" Live wallpapers is currently a duplicated of "Newest". The featured endpoint will take manual curation, so this will take some time.
 BETA should be here within a few weeks.
