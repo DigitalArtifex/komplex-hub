@@ -78,23 +78,23 @@ Content purchases will be processed through the website using Paypal as will art
 
 | Feature |  Incomplete  | Started  | Complete |
 |-------|-------|-------|-------|
-| Newest Packs | - | ✅ | - |
+| Newest Packs | - | - | ✅ |
 | Featured Packs | - | ✔ | - |
-| Search Packs | - | ✅ | - |
+| Search Packs | - | - | ✅ |
 | Submit Packs | |❌| |-| |-|
-| Newest Cubemaps | - | ✅ | - |
+| Newest Cubemaps | - | - | ✅ |
 | Featured Cubemaps | - | ✔ | - |
-| Search Cubemaps | - | ✅ | - |
+| Search Cubemaps | - | - | ✅ |
 | Submit Cubemaps | |❌| |-| |-|
-| Newest Filter Shaders | - | ✅ | - |
+| Newest Filter Shaders | - | - | ✅ |
 | Featured Filter Shaders | - | ✔ | - |
-| Search Filter Shaders | - | ✅ | - |
+| Search Filter Shaders | - | - | ✅ |
 | Submit Filter Shaders | |❌| |-| |-|
-| Pack Thumbnails | - | ✅ | - |
-| Featured Images | - | ✅ | - |
-| Search Images | - | ✅ | - |
-| Popular Videos | - | ✅ | - |
-| Search Videos | - | ✅ | - |
+| Pack Thumbnails | - | - | ✅ |
+| Featured Images | - | - | ✅ |
+| Search Images | - | - | ✅ |
+| Popular Videos | - | - | ✅ |
+| Search Videos | - | - | ✅ |
 | User Accounts | - | ✔ | - |
 | User Authentication | - | ✔ | - |
 | User Configuration | |❌| |-| |-|
@@ -105,28 +105,28 @@ Content purchases will be processed through the website using Paypal as will art
 
 | Feature |  Incomplete  | Started  | Complete |
 |-------|-------|-------|-------|
-| UI Design | - | ✅ | - |
+| UI Design | - | - | ✅ |
 | Spotlight/Homepage | - | ✔ | - |
-| - Newest Packs | - | ✅ | - |
+| - Newest Packs | - | - | ✅ |
 | - Featured Packs | - | ✔ | - |
-| - Featured Images | - | ✅ | - |
-| - Popular Videos | - | ✅ | - |
-| - View More | - | ✅ | - |
+| - Featured Images | - | - | ✅ |
+| - Popular Videos | - | - | ✅ |
+| - View More | - | - | ✅ |
 | - Author Profile | |❌| |-| |-|
 | Media Downloader | | - | ✔ | - |
 | - Packs | |❌| |-| |-|
 | - Videos | |❌| |-| |-|
-| - Images | - | ✅ | - |
-| Detailed Views | - | ✅ | - |
-| - Packs | - | ✅ | - |
-| - Videos | - | ✅ | - |
-| - Images | - | ✅ | - |
+| - Images | - | - | ✅ |
+| Detailed Views | - | - | ✅ |
+| - Packs | - | - | ✅ |
+| - Videos | - | - | ✅ |
+| - Images | - | - | ✅ |
 | Installed Media Manager | - | ✔ | - |
-| Settings Manager | - | ✅ | - |
+| Settings Manager | - | - | ✅ |
 | User Accounts | |❌| |-| |-|
 | - User Login | |❌| |-| |-|
 | - User Profile | |❌| |-| |-|
-| About Page | - | ✅ | - |
+| About Page | - | - | ✅ |
 
 ### Pack Builder
 
