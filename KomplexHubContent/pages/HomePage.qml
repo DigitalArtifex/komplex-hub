@@ -19,15 +19,15 @@ Item
                            imagesModel.state === FeaturedImagesModel.Loading ||
                            videosModel.state === FeaturedVideosModel.Loading;
 
-    onWidthChanged:() => {
+    onWidthChanged: () =>
+    {
         packsModel.resultsPerPage = resultsPerRow
         imagesModel.resultsPerPage = resultsPerRow
         videosModel.resultsPerPage = resultsPerRow
     }
 
-    clip: true
-
     id: homePageRoot
+    clip: true
 
     NewestPacksModel
     {
@@ -394,9 +394,9 @@ Item
                         }
                     }
                 }
-
-                VerticalSpacer{}
             }
+
+            VerticalSpacer{ height: Constants.largeMargin }
         }
 
     }
@@ -583,9 +583,7 @@ Item
         },
         State {
             name: "idle"
-            when: packsModel.state !== NewestPacksModel.Loading &&
-                  imagesModel.state !== FeaturedImagesModel.Loading &&
-                  videosModel.state !== FeaturedVideosModel.Loading;
+            when: !popup && !loading
 
             PropertyChanges
             {
@@ -597,6 +595,17 @@ Item
             {
                 target: pageArea
                 opacity: 1
+            }
+        },
+        State
+        {
+            name: "popup"
+            when: popup
+
+            PropertyChanges
+            {
+                target: pageArea
+                opacity: 0
             }
         }
     ]

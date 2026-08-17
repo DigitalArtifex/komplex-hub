@@ -21,6 +21,7 @@ qt6_add_qml_module(KomplexHubContent
         QML_FILES pages/FeaturedVideosPage.qml
         QML_FILES pages/FeaturedPacksPage.qml
         QML_FILES pages/FeaturedImagesPage.qml
+        QML_FILES pages/NewestPacksPage.qml
 )
 
 

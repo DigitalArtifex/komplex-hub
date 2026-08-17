@@ -35,29 +35,13 @@ Rectangle
         anchors.fill: parent
         anchors.margins: Constants.mediumMargin
 
-        Text
+        KeroHeader
         {
             Layout.alignment: Qt.AlignTop
-            Layout.preferredHeight: 50
-
-            color: palette.text
-            font.pixelSize: Constants.h2Font.pixelSize
-            font.bold: true
-            text: qsTr("Featured Images")
-            verticalAlignment: Qt.AlignVCenter
-        }
-
-        Text
-        {
-            Layout.alignment: Qt.AlignTop
-            Layout.preferredHeight: 50
-
-            color: palette.text
-            font.pixelSize: Constants.h4Font.pixelSize
-            font.bold: true
-            text: qsTr("A specially curated collection of images, courtesy of Pexels")
-            verticalAlignment: Qt.AlignVCenter
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            Layout.fillWidth: true
+            Layout.preferredHeight: 180
+            title: qsTr("Featured Images")
+            description: qsTr("A specially curated collection of images, courtesy of Pexels")
         }
 
         PaginatorGrid

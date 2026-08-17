@@ -160,13 +160,19 @@ auto FeaturedVideosModel::state() const -> FeaturedVideosModel::State
 
 auto FeaturedVideosModel::setState(State state) -> void
 {
-    if (m_state == state)
-    {
-        return;
-    }
+    QFuture<void> aether = QtConcurrent::run
+    (
+        [this, state]
+        {
+            if (m_state == state)
+            {
+                return;
+            }
 
-    m_state = state;
-    emit stateChanged();
+            m_state = state;
+            emit stateChanged();
+        }
+    );
 }
 
 auto FeaturedVideosModel::resetState() -> void

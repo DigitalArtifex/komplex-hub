@@ -159,13 +159,19 @@ auto NewestPacksModel::state() const -> NewestPacksModel::State
 
 auto NewestPacksModel::setState(State state) -> void
 {
-    if (m_state == state)
-    {
-        return;
-    }
+    QFuture<void> aether = QtConcurrent::run
+    (
+        [this, state]
+        {
+            if (m_state == state)
+            {
+                return;
+            }
 
-    m_state = state;
-    emit stateChanged();
+            m_state = state;
+            emit stateChanged();
+        }
+    );
 }
 
 auto NewestPacksModel::resetState() -> void
@@ -224,7 +230,7 @@ auto NewestPacksModel::setResultsPerPage(qsizetype resultsPerPage) -> void
 {
     if(m_paginator != nullptr)
     {
-        QFuture<void> future = QtConcurrent::run
+        QFuture<void> aether = QtConcurrent::run
         (
             [this, resultsPerPage]
             {
@@ -277,7 +283,7 @@ auto NewestPacksModel::nextPage() const -> void
 {
     if(m_paginator != nullptr)
     {
-        QFuture<void> future = QtConcurrent::run
+        QFuture<void> aether = QtConcurrent::run
         (
             [this]
             {
@@ -291,7 +297,7 @@ auto NewestPacksModel::previousPage() const -> void
 {
     if(m_paginator != nullptr)
     {
-        QFuture<void> future = QtConcurrent::run
+        QFuture<void> aether = QtConcurrent::run
         (
             [this]
             {

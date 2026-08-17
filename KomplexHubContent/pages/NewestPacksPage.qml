@@ -11,6 +11,7 @@ Rectangle
 {
     id: rootItem
 
+    property string query
     readonly property bool searchable: false
     property bool popup: false
     property int resultWidth: 256
@@ -18,11 +19,12 @@ Rectangle
 
     color: palette.base
 
-    FeaturedVideosModel
+    NewestPacksModel
     {
-        id: videosModel
+        id: packsModel
         resultsPerPage: paginator.resultsPerPage
-        windowSize: 80
+
+        Component.onCompleted: () => nextPage()
     }
 
     ColumnLayout
@@ -37,8 +39,8 @@ Rectangle
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             Layout.preferredHeight: 180
-            title: qsTr("Most Popular Videos")
-            description: qsTr("Most popular videos, provided courtesy of Pexels")
+            title: qsTr("Newest Live Wallpapers")
+            description: qsTr("Live Wallpaper Packs from Komplex or ShaderToy")
             image: "qrc:/images/kero/kero_star.png"
         }
 
@@ -49,9 +51,8 @@ Rectangle
             Layout.fillWidth: true
 
             id: paginator
-            model: videosModel
-            loading: videosModel.state === FeaturedVideosModel.Loading
-            visible: opacity > 0.01
+            model: packsModel
+            loading: model.state === NewestPacksModel.Loading
 
             delegate: ItemDelegate
             {
@@ -60,28 +61,29 @@ Rectangle
                 width: resultWidth
                 height: resultHeight
 
-                required property string uuid
+                required property string name
                 required property string author
-                required property string authorId
-                required property string authorUrl
+                required property string description
+                required property string uuid
                 required property string thumbnail
+                required property string authorId
                 required property int index
 
                 SearchResultItem
                 {
                     anchors.fill: parent
+                    title: parent.name
                     author: parent.author
-                    description: qsTr("")
+                    description: parent.description
                     thumbnail: parent.thumbnail
                     uuid: parent.uuid
-                    pexels: true
                     selected: paginator.currentIndex === parent.index
 
                     onTriggered: () => paginator.currentIndex = parent.index
 
                     onViewMoreTriggered: () =>
                     {
-                        showVideoPopup(parent.index)
+                        showWallpaperPopup(parent.index)
                     }
                 }
             }
@@ -96,15 +98,14 @@ Rectangle
         visible: opacity > 0.01
         color: palette.base
 
-        VideoView
+        PackView
         {
-            id: videoDetailsPopup
+            id: viewMoreWallpaperPopup
             anchors.fill: parent
             opacity: 0
             visible: opacity > 0.01
 
-            Behavior on opacity
-            {
+            Behavior on opacity {
                 NumberAnimation
                 {
                     duration: 250
@@ -112,8 +113,7 @@ Rectangle
             }
         }
 
-        Behavior on opacity
-        {
+        Behavior on opacity {
             NumberAnimation
             {
                 duration: 250
@@ -121,31 +121,23 @@ Rectangle
         }
     }
 
-    Component.onCompleted: () =>
-    {
-        videosModel.nextPage()
-    }
-
-    function showVideoPopup(index)
-    {
-        videosModel.setItem(index)
-        videoDetailsPopup.author = searchModel.data(searchModel.index(index,0), VideoSearchModel.AuthorRole)
-        videoDetailsPopup.authorUrl = searchModel.data(searchModel.index(index,0), VideoSearchModel.AuthorUrlRole)
-        videoDetailsPopup.uuid = searchModel.data(searchModel.index(index,0), VideoSearchModel.UuidRole)
-        videoDetailsPopup.thumbnail = searchModel.data(searchModel.index(index,0), VideoSearchModel.ThumbnailRole)
-        videoDetailsPopup.modelIndex = index
-        videoDetailsPopup.model = searchModel.itemModel
-        videoDetailsPopup.opacity = 1
-        resultsLayout.opacity = 0
-        popupContainer.opacity = 1
-        rootItem.popup = true
-    }
-
     function closePopup()
     {
-        videoDetailsPopup.opacity = 0
+        viewMoreWallpaperPopup.opacity = 0
         popupContainer.opacity = 0
         resultsLayout.opacity = 1
         rootItem.popup = false
+    }
+
+    function showWallpaperPopup(index)
+    {
+        viewMoreWallpaperPopup.author = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorRole)
+        viewMoreWallpaperPopup.authorId = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorIdRole)
+        viewMoreWallpaperPopup.description = packsModel.data(packsModel.index(index,0), NewestPacksModel.DescriptionRole)
+        viewMoreWallpaperPopup.thumbnail = packsModel.data(packsModel.index(index,0), NewestPacksModel.ThumbnailRole)
+        viewMoreWallpaperPopup.opacity = 1
+        popupContainer.opacity = 1
+        resultsLayout.opacity = 0
+        rootItem.popup = true
     }
 }
