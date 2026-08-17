@@ -12,28 +12,31 @@ auto CoreServices::networkAccessManager() -> QWeakPointer<QNetworkAccessManager>
 
     if(!s_networkAccessPointer)
     {
-        s_networkAccessManager = new QNetworkAccessManager(QCoreApplication::instance());
-        s_networkAccessManager->setAutoDeleteReplies(true);
+        if(!s_networkAccessManager)
+        {
+            s_networkAccessManager = new QNetworkAccessManager(QCoreApplication::instance());
+            s_networkAccessManager->setAutoDeleteReplies(true);
 
-        QObject::connect(
-            s_networkAccessManager,
-            &QNetworkAccessManager::sslErrors,
-            s_networkAccessManager,
-            [] (QNetworkReply *reply, const QList<QSslError> &errors)
-            {
-                for(const auto &error : errors)
+            QObject::connect(
+                s_networkAccessManager,
+                &QNetworkAccessManager::sslErrors,
+                s_networkAccessManager,
+                [] (QNetworkReply *reply, const QList<QSslError> &errors)
                 {
-                    LOG_ERROR(
-                        "CoreServices::networkAccessManager",
-                        error.errorString().toStdString().c_str()
-                    );
-                }
+                    for(const auto &error : errors)
+                    {
+                        LOG_ERROR(
+                            "CoreServices::networkAccessManager",
+                            error.errorString().toStdString().c_str()
+                        );
+                    }
 
-#ifdef KOMPLEX_LOCAL_DEV
-                reply->ignoreSslErrors();
-#endif
-            }
-        );
+    #ifdef KOMPLEX_LOCAL_DEV
+                    reply->ignoreSslErrors();
+    #endif
+                }
+            );
+        }
 
         s_networkAccessPointer = QSharedPointer<QNetworkAccessManager>(
             s_networkAccessManager,

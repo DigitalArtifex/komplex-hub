@@ -6,7 +6,7 @@ add_library(
 qt_add_qml_module(
     KomplexHubPlugin
     URI
-        KomplexHubPlugin
+        "KomplexHub.Plugin"
     VERSION
         1.0
     SOURCES

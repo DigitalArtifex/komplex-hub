@@ -6,7 +6,7 @@ import QtQuick.Effects
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
-import KomplexHubPlugin
+import KomplexHub.Plugin
 
 Item
 {
@@ -17,7 +17,6 @@ Item
     property string thumbnail
     property string portrait
     property string landscape
-    property string original
     property string fullScreen
     property string portraitSize
     property string landscapeSize
@@ -30,29 +29,21 @@ Item
 
     id: rootItem
 
+    DownloadManager
+    {
+        id: downloadManager
+    }
+
     Rectangle
     {
+        id: pageView
         anchors.fill: parent
         color: palette.base
 
-        Image
+        BackgroundImage
         {
-            id: backgroundImage
-            source: width > height ? backgroundLandscape : backgroundPortrait
-            transform: Image.PreserveAspectCrop
             anchors.fill: parent
-            visible: false
-        }
-
-        MultiEffect
-        {
-            anchors.fill: backgroundImage
-            source: backgroundImage
-            blurEnabled: true
-            blurMax: 64
-            blur: 1.0
-            opacity: 0.25
-            saturation: -0.8
+            source: width > height ? backgroundLandscape : backgroundPortrait
         }
 
         ColumnLayout
@@ -61,36 +52,15 @@ Item
             anchors.margins: Constants.largeMargin
             spacing: Constants.largeMargin
 
-            RowLayout
+            ImageFrame
             {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignTop| Qt.AlignHCenter
-                Layout.topMargin: 32
+                Layout.topMargin: Constants.largeMargin
+                Layout.preferredHeight: width / 1.77777777778
+                Layout.maximumWidth: 800
 
-                Rectangle
-                {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: width / 1.77777777778
-                    Layout.maximumWidth: 800
-                    Layout.alignment: Qt.AlignHCenter
-                    color: palette.base.darker()
-
-                    Throbber
-                    {
-                        anchors.fill: parent
-                        id: loadingThrobber
-                        visible: viewImage.status === Image.Loading
-                    }
-
-                    Image
-                    {
-                        id: viewImage
-                        anchors.fill: parent
-                        transform: Image.PreserveAspectCrop
-                        source: rootItem.thumbnail
-                        visible: !(status === Image.Loading)
-                    }
-                }
+                source: rootItem.thumbnail
             }
 
             Text
@@ -158,6 +128,8 @@ Item
                     Layout.preferredWidth: 128
                     text: qsTr("Download")
                     icon.source: "qrc:/images/icons/icons8-download.svg"
+
+                    onTriggered: () => rootItem.download()
                 }
             }
 
@@ -191,5 +163,177 @@ Item
                 }
             }
         }
+
+        states:
+        [
+            State
+            {
+                name: "downloading"
+                when: downloadManager.state === DownloadManager.Downloading
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 1
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 0
+                }
+            },
+            State
+            {
+                name: "complete"
+                when: downloadManager.state === DownloadManager.Complete
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 1
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 0
+                }
+            },
+            State
+            {
+                name: "error"
+                when: downloadManager.state === DownloadManager.Error
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 1
+                }
+            },
+            State
+            {
+                name: "idle"
+                when: downloadManager.state === DownloadManager.Idle
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 1
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 0
+                }
+            }
+        ]
+    }
+
+    DownloadView
+    {
+        id: downloadView
+        anchors.fill: parent
+
+        manager: downloadManager
+        thumbnail: rootItem.thumbnail
+        opacity: 0
+        visible: opacity > 0.01
+    }
+
+    CompletedView
+    {
+        id: completedView
+        anchors.fill: parent
+
+        opacity: 0
+        visible: opacity > 0.01
+        manager: downloadManager
+    }
+
+    ErrorView
+    {
+        id: errorView
+        anchors.fill: parent
+
+        opacity: 0
+        visible: opacity > 0.01
+        manager: downloadManager
+    }
+
+    function download()
+    {
+        let url = ""
+
+        switch(downloadSelector.currentIndex)
+        {
+            case 1:
+                url = portrait
+                break;
+            case 2:
+                url = landscape
+                break;
+            case 0:
+            default:
+                url = fullScreen
+                break;
+        }
+
+        downloadManager.downloadImage(author, authorUrl, description, url)
     }
 }

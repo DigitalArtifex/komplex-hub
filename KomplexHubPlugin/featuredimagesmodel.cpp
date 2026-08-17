@@ -5,49 +5,56 @@ FeaturedImagesModel::FeaturedImagesModel(QObject *parent) : QAbstractListModel{p
     m_paginator = new FeaturedImagesPaginator(this);
     PaginationNotifier *notifier = static_cast<PaginationNotifier*>(m_paginator);
 
-    QObject::connect(
+    QObject::connect
+    (
         notifier,
         &PaginationNotifier::resultsPerPageChanged,
         this,
         &FeaturedImagesModel::resultsPerPageChanged
     );
 
-    QObject::connect(
+    QObject::connect
+    (
         notifier,
         &PaginationNotifier::totalResultsChanged,
         this,
         &FeaturedImagesModel::totalResultsChanged
     );
 
-    QObject::connect(
+    QObject::connect
+    (
         notifier,
         &PaginationNotifier::totalPagesChanged,
         this,
         &FeaturedImagesModel::totalPagesChanged
     );
 
-    QObject::connect(
+    QObject::connect
+    (
         notifier,
         &PaginationNotifier::pageChanged,
         this,
         &FeaturedImagesModel::pageChanged
     );
 
-    QObject::connect(
+    QObject::connect
+    (
         notifier,
         &PaginationNotifier::pageChanged,
         this,
         &FeaturedImagesModel::resetDataModel
     );
 
-    QObject::connect(
+    QObject::connect
+    (
         notifier,
         &PaginationNotifier::fetchComplete,
         this,
         &FeaturedImagesModel::resetState
     );
 
-    QObject::connect(
+    QObject::connect
+    (
         notifier,
         &PaginationNotifier::fetching,
         this,

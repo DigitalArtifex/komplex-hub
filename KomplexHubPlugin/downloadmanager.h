@@ -68,13 +68,13 @@ public:
      * out of it
      * @param url
      */
-    auto downloadImage
+    Q_INVOKABLE auto downloadImage
     (
         const QString &author,
         const QString &authorId,
         const QString &description,
         const QUrl &url
-    ) noexcept(false) -> void;
+    ) -> void;
 
     /**
      * @brief downloadVideo
@@ -85,13 +85,13 @@ public:
      * @param description
      * @param url
      */
-    auto downloadVideo
+    Q_INVOKABLE auto downloadVideo
     (
         const QString &author,
         const QString &authorId,
         const QString &description,
         const QUrl &url
-    ) noexcept(false) -> void;
+    ) -> void;
 
     /**
      * @brief downloadPack
@@ -100,13 +100,13 @@ public:
      * @param id
      * @return File info of the installed pack
      */
-    auto downloadPack(const QString &id) noexcept(false) -> void;
+    Q_INVOKABLE auto downloadPack(const QString &id) -> void;
 
     auto compilerOutput() const -> const QString & { return m_compilerOutput; }
     auto errorTitle() const -> const QString & { return m_errorTitle; }
     auto errorMessage() const -> const QString & { return m_errorMessage; }
     auto state() const -> State { return m_state; }
-    auto reset() -> void;
+    Q_INVOKABLE auto reset() -> void;
     auto downloadProgress() -> qreal { return m_downloadProgress; }
     auto compileProgress() -> qreal;
     auto compileSteps() -> qint64;
@@ -117,6 +117,9 @@ public:
 
     auto downloadedBytes() const -> qint64 { return m_downloadedBytes; }
     auto setDownloadedBytes(qint64 downloadedBytes) -> void;
+
+    auto lastInstalledFile() const -> const QString &;
+    auto setLastInstalledFile(const QString &lastInstalledFile) -> void;
 
 protected:
     auto setError(const QString &title, const QString &message) -> void;
@@ -136,11 +139,15 @@ signals:
     auto compileStepsChanged() -> void;
     auto compileStepsCompletedChanged() -> void;
 
+    auto lastInstalledFileChanged() -> void;
+
 private:
     auto compile(const QUrl &uri) noexcept(false) -> QUrl;
     auto install(const QUrl &uri) noexcept(false) -> QUrl;
     auto download(const QNetworkRequest &request, const QString &id, RequestType type = Get) -> QFuture<QUrl>;
     auto readShaderToyEntry(const QUrl &uri) noexcept(false) -> ShaderToyEntry;
+
+    QString m_lastInstalledFile;
 
     QString m_compilerOutput;
     QString m_errorTitle;
@@ -156,6 +163,10 @@ private:
 
     PackCompiler *m_compiler = nullptr;
 
+    QProcess m_moveProcess;
+
+    QFuture<QUrl> m_downloadFuture;
+
     Q_PROPERTY(QString compilerOutput READ compilerOutput WRITE setCompilerOutput NOTIFY compilerOutputChanged FINAL)
     Q_PROPERTY(QString errorTitle READ errorTitle NOTIFY errorChanged FINAL)
     Q_PROPERTY(QString errorMessage READ errorMessage NOTIFY errorChanged FINAL)
@@ -166,6 +177,7 @@ private:
     Q_PROPERTY(qint64 downloadedBytes READ downloadedBytes WRITE setDownloadedBytes NOTIFY downloadedBytesChanged FINAL)
     Q_PROPERTY(qint64 compileSteps READ compileSteps NOTIFY compileStepsChanged FINAL)
     Q_PROPERTY(qint64 compileStepsCompleted READ compileStepsCompleted NOTIFY compileStepsCompletedChanged FINAL)
+    Q_PROPERTY(QString lastInstalledFile READ lastInstalledFile WRITE setLastInstalledFile NOTIFY lastInstalledFileChanged FINAL)
 };
 Q_DECLARE_METATYPE(DownloadManager)
 
