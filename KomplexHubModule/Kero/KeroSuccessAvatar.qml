@@ -1,18 +1,20 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+
 import KomplexHub
 
 Item {
-    property string title: qsTr("Building")
-    property string description: qsTr("Kero is getting your wallpaper ready")
+    property string title: qsTr("Success!")
+    property string description: qsTr("Your new wallpaper is ready!")
     property color color: "transparent"
 
-    id: keroLoadingOverlayRoot
+    id: keroHelloAvatarRoot
 
     Rectangle {
+        id: keroHelloAvatarBackground
         anchors.fill: parent
-        color: keroLoadingOverlayRoot.color
+        color: keroHelloAvatarRoot.color
 
         ColumnLayout {
             anchors.fill: parent
@@ -29,29 +31,11 @@ Item {
                 color: "transparent"
 
                 Image {
-                    id: keroLoadingImage
                     anchors.fill: parent
 
-                    source: "qrc:/images/kero/kero_build_1.png"
+                    source: "qrc:/images/kero/kero_success.png"
                     antialiasing: true
                     fillMode: Image.PreserveAspectFit
-
-                    Timer {
-                        property int frame: 1
-                        id: animationTimer
-                        interval: 175
-                        running: parent.visible
-                        repeat: true
-
-                        onTriggered: () => {
-                            frame += 1;
-
-                            if(frame >= 4)
-                                frame = 1
-
-                            keroLoadingImage.source = "qrc:/images/kero/kero_build_" + frame + ".png"
-                        }
-                    }
                 }
 
                 ColumnLayout {
@@ -61,7 +45,7 @@ Item {
 
                     Text {
                         color: palette.text
-                        text: keroLoadingOverlayRoot.title
+                        text: keroHelloAvatarRoot.title
                         font: Constants.h1Font
 
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
@@ -69,7 +53,7 @@ Item {
 
                     Text {
                         id: errorText
-                        text: keroLoadingOverlayRoot.description
+                        text: keroHelloAvatarRoot.description
                         color: palette.text.darker()
 
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom

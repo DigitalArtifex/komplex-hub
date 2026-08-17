@@ -11,5 +11,6 @@ qt6_add_qml_module(KomplexHubModule_Kero
         "KeroLoadingAnimation.qml"
         "KeroNoResultsAvatar.qml"
         "KeroWarningAvatar.qml"
-        QML_FILES KeroHeader.qml
+        "KeroHeader.qml"
+        "KeroSuccessAvatar.qml"
 )
