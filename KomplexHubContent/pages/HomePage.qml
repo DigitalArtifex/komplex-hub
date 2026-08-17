@@ -47,25 +47,22 @@ Item
         resultsPerPage: 0
     }
 
-    ScrollView
+    Flickable
     {
-        id: resultsLayout
+        id: pageArea
         visible: opacity > 0.01
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
 
-        ScrollBar.horizontal.interactive: false
-        ScrollBar.vertical.interactive: true
-
-        onWidthChanged: content.width = width
+        contentHeight: content.height
+        contentWidth: content.width
 
         Column
         {
             id: content
-            anchors.right: parent.right
-            anchors.top: parent.top
+            width: pageArea.width
 
             VerticalSpacer{ height: Constants.largeMargin }
 
@@ -401,6 +398,7 @@ Item
                 VerticalSpacer{}
             }
         }
+
     }
 
     Component.onCompleted: () =>
@@ -573,7 +571,7 @@ Item
 
             PropertyChanges
             {
-                target: resultsLayout
+                target: pageArea
                 opacity: 0
             }
 
@@ -597,7 +595,7 @@ Item
 
             PropertyChanges
             {
-                target: resultsLayout
+                target: pageArea
                 opacity: 1
             }
         }
@@ -616,7 +614,7 @@ Item
             }
             NumberAnimation
             {
-                target: resultsLayout
+                target: pageArea
                 duration: 250
                 property: "opacity";
             }
@@ -625,7 +623,7 @@ Item
 
     function showFeaturedVideosPage()
     {
-        resultsLayout.opacity = 0
+        pageArea.opacity = 0
         featuredLoaderItem.opacity = 1
         featuredLoader.sourceComponent = featuredVideosComponent
         popup = true
@@ -633,7 +631,7 @@ Item
 
     function showFeaturedPacksPage()
     {
-        resultsLayout.opacity = 0
+        pageArea.opacity = 0
         featuredLoaderItem.opacity = 1
         featuredLoader.sourceComponent = featuredPacksComponent
         popup = true
@@ -641,7 +639,7 @@ Item
 
     function showFeaturedImagesPage()
     {
-        resultsLayout.opacity = 0
+        pageArea.opacity = 0
         featuredLoaderItem.opacity = 1
         featuredLoader.sourceComponent = featuredImagesComponent
         popup = true
@@ -665,7 +663,7 @@ Item
         viewMoreImagePopup.fullScreenSize = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.ScreenSizeRole)
         viewMoreImagePopup.opacity = 1
         popupContainer.opacity = 1
-        resultsLayout.opacity = 0
+        pageArea.opacity = 0
         homePageRoot.popup = true
     }
 
@@ -679,7 +677,7 @@ Item
         viewMoreVideoPopup.modelIndex = index
         viewMoreVideoPopup.model = videosModel.itemModel
         viewMoreVideoPopup.opacity = 1
-        resultsLayout.opacity = 0
+        pageArea.opacity = 0
         popupContainer.opacity = 1
         homePageRoot.popup = true
     }
@@ -692,7 +690,7 @@ Item
         viewMoreWallpaperPopup.thumbnail = packsModel.data(packsModel.index(index,0), NewestPacksModel.ThumbnailRole)
         viewMoreWallpaperPopup.opacity = 1
         popupContainer.opacity = 1
-        resultsLayout.opacity = 0
+        pageArea.opacity = 0
         homePageRoot.popup = true
     }
 
@@ -709,7 +707,7 @@ Item
         viewMoreVideoPopup.opacity = 0
         viewMoreWallpaperPopup.opacity = 0
         popupContainer.opacity = 0
-        resultsLayout.opacity = 1
+        pageArea.opacity = 1
         homePageRoot.popup = false
     }
 }
