@@ -34,7 +34,10 @@
     </tr>
 </table>
 
-Most of the development of Komplex and it's associated apps will now happen here, instead of Github.
+<small>Note: Application style is based on your system theme. It will look different than it does in the screenshots. I am using a modified KVantum Glass, Blur and Neon Sunset Wallpaper Pack.</small>
+
+## Development
+Most of the development of Komplex and applications under its project umbrella will now happen here, instead of Github.
 
 ## Installation
 
