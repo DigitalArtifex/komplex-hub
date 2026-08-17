@@ -1,9 +1,9 @@
 import QtQuick
+import QtQuick.Layouts
 
 Rectangle
 {
-    height: 36
+    Layout.fillHeight: true
+
     color: "transparent"
-    anchors.left: parent.left
-    anchors.right: parent.right
 }

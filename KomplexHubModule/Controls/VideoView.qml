@@ -6,7 +6,7 @@ import QtQuick.Effects
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
-import KomplexHubPlugin
+import KomplexHub.Plugin
 
 Item
 {
@@ -46,24 +46,10 @@ Item
         anchors.fill: parent
         color: palette.base
 
-        Image
+        BackgroundImage
         {
-            id: backgroundImage
-            source: thumbnail
             anchors.fill: parent
-            visible: false
-            fillMode: Image.PreserveAspectFit
-        }
-
-        MultiEffect
-        {
-            anchors.fill: backgroundImage
-            source: backgroundImage
-            blurEnabled: true
-            blurMax: 64
-            blur: 1.0
-            opacity: 0.25
-            saturation: -0.8
+            source: rootItem.thumbnail
         }
 
         ColumnLayout
@@ -72,36 +58,15 @@ Item
             anchors.margins: Constants.largeMargin
             spacing: Constants.largeMargin
 
-            RowLayout
+            ImageFrame
             {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignTop| Qt.AlignHCenter
-                Layout.topMargin: 32
+                Layout.topMargin: Constants.largeMargin
+                Layout.preferredHeight: width / 1.77777777778
+                Layout.maximumWidth: 800
 
-                Rectangle
-                {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: width / 1.77777777778
-                    Layout.maximumWidth: 800
-                    Layout.alignment: Qt.AlignHCenter
-                    color: palette.base.darker()
-
-                    Throbber
-                    {
-                        anchors.fill: parent
-                        id: loadingThrobber
-                        visible: viewImage.status === Image.Loading
-                    }
-
-                    Image
-                    {
-                        id: viewImage
-                        anchors.fill: parent
-                        source: rootItem.thumbnail
-                        visible: !(status === Image.Loading)
-                        fillMode: Image.PreserveAspectCrop
-                    }
-                }
+                source: rootItem.thumbnail
             }
 
             Text

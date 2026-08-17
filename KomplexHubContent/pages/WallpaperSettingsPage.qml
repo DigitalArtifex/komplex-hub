@@ -33,7 +33,7 @@ import QtCore
 import Qt.labs.folderlistmodel 2.15
 import KomplexHub
 import KomplexHub.Controls
-import KomplexHubPlugin
+import KomplexHub.Plugin
 
 //import com.github.digitalartifex.komplex 1.0 as Komplex
 

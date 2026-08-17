@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
-import KomplexHubPlugin
+import KomplexHub.Plugin
 
 Rectangle
 {

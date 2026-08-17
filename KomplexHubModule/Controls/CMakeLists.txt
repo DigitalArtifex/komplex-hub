@@ -22,5 +22,10 @@ qt6_add_qml_module(KomplexHubModule_Controls
         QML_FILES VideoView.qml
         QML_FILES PackView.qml
         QML_FILES VerticalSpacer.qml
+        QML_FILES DownloadView.qml
+        QML_FILES ImageFrame.qml
+        QML_FILES BackgroundImage.qml
+        QML_FILES CompletedView.qml
+        QML_FILES ErrorView.qml
 )
 

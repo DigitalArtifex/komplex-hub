@@ -16,7 +16,7 @@ Item {
     signal triggered
     signal viewMoreTriggered
 
-    id: mainItem
+    id: rootItem
     width: 256
     height: 256
     clip: true
@@ -48,7 +48,7 @@ Item {
             onReleased: () => {
                 if(!states.selected)
                 {
-                    mainItem.triggered()
+                    rootItem.triggered()
                 }
             }
         }
@@ -57,47 +57,13 @@ Item {
         {
             anchors.fill: parent
 
-            Rectangle
+            ImageFrame
             {
                 Layout.preferredWidth: 250
                 Layout.preferredHeight: 141
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                 Layout.topMargin: 3
-
-                border.color: palette.alternateBase.lighter(1.75)
-
-                color: palette.base.lighter(1.25)
-
-                Throbber
-                {
-                    anchors.fill: parent
-                    id: loadingThrobber
-                    visible: viewImage.status === Image.Loading
-                }
-
-                Image
-                {
-                    property int retries: 0
-                    id: viewImage
-                    anchors.fill: parent
-                    source: mainItem.thumbnail
-                    visible: !(status === Image.Loading)
-                    fillMode: Image.PreserveAspectCrop
-
-                    onStatusChanged: () =>
-                    {
-                        // if(status === Image.Error)
-                        // {
-                        //     if(retries <= 3)
-                        //     {
-                        //         ++retries
-                        //         let src = source
-                        //         source = ""
-                        //         source = src
-                        //     }
-                        // }
-                    }
-                }
+                source: rootItem.thumbnail
 
                 Image
                 {
@@ -112,14 +78,57 @@ Item {
                     opacity: 0.5
                     source: "qrc:/images/icons/pexels-icon-filled-256.svg"
 
-                    visible: mainItem.pexels
+                    visible: rootItem.pexels
                 }
             }
+
+            // Rectangle
+            // {
+            //     Layout.preferredWidth: 250
+            //     Layout.preferredHeight: 141
+            //     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+            //     Layout.topMargin: 3
+
+            //     border.color: palette.alternateBase.lighter(1.75)
+
+            //     color: palette.base.lighter(1.25)
+
+            //     // Throbber
+            //     // {
+            //     //     anchors.fill: parent
+            //     //     id: loadingThrobber
+            //     //     visible: viewImage.status === Image.Loading
+            //     // }
+
+            //     // Image
+            //     // {
+            //     //     property int retries: 0
+            //     //     id: viewImage
+            //     //     anchors.fill: parent
+            //     //     source: rootItem.thumbnail
+            //     //     visible: !(status === Image.Loading)
+            //     //     fillMode: Image.PreserveAspectCrop
+
+            //     //     onStatusChanged: () =>
+            //     //     {
+            //     //         // if(status === Image.Error)
+            //     //         // {
+            //     //         //     if(retries <= 3)
+            //     //         //     {
+            //     //         //         ++retries
+            //     //         //         let src = source
+            //     //         //         source = ""
+            //     //         //         source = src
+            //     //         //     }
+            //     //         // }
+            //     //     }
+            //     // }
+            // }
 
             Text
             {
                 color: palette.text
-                text: mainItem.title
+                text: rootItem.title
 
                 font.pixelSize: 16
                 font.bold: true
@@ -135,12 +144,12 @@ Item {
             {
                 color: palette.text
                 font.pixelSize: 12
-                text: "By: " + mainItem.author
+                text: "By: " + rootItem.author
                 leftPadding: 12
 
                 Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
                 Layout.preferredWidth: 250
-                visible: !mainItem.pexels
+                visible: !rootItem.pexels
             }
 
             Text
@@ -149,7 +158,7 @@ Item {
                 clip: true
                 color: palette.text
                 font.pixelSize: 12
-                text: mainItem.description
+                text: rootItem.description
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 textFormat: Text.PlainText
                 elide: Text.ElideRight
@@ -176,7 +185,7 @@ Item {
                 opacity: 0
 
                 onTriggered: () => {
-                    mainItem.viewMoreTriggered()
+                    rootItem.viewMoreTriggered()
                 }
             }
 
@@ -189,7 +198,7 @@ Item {
         id: states
         property bool clicked: false
         property bool hovered: false
-        property alias selected: mainItem.selected
+        property alias selected: rootItem.selected
         property bool idle: true
 
         onIdleChanged: () =>

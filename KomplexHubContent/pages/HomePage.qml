@@ -6,7 +6,7 @@ import QtQuick.Effects
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
-import KomplexHubPlugin
+import KomplexHub.Plugin
 
 Item
 {
@@ -64,7 +64,7 @@ Item
             id: content
             width: pageArea.width
 
-            VerticalSpacer{ height: Constants.largeMargin }
+            VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
 
             Rectangle
             {
@@ -153,11 +153,6 @@ Item
                                         {
                                             showWallpaperPopup(parent.index)
                                         }
-
-                                        onThumbnailChanged: () =>
-                                        {
-                                            console.log(index + " " + thumbnail + " " + parent.thumbnail)
-                                        }
                                     }
                                 }
 
@@ -225,13 +220,13 @@ Item
                                 }
                             }
 
-                            VerticalSpacer{ height: Constants.largeMargin }
+                            VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
                         }
                     }
                 }
             }
 
-            VerticalSpacer{ height: Constants.largeMargin }
+            VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
 
             Rectangle
             {
@@ -322,11 +317,6 @@ Item
                                         {
                                             showWallpaperPopup(parent.index)
                                         }
-
-                                        onThumbnailChanged: () =>
-                                        {
-                                            console.log(index + " " + thumbnail + " " + parent.thumbnail)
-                                        }
                                     }
                                 }
 
@@ -390,13 +380,13 @@ Item
                                 }
                             }
 
-                            VerticalSpacer{ height: Constants.largeMargin }
+                            VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
                         }
                     }
                 }
             }
 
-            VerticalSpacer{ height: Constants.largeMargin }
+            VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
         }
 
     }
@@ -607,6 +597,12 @@ Item
                 target: pageArea
                 opacity: 0
             }
+
+            PropertyChanges
+            {
+                target: loadingAnimation
+                opacity: 0
+            }
         }
     ]
 
@@ -661,7 +657,6 @@ Item
         viewMoreImagePopup.description = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.DescriptionRole)
         viewMoreImagePopup.uuid = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.UuidRole)
         viewMoreImagePopup.thumbnail = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LargeThumbnailRole)
-        viewMoreImagePopup.original = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.OriginalUrlRole)
         viewMoreImagePopup.portrait = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.PortraitUrlRole)
         viewMoreImagePopup.landscape = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.LandscapeUrlRole)
         viewMoreImagePopup.backgroundPortrait = imagesModel.data(imagesModel.index(index,0), FeaturedImagesModel.BackgroundPortraitRole)
