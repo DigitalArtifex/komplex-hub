@@ -75,68 +75,75 @@ Content purchases will be processed through the website using Paypal as will art
 ## Status
 
 ### API Status
-|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
-| Newest Packs | |-| |-| | ✅ |
-| Featured Packs | |-| |✔| |-|
-| Search Packs | |-| |-| | ✅ |
+
+| Feature |  Incomplete  | Started  | Complete |
+|-------|-------|-------|-------|
+| Newest Packs | - | ✅ | - |
+| Featured Packs | - | ✔ | - |
+| Search Packs | - | ✅ | - |
 | Submit Packs | |❌| |-| |-|
-| Newest Cubemaps | |-| |-| | ✅ |
-| Featured Cubemaps | |-| |✔| |-|
-| Search Cubemaps | |-| |-| | ✅ |
+| Newest Cubemaps | - | ✅ | - |
+| Featured Cubemaps | - | ✔ | - |
+| Search Cubemaps | - | ✅ | - |
 | Submit Cubemaps | |❌| |-| |-|
-| Newest Filter Shaders | |-| |-| | ✅ |
-| Featured Filter Shaders | |-| |✔| |-|
-| Search Filter Shaders | |-| |-| | ✅ |
+| Newest Filter Shaders | - | ✅ | - |
+| Featured Filter Shaders | - | ✔ | - |
+| Search Filter Shaders | - | ✅ | - |
 | Submit Filter Shaders | |❌| |-| |-|
-| Pack Thumbnails | |-| |-| | ✅ |
-| Featured Images | |-| |-| | ✅ |
-| Search Images | |-| |-| | ✅ |
-| Popular Videos | |-| |-| | ✅ |
-| Search Videos | |-| |-| | ✅ |
-| User Accounts | |-| |✔| |-|
-| User Authentication | |-| |✔| |-|
+| Pack Thumbnails | - | ✅ | - |
+| Featured Images | - | ✅ | - |
+| Search Images | - | ✅ | - |
+| Popular Videos | - | ✅ | - |
+| Search Videos | - | ✅ | - |
+| User Accounts | - | ✔ | - |
+| User Authentication | - | ✔ | - |
 | User Configuration | |❌| |-| |-|
 | User Media | |❌| |-| |-|
 | Author Profiles | |❌| |-| |-|
 
 ### Media Hub Status
-|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
-| UI Design | |-| |-| | ✅ |
-| Spotlight/Homepage | |-| |✔| | - |
-| - Newest Packs | |-| |-| | ✅ |
-| - Featured Packs | |-| |✔| | - |
-| - Featured Images | |-| |-| | ✅ |
-| - Popular Videos | |-| |-| | ✅ |
-| - View More | |-| |-| | ✅ |
+
+| Feature |  Incomplete  | Started  | Complete |
+|-------|-------|-------|-------|
+| UI Design | - | ✅ | - |
+| Spotlight/Homepage | - | ✔ | - |
+| - Newest Packs | - | ✅ | - |
+| - Featured Packs | - | ✔ | - |
+| - Featured Images | - | ✅ | - |
+| - Popular Videos | - | ✅ | - |
+| - View More | - | ✅ | - |
 | - Author Profile | |❌| |-| |-|
-| Media Downloader | |-| |✔| | - |
+| Media Downloader | | - | ✔ | - |
 | - Packs | |❌| |-| |-|
 | - Videos | |❌| |-| |-|
-| - Images | |-| |-| | ✅ |
-| Detailed Views | |-| |-| | ✅ |
-| - Packs | |-| |-| | ✅ |
-| - Videos | |-| |-| | ✅ |
-| - Images | |-| |-| | ✅ |
-| Installed Media Manager | |-| |✔| | - |
-| Settings Manager | |-| |-| | ✅ |
+| - Images | - | ✅ | - |
+| Detailed Views | - | ✅ | - |
+| - Packs | - | ✅ | - |
+| - Videos | - | ✅ | - |
+| - Images | - | ✅ | - |
+| Installed Media Manager | - | ✔ | - |
+| Settings Manager | - | ✅ | - |
 | User Accounts | |❌| |-| |-|
 | - User Login | |❌| |-| |-|
 | - User Profile | |❌| |-| |-|
-| About Page | |-| |-| | ✅ |
+| About Page | - | ✅ | - |
 
 ### Pack Builder
-|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
-|-----| |-----| |-----| |-----|
-| All Design & Features | |❌| |-| |-|
+
+| Feature |  Incomplete  | Started  | Complete |
+|-------|-------|-------|-------|
+| All Design & Features | ❌ | - | - |
 
 ### Site
-|--Feature--| |--Incomplete--| |--Started--| |--Complete--|
-| Site Base | |-| |✔| | - |
-| Accounts | |-| |✔| | - |
-| Gallery | |❌| |-| |-|
-| Payment Gateway | |❌| |-| |-|
-| - Artist Payout | |❌| |-| |-|
-| - User Media Purchase | |❌| |-| |-|
+
+| Feature |  Incomplete  | Started  | Complete |
+|-------|-------|-------|-------|
+| Site Base | - | ✔ | - |
+| Accounts | - | ✔ | - |
+| Gallery | | ❌ | - | - |
+| Payment Gateway | | ❌ | - | - |
+| - Artist Payout | | ❌ | - | - |
+| - User Media Purchase | | ❌ | - | - |
 
 This app is currently under development and is currently alpha. The API is now being hosted on https://komplex.dev.
 
