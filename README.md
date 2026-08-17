@@ -80,7 +80,7 @@ Content purchases will be processed through the website using Paypal as will art
 ### Legend
 
 | Status |  Icon  | Description  |
-|-------|:-------:|
+|-------|:-------:|--------|
 | Not started | ❌ | Either no work has been done yet or so little work that it is unusable in its current state.
 | In Progress | ✔ | *Some* work has been completed, but is not yet functional and/or feature complete
 | Complete | ✅ | Planned features completed
