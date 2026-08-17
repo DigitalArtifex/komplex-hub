@@ -126,6 +126,7 @@ Content purchases will be processed through the website using Paypal as will art
 
 ### Pack Builder
 |--Feature--| |--Incomplete--| |--Started--| |--Complete--|
+|-----| |-----| |-----| |-----|
 | All Design & Features | |❌| |-| |-|
 
 ### Site
