@@ -81,15 +81,15 @@ Content purchases will be processed through the website using Paypal as will art
 | Newest Packs | - | - | ✅ |
 | Featured Packs | - | ✔ | - |
 | Search Packs | - | - | ✅ |
-| Submit Packs | |❌| |-| |-|
+| Submit Packs | ❌ | - | - |
 | Newest Cubemaps | - | - | ✅ |
 | Featured Cubemaps | - | ✔ | - |
 | Search Cubemaps | - | - | ✅ |
-| Submit Cubemaps | |❌| |-| |-|
+| Submit Cubemaps | ❌ | - | - |
 | Newest Filter Shaders | - | - | ✅ |
 | Featured Filter Shaders | - | ✔ | - |
 | Search Filter Shaders | - | - | ✅ |
-| Submit Filter Shaders | |❌| |-| |-|
+| Submit Filter Shaders | ❌ | - | - |
 | Pack Thumbnails | - | - | ✅ |
 | Featured Images | - | - | ✅ |
 | Search Images | - | - | ✅ |
@@ -97,9 +97,9 @@ Content purchases will be processed through the website using Paypal as will art
 | Search Videos | - | - | ✅ |
 | User Accounts | - | ✔ | - |
 | User Authentication | - | ✔ | - |
-| User Configuration | |❌| |-| |-|
-| User Media | |❌| |-| |-|
-| Author Profiles | |❌| |-| |-|
+| User Configuration | ❌ | - | - |
+| User Media | ❌ | - | - |
+| Author Profiles | ❌ | - | - |
 
 ### Media Hub Status
 
@@ -112,10 +112,10 @@ Content purchases will be processed through the website using Paypal as will art
 | - Featured Images | - | - | ✅ |
 | - Popular Videos | - | - | ✅ |
 | - View More | - | - | ✅ |
-| - Author Profile | |❌| |-| |-|
+| - Author Profile | ❌ | - | - |
 | Media Downloader | | - | ✔ | - |
-| - Packs | |❌| |-| |-|
-| - Videos | |❌| |-| |-|
+| - Packs | ❌ | - | - |
+| - Videos | ❌ | - | - |
 | - Images | - | - | ✅ |
 | Detailed Views | - | - | ✅ |
 | - Packs | - | - | ✅ |
@@ -123,9 +123,9 @@ Content purchases will be processed through the website using Paypal as will art
 | - Images | - | - | ✅ |
 | Installed Media Manager | - | ✔ | - |
 | Settings Manager | - | - | ✅ |
-| User Accounts | |❌| |-| |-|
-| - User Login | |❌| |-| |-|
-| - User Profile | |❌| |-| |-|
+| User Accounts | ❌ | - | - |
+| - User Login | ❌ | - | - |
+| - User Profile | ❌ | - | - |
 | About Page | - | - | ✅ |
 
 ### Pack Builder
@@ -140,10 +140,10 @@ Content purchases will be processed through the website using Paypal as will art
 |-------|-------|-------|-------|
 | Site Base | - | ✔ | - |
 | Accounts | - | ✔ | - |
-| Gallery | | ❌ | - | - |
-| Payment Gateway | | ❌ | - | - |
-| - Artist Payout | | ❌ | - | - |
-| - User Media Purchase | | ❌ | - | - |
+| Gallery | ❌ | - | - |
+| Payment Gateway | ❌ | - | - |
+| - Artist Payout | ❌ | - | - |
+| - User Media Purchase | ❌ | - | - |
 
 This app is currently under development and is currently alpha. The API is now being hosted on https://komplex.dev.
 
