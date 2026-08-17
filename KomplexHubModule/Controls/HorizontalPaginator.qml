@@ -28,6 +28,7 @@ Item
     signal viewMoreTriggered()
 
     id: rootItem
+    clip: true
 
     Item
     {
@@ -57,6 +58,7 @@ Item
                 id: resultsView
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                clip: true
 
                 spacing: Constants.mediumMargin
 
@@ -132,7 +134,7 @@ Item
             Item
             {
                 Layout.fillHeight: true
-                Layout.preferredWidth: 128
+                Layout.preferredWidth: 64
                 Rectangle
                 {
                     id: gradientMap

@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls 2.0
 import QtQuick.Layouts
 import QtQuick.Effects
 
@@ -47,193 +47,359 @@ Item
         resultsPerPage: 0
     }
 
-    Rectangle
+    ScrollView
     {
-        anchors.fill: parent
-        color: palette.base
+        id: resultsLayout
+        visible: opacity > 0.01
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
 
-        ColumnLayout
+        ScrollBar.horizontal.interactive: false
+        ScrollBar.vertical.interactive: true
+
+        onWidthChanged: content.width = width
+
+        Column
         {
-            id: resultsLayout
-            visible: opacity > 0.01
-            anchors.fill: parent
-            anchors.margins: Constants.mediumMargin
+            id: content
+            anchors.right: parent.right
+            anchors.top: parent.top
 
-            Text
+            VerticalSpacer{ height: Constants.largeMargin }
+
+            Rectangle
             {
-                Layout.alignment: Qt.AlignTop
-                Layout.preferredHeight: 50
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: childrenRect.height
+                anchors.margins: Constants.largeMargin
 
-                color: palette.text
-                font.pixelSize: Constants.h2Font.pixelSize
-                font.bold: true
-                text: qsTr("Newest Wallpaper Packs")
-                verticalAlignment: Qt.AlignVCenter
+                color: palette.base
+                border.color: palette.midlight
+
+                Column
+                {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+
+                    KeroHeader
+                    {
+                        height: 180
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                    }
+
+                    Rectangle
+                    {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: childrenRect.height
+
+                        color: palette.window
+
+                        Column
+                        {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.margins: Constants.largeMargin
+
+                            Text
+                            {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 36
+
+                                color: palette.text
+                                font.pixelSize: Constants.h2Font.pixelSize
+                                font.bold: true
+                                text: qsTr("Featured Live Wallpapers")
+                                verticalAlignment: Qt.AlignVCenter
+                            }
+
+                            HorizontalPaginator
+                            {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 245
+
+                                id: packsPaginator
+                                model: packsModel
+                                delegate: ItemDelegate
+                                {
+                                    width: resultWidth
+                                    height: resultHeight
+
+                                    required property string name
+                                    required property string author
+                                    required property string description
+                                    required property string uuid
+                                    required property string thumbnail
+                                    required property string authorId
+                                    required property int index
+
+                                    SearchResultItem
+                                    {
+                                        anchors.fill: parent
+                                        title: parent.name
+                                        author: parent.author
+                                        description: parent.description
+                                        thumbnail: parent.thumbnail
+                                        uuid: parent.uuid
+
+                                        selected: packsPaginator.currentIndex === parent.index
+
+                                        onTriggered: () => packsPaginator.currentIndex = parent.index
+
+                                        onViewMoreTriggered: () =>
+                                        {
+                                            showWallpaperPopup(parent.index)
+                                        }
+
+                                        onThumbnailChanged: () =>
+                                        {
+                                            console.log(index + " " + thumbnail + " " + parent.thumbnail)
+                                        }
+                                    }
+                                }
+
+                                onViewMoreTriggered: () =>
+                                {
+                                    showFeaturedPacksPage()
+                                }
+                            }
+
+                            Text
+                            {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 36
+
+                                color: palette.text
+                                font.pixelSize: Constants.h2Font.pixelSize
+                                font.bold: true
+                                text: qsTr("Featured Images")
+                                verticalAlignment: Qt.AlignVCenter
+                            }
+
+                            HorizontalPaginator
+                            {
+                                id: imagesPaginator
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 245
+
+                                model: imagesModel
+                                delegate: ItemDelegate
+                                {
+                                    width: resultWidth
+                                    height: resultHeight
+
+                                    required property string author
+                                    required property string description
+                                    required property string uuid
+                                    required property string thumbnail
+                                    required property string authorId
+                                    required property int index
+
+                                    SearchResultItem
+                                    {
+                                        anchors.fill: parent
+                                        title: parent.author
+                                        description: parent.description
+                                        thumbnail: parent.thumbnail
+                                        uuid: parent.uuid
+                                        pexels: true
+                                        selected: imagesPaginator.currentIndex === parent.index
+
+                                        onTriggered: () => imagesPaginator.currentIndex = parent.index
+
+                                        onViewMoreTriggered: () =>
+                                        {
+                                            showImagePopup(parent.index)
+                                        }
+                                    }
+                                }
+
+                                onViewMoreTriggered: () =>
+                                {
+                                    showFeaturedImagesPage()
+                                }
+                            }
+
+                            VerticalSpacer{ height: Constants.largeMargin }
+                        }
+                    }
+                }
             }
 
-            HorizontalPaginator
+            VerticalSpacer{ height: Constants.largeMargin }
+
+            Rectangle
             {
-                id: packsPaginator
-                Layout.fillWidth: true
-                Layout.preferredHeight: 245
-                Layout.alignment: Qt.AlignTop
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: childrenRect.height
+                anchors.margins: Constants.largeMargin
 
-                model: packsModel
-                delegate: ItemDelegate
+                color: palette.base
+                border.color: palette.midlight
+
+                Column
                 {
-                    width: resultWidth
-                    height: resultHeight
+                    anchors.left: parent.left
+                    anchors.right: parent.right
 
-                    required property string name
-                    required property string author
-                    required property string description
-                    required property string uuid
-                    required property string thumbnail
-                    required property string authorId
-                    required property int index
-
-                    SearchResultItem
+                    KeroHeader
                     {
-                        anchors.fill: parent
-                        title: parent.name
-                        author: parent.author
-                        description: parent.description
-                        thumbnail: parent.thumbnail
-                        uuid: parent.uuid
+                        height: 180
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        title: qsTr("New & Popular Wallpapers")
+                        image: "qrc:/images/kero/kero_star.png"
+                    }
 
-                        selected: packsPaginator.currentIndex === parent.index
+                    Rectangle
+                    {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.margins: Constants.largeMargin
+                        height: childrenRect.height
 
-                        onTriggered: () => packsPaginator.currentIndex = parent.index
+                        color: palette.window
 
-                        onViewMoreTriggered: () =>
+                        Column
                         {
-                            showWallpaperPopup(parent.index)
-                        }
+                            anchors.left: parent.left
+                            anchors.right: parent.right
 
-                        onThumbnailChanged: () =>
-                        {
-                            console.log(index + " " + thumbnail + " " + parent.thumbnail)
+                            Text
+                            {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 36
+
+                                color: palette.text
+                                font.pixelSize: Constants.h2Font.pixelSize
+                                font.bold: true
+                                text: qsTr("Newest Wallpaper Packs")
+                                verticalAlignment: Qt.AlignVCenter
+                            }
+
+                            HorizontalPaginator
+                            {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 245
+
+                                id: packsPaginator2
+                                model: packsModel
+                                delegate: ItemDelegate
+                                {
+                                    width: resultWidth
+                                    height: resultHeight
+
+                                    required property string name
+                                    required property string author
+                                    required property string description
+                                    required property string uuid
+                                    required property string thumbnail
+                                    required property string authorId
+                                    required property int index
+
+                                    SearchResultItem
+                                    {
+                                        anchors.fill: parent
+                                        title: parent.name
+                                        author: parent.author
+                                        description: parent.description
+                                        thumbnail: parent.thumbnail
+                                        uuid: parent.uuid
+
+                                        selected: packsPaginator2.currentIndex === parent.index
+
+                                        onTriggered: () => packsPaginator2.currentIndex = parent.index
+
+                                        onViewMoreTriggered: () =>
+                                        {
+                                            showWallpaperPopup(parent.index)
+                                        }
+
+                                        onThumbnailChanged: () =>
+                                        {
+                                            console.log(index + " " + thumbnail + " " + parent.thumbnail)
+                                        }
+                                    }
+                                }
+
+                                onViewMoreTriggered: () =>
+                                {
+                                    showFeaturedPacksPage()
+                                }
+                            }
+
+                            Text
+                            {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 36
+
+                                color: palette.text
+                                font.pixelSize: Constants.h2Font.pixelSize
+                                font.bold: true
+                                text: qsTr("Popular Videos")
+                                verticalAlignment: Qt.AlignVCenter
+                            }
+
+                            HorizontalPaginator
+                            {
+                                id: videosPaginator
+
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 245
+
+                                model: videosModel
+                                delegate: ItemDelegate
+                                {
+                                    width: resultWidth
+                                    height: resultHeight
+
+                                    required property string uuid
+                                    required property string author
+                                    required property string authorId
+                                    required property string authorUrl
+                                    required property string thumbnail
+                                    required property int index
+
+                                    SearchResultItem
+                                    {
+                                        anchors.fill: parent
+                                        title: parent.author
+                                        thumbnail: parent.thumbnail
+                                        uuid: parent.uuid
+                                        pexels: true
+                                        selected: videosPaginator.currentIndex === parent.index
+
+                                        onTriggered: () => videosPaginator.currentIndex = parent.index
+                                        onViewMoreTriggered:() => showVideoPopup(parent.index)
+                                    }
+                                }
+
+                                onViewMoreTriggered: () =>
+                                {
+                                    showFeaturedVideosPage()
+                                }
+                            }
+
+                            VerticalSpacer{ height: Constants.largeMargin }
                         }
                     }
                 }
 
-                onViewMoreTriggered: () =>
-                {
-                    showFeaturedPacksPage()
-                }
+                VerticalSpacer{}
             }
-
-            Text
-            {
-                Layout.alignment: Qt.AlignTop
-                Layout.preferredHeight: 50
-
-                color: palette.text
-                font.pixelSize: Constants.h2Font.pixelSize
-                font.bold: true
-                text: qsTr("Featured Images")
-                verticalAlignment: Qt.AlignVCenter
-            }
-
-            HorizontalPaginator
-            {
-                id: imagesPaginator
-                Layout.fillWidth: true
-                Layout.preferredHeight: 245
-                Layout.alignment: Qt.AlignTop
-
-                model: imagesModel
-                delegate: ItemDelegate
-                {
-                    width: resultWidth
-                    height: resultHeight
-
-                    required property string author
-                    required property string description
-                    required property string uuid
-                    required property string thumbnail
-                    required property string authorId
-                    required property int index
-
-                    SearchResultItem
-                    {
-                        anchors.fill: parent
-                        title: parent.author
-                        description: parent.description
-                        thumbnail: parent.thumbnail
-                        uuid: parent.uuid
-                        pexels: true
-                        selected: imagesPaginator.currentIndex === parent.index
-
-                        onTriggered: () => imagesPaginator.currentIndex = parent.index
-
-                        onViewMoreTriggered: () =>
-                        {
-                            showImagePopup(parent.index)
-                        }
-                    }
-                }
-
-                onViewMoreTriggered: () =>
-                {
-                    showFeaturedImagesPage()
-                }
-            }
-
-            Text
-            {
-                Layout.alignment: Qt.AlignTop
-                Layout.preferredHeight: 50
-
-                color: palette.text
-                font.pixelSize: Constants.h2Font.pixelSize
-                font.bold: true
-                text: qsTr("Popular Videos")
-                verticalAlignment: Qt.AlignVCenter
-            }
-
-            HorizontalPaginator
-            {
-                id: videosPaginator
-                Layout.fillWidth: true
-                Layout.preferredHeight: 245
-                Layout.alignment: Qt.AlignTop
-
-                model: videosModel
-                delegate: ItemDelegate
-                {
-                    width: resultWidth
-                    height: resultHeight
-
-                    required property string uuid
-                    required property string author
-                    required property string authorId
-                    required property string authorUrl
-                    required property string thumbnail
-                    required property int index
-
-                    SearchResultItem
-                    {
-                        anchors.fill: parent
-                        title: parent.author
-                        thumbnail: parent.thumbnail
-                        uuid: parent.uuid
-                        pexels: true
-                        selected: videosPaginator.currentIndex === parent.index
-
-                        onTriggered: () => videosPaginator.currentIndex = parent.index
-                        onViewMoreTriggered:() => showVideoPopup(parent.index)
-                    }
-                }
-
-                onViewMoreTriggered: () =>
-                {
-                    showFeaturedVideosPage()
-                }
-            }
-
-            /* spacer */
-            Item { Layout.fillHeight: true }
         }
     }
 

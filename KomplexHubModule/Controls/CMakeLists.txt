@@ -21,5 +21,6 @@ qt6_add_qml_module(KomplexHubModule_Controls
         QML_FILES
         QML_FILES VideoView.qml
         QML_FILES PackView.qml
+        QML_FILES VerticalSpacer.qml
 )
 

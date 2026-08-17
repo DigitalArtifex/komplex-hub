@@ -97,6 +97,8 @@ qt_add_resources(${CMAKE_PROJECT_NAME} "app_images"
     "images/kero/kero_run_3.png"
     "images/kero/kero_run_4.png"
     "images/kero/kero_success.png"
+    "images/kero/kero_spotlight.png"
+    "images/kero/kero_star.png"
     "images/kero/kero_warning.png"
 )
 
