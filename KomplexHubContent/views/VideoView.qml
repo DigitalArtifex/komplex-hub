@@ -21,17 +21,10 @@ Item
     property int imageWidth
 
     visible: opacity > 0.01
-    onVisibleChanged: () =>
-    {
-        if(!visible)
-        {
-            model = null
-        }
-    }
 
     Connections
     {
-        target: model
+        target: model ? model : null
 
         function onRowCountChanged()
         {
@@ -39,10 +32,16 @@ Item
         }
     }
 
+    DownloadManager
+    {
+        id: downloadManager
+    }
+
     id: rootItem
 
     Rectangle
     {
+        id: pageView
         anchors.fill: parent
         color: palette.base
 
@@ -119,6 +118,8 @@ Item
                     Layout.preferredWidth: 128
                     text: qsTr("Download")
                     icon.source: "qrc:/images/icons/icons8-download.svg"
+
+                    onTriggered: () => rootItem.download()
                 }
             }
 
@@ -152,5 +153,161 @@ Item
                 }
             }
         }
+
+        states:
+        [
+            State
+            {
+                name: "downloading"
+                when: downloadManager.state === DownloadManager.Downloading
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 1
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 0
+                }
+            },
+            State
+            {
+                name: "complete"
+                when: downloadManager.state === DownloadManager.Complete
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 1
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 0
+                }
+            },
+            State
+            {
+                name: "error"
+                when: downloadManager.state === DownloadManager.Error
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 1
+                }
+            },
+            State
+            {
+                name: "idle"
+                when: downloadManager.state === DownloadManager.Idle
+
+                PropertyChanges
+                {
+                    target: pageView
+                    opacity: 1
+                }
+
+                PropertyChanges
+                {
+                    target: downloadView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: completedView
+                    opacity: 0
+                }
+
+                PropertyChanges
+                {
+                    target: errorView
+                    opacity: 0
+                }
+            }
+        ]
+    }
+
+    DownloadView
+    {
+        id: downloadView
+        anchors.fill: parent
+
+        manager: downloadManager
+        thumbnail: rootItem.thumbnail
+        opacity: 0
+        visible: opacity > 0.01
+    }
+
+    CompletedView
+    {
+        id: completedView
+        anchors.fill: parent
+
+        opacity: 0
+        visible: opacity > 0.01
+        manager: downloadManager
+    }
+
+    ErrorView
+    {
+        id: errorView
+        anchors.fill: parent
+
+        opacity: 0
+        visible: opacity > 0.01
+        manager: downloadManager
+    }
+
+    function download()
+    {
+        downloadManager.downloadImage(author, authorUrl, downloadSelector.currentValue)
     }
 }

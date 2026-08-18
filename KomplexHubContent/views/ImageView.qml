@@ -55,7 +55,7 @@ Item
             ImageFrame
             {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignTop| Qt.AlignHCenter
+                Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
                 Layout.topMargin: Constants.largeMargin
                 Layout.preferredHeight: width / 1.77777777778
                 Layout.maximumWidth: 800
@@ -73,7 +73,7 @@ Item
                 elide: Text.ElideRight
 
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignTop| Qt.AlignLeft
+                Layout.alignment: Qt.AlignTop | Qt.AlignLeft
             }
 
             Text
