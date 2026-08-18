@@ -7,6 +7,7 @@ import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
 import KomplexHub.Plugin
+import KomplexHubContent
 
 Item
 {
@@ -111,7 +112,7 @@ Item
                                 color: palette.text
                                 font.pixelSize: Constants.h2Font.pixelSize
                                 font.bold: true
-                                text: qsTr("Featured Live Wallpapers")
+                                text: qsTr("Featured Komplex Wallpapers")
                                 verticalAlignment: Qt.AlignVCenter
                             }
 
@@ -198,7 +199,7 @@ Item
                                     SearchResultItem
                                     {
                                         anchors.fill: parent
-                                        title: parent.author
+                                        author: parent.author
                                         description: parent.description
                                         thumbnail: parent.thumbnail
                                         uuid: parent.uuid
@@ -220,13 +221,13 @@ Item
                                 }
                             }
 
-                            VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
+                            VerticalSpacer { height: Constants.largeMargin; width: Constants.largeMargin }
                         }
                     }
                 }
             }
 
-            VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
+            VerticalSpacer { height: Constants.largeMargin; width: Constants.largeMargin }
 
             Rectangle
             {
@@ -257,8 +258,8 @@ Item
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.margins: Constants.largeMargin
-                        height: childrenRect.height
 
+                        height: childrenRect.height
                         color: palette.window
 
                         Column
@@ -363,7 +364,7 @@ Item
                                     SearchResultItem
                                     {
                                         anchors.fill: parent
-                                        title: parent.author
+                                        author: parent.author
                                         thumbnail: parent.thumbnail
                                         uuid: parent.uuid
                                         pexels: true
@@ -388,7 +389,6 @@ Item
 
             VerticalSpacer{ height: Constants.largeMargin; width: Constants.largeMargin }
         }
-
     }
 
     Component.onCompleted: () =>
@@ -422,7 +422,8 @@ Item
             opacity: 0
             visible: opacity > 0.01
 
-            Behavior on opacity {
+            Behavior on opacity
+            {
                 NumberAnimation
                 {
                     duration: 250
@@ -437,7 +438,8 @@ Item
             opacity: 0
             visible: opacity > 0.01
 
-            Behavior on opacity {
+            Behavior on opacity
+            {
                 NumberAnimation
                 {
                     duration: 250
@@ -452,7 +454,8 @@ Item
             opacity: 0
             visible: opacity > 0.01
 
-            Behavior on opacity {
+            Behavior on opacity
+            {
                 NumberAnimation
                 {
                     duration: 250
@@ -460,7 +463,8 @@ Item
             }
         }
 
-        Behavior on opacity {
+        Behavior on opacity
+        {
             NumberAnimation
             {
                 duration: 250
@@ -478,7 +482,8 @@ Item
             anchors.fill: parent
             opacity: 0
 
-            Behavior on opacity {
+            Behavior on opacity
+            {
                 NumberAnimation
                 {
                     duration: 250
@@ -548,8 +553,10 @@ Item
         }
     }
 
-    states: [
-        State {
+    states:
+    [
+        State
+        {
             name: "loading"
             when: homePageRoot.loading
 
@@ -571,7 +578,8 @@ Item
                 opacity: 0
             }
         },
-        State {
+        State
+        {
             name: "idle"
             when: !popup && !loading
 
@@ -606,7 +614,8 @@ Item
         }
     ]
 
-    transitions: [
+    transitions:
+    [
         Transition
         {
             from: "loading"
@@ -692,6 +701,7 @@ Item
         viewMoreWallpaperPopup.authorId = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorIdRole)
         viewMoreWallpaperPopup.description = packsModel.data(packsModel.index(index,0), NewestPacksModel.DescriptionRole)
         viewMoreWallpaperPopup.thumbnail = packsModel.data(packsModel.index(index,0), NewestPacksModel.ThumbnailRole)
+        viewMoreWallpaperPopup.name = packsModel.data(packsModel.index(index,0), NewestPacksModel.NameRole)
         viewMoreWallpaperPopup.opacity = 1
         popupContainer.opacity = 1
         pageArea.opacity = 0

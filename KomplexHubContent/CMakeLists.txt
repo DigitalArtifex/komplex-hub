@@ -18,10 +18,20 @@ qt6_add_qml_module(KomplexHubContent
         "pages/UserProfilePage.qml"
         "pages/WallpaperSettingsPage.qml"
         "pages/VideoSearchPage.qml"
-        QML_FILES pages/FeaturedVideosPage.qml
-        QML_FILES pages/FeaturedPacksPage.qml
-        QML_FILES pages/FeaturedImagesPage.qml
-        QML_FILES pages/NewestPacksPage.qml
+        "pages/FeaturedVideosPage.qml"
+        "pages/FeaturedPacksPage.qml"
+        "pages/FeaturedImagesPage.qml"
+        "pages/NewestPacksPage.qml"
+        "views/CompletedView.qml"
+        "views/DownloadView.qml"
+        "views/ErrorView.qml"
+        "views/ImageView.qml"
+        "views/PackView.qml"
+        "views/VideoView.qml"
+        RESOURCES views/CMakeLists.txt
+        RESOURCES pages/CMakeLists.txt
 )
 
+add_subdirectory(pages)
+add_subdirectory(views)
 

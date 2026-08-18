@@ -2,10 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
 import KomplexHub.Plugin
+import KomplexHub.Views
+import KomplexHub.Pages
 
 Rectangle {
     id: root

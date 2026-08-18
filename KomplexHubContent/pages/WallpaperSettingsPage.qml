@@ -31,9 +31,12 @@ import QtQuick.Layouts
 //import org.kde.plasma.core as PlasmaCore
 import QtCore
 import Qt.labs.folderlistmodel 2.15
+
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Plugin
+import KomplexHub.Views
+import KomplexHub.Pages
 
 //import com.github.digitalartifex.komplex 1.0 as Komplex
 

@@ -81,7 +81,7 @@ Rectangle {
 
                     height: 64
                     width: 100
-                    text: "Home"
+                    text: qsTr("Home")
 
                     icon.height: 32
                     icon.width: 32
@@ -109,7 +109,7 @@ Rectangle {
 
                     height: 64
                     width: 100
-                    text: "Images"
+                    text: qsTr("Images")
 
                     icon.height: 32
                     icon.width: 32
@@ -132,7 +132,7 @@ Rectangle {
 
                     height: 64
                     width: 100
-                    text: "Videos"
+                    text: qsTr("Videos")
 
                     icon.height: 32
                     icon.width: 32
@@ -155,7 +155,7 @@ Rectangle {
 
                     height: 64
                     width: 100
-                    text: "Live"
+                    text: qsTr("Komplex")
 
                     icon.height: 32
                     icon.width: 32
@@ -178,7 +178,7 @@ Rectangle {
 
                     height: 64
                     width: 100
-                    text: "Installed"
+                    text: qsTr("Installed")
 
                     icon.height: 32
                     icon.width: 32
@@ -207,7 +207,7 @@ Rectangle {
 
                     height: 64
                     width: 100
-                    text: "Settings"
+                    text: qsTr("Settings")
 
                     icon.height: 32
                     icon.width: 32
@@ -369,7 +369,7 @@ Rectangle {
 
                         function isSearchPage()
                         {
-                            return (
+                            return(
                                 pageLoader.item instanceof ImageSearchPage ||
                                 pageLoader.item instanceof LiveSearchPage  ||
                                 pageLoader.item instanceof VideoSearchPage

@@ -89,7 +89,6 @@ public:
     (
         const QString &author,
         const QString &authorId,
-        const QString &description,
         const QUrl &url
     ) -> void;
 

@@ -1,9 +1,12 @@
 import QtQuick
 import QtQuick.Controls
+
 import KomplexHub
 import KomplexHub.Controls
 import KomplexHub.Kero
 import KomplexHub.Plugin
+import KomplexHub.Views
+import KomplexHub.Pages
 
 Item
 {

@@ -74,56 +74,13 @@ Item {
 
                     width: 24
                     height: 24
-                    transform: Image.PreserveAspectFit
+                    fillMode: Image.PreserveAspectFit
                     opacity: 0.5
                     source: "qrc:/images/icons/pexels-icon-filled-256.svg"
 
                     visible: rootItem.pexels
                 }
             }
-
-            // Rectangle
-            // {
-            //     Layout.preferredWidth: 250
-            //     Layout.preferredHeight: 141
-            //     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            //     Layout.topMargin: 3
-
-            //     border.color: palette.alternateBase.lighter(1.75)
-
-            //     color: palette.base.lighter(1.25)
-
-            //     // Throbber
-            //     // {
-            //     //     anchors.fill: parent
-            //     //     id: loadingThrobber
-            //     //     visible: viewImage.status === Image.Loading
-            //     // }
-
-            //     // Image
-            //     // {
-            //     //     property int retries: 0
-            //     //     id: viewImage
-            //     //     anchors.fill: parent
-            //     //     source: rootItem.thumbnail
-            //     //     visible: !(status === Image.Loading)
-            //     //     fillMode: Image.PreserveAspectCrop
-
-            //     //     onStatusChanged: () =>
-            //     //     {
-            //     //         // if(status === Image.Error)
-            //     //         // {
-            //     //         //     if(retries <= 3)
-            //     //         //     {
-            //     //         //         ++retries
-            //     //         //         let src = source
-            //     //         //         source = ""
-            //     //         //         source = src
-            //     //         //     }
-            //     //         // }
-            //     //     }
-            //     // }
-            // }
 
             Text
             {
@@ -142,18 +99,6 @@ Item {
 
             Text
             {
-                color: palette.text
-                font.pixelSize: 12
-                text: "By: " + rootItem.author
-                leftPadding: 12
-
-                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-                Layout.preferredWidth: 250
-                visible: !rootItem.pexels
-            }
-
-            Text
-            {
                 id: descriptionText
                 clip: true
                 color: palette.text
@@ -169,6 +114,19 @@ Item {
                 Layout.preferredWidth: 236
                 Layout.maximumWidth: 236
                 Layout.bottomMargin: 3
+            }
+
+            Text
+            {
+                color: palette.text
+                font.pixelSize: 12
+                text: "By: " + rootItem.author
+                leftPadding: Constants.mediumMargin
+                rightPadding: Constants.mediumMargin
+                horizontalAlignment: Qt.AlignRight
+
+                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+                Layout.fillWidth: true
             }
 
             SquareButton

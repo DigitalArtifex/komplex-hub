@@ -14,18 +14,11 @@ qt6_add_qml_module(KomplexHubModule_Controls
         "Throbber.qml"
         "SearchResultItem.qml"
         "SearchResultList.qml"
-        QML_FILES PaginationBox.qml
-        QML_FILES PaginatorGrid.qml
-        QML_FILES HorizontalPaginator.qml
-        QML_FILES ImageView.qml
-        QML_FILES
-        QML_FILES VideoView.qml
-        QML_FILES PackView.qml
-        QML_FILES VerticalSpacer.qml
-        QML_FILES DownloadView.qml
-        QML_FILES ImageFrame.qml
-        QML_FILES BackgroundImage.qml
-        QML_FILES CompletedView.qml
-        QML_FILES ErrorView.qml
+        "PaginationBox.qml"
+        "PaginatorGrid.qml"
+        "HorizontalPaginator.qml"
+        "VerticalSpacer.qml"
+        "ImageFrame.qml"
+        "BackgroundImage.qml"
 )
 

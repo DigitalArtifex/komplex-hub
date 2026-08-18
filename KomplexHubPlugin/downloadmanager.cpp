@@ -79,305 +79,334 @@ DownloadManager::DownloadManager(QObject *parent)
  */
 auto DownloadManager::downloadImage(const QString &author, const QString &authorId, const QString &description, const QUrl &url) -> void
 {
-    // QFuture future = QtConcurrent::run
-    // (
-    //     [this, url, author, authorId, description]()
-    //     {
-            QNetworkRequest request(url);
-            QString requestUrl = request.url().toString();
-            QString id = QUuid::createUuidV7().toString(QUuid::WithoutBraces);
+    QNetworkRequest request(url);
+    QString requestUrl = request.url().toString();
+    QString id = QUuid::createUuidV7().toString(QUuid::WithoutBraces);
 
-            setState(Downloading);
+    setState(Downloading);
 
-            //QFuture<QUrl> downloadUri = download(request, id, Get);
-            if(m_downloadFuture.isRunning())
+    //QFuture<QUrl> downloadUri = download(request, id, Get);
+    if(m_downloadFuture.isRunning())
+    {
+        m_downloadFuture.cancelChain();
+    }
+
+    m_downloadFuture = download(request, id, Get);
+
+    m_downloadFuture
+        .then
+        (
+            [this, author, description, id](QUrl result) -> QUrl
             {
-                m_downloadFuture.cancelChain();
-            }
+                setState(Installing);
 
-            m_downloadFuture = download(request, id, Get);
+                ShaderPack metadata;
+                metadata.setAuthor(author);
+                metadata.setDescription(description);
+                metadata.setName(QStringLiteral("Pexels Image (%1)").arg(id));
+                metadata.setSource(QStringLiteral("./images/%1").arg(result.fileName()));
 
-            m_downloadFuture
-                .then
+                QUrl packUri
                 (
-                    [this, author, description, id](QUrl result) -> QUrl
-                    {
-                        setState(Installing);
-
-                        ShaderPack metadata;
-                        metadata.setAuthor(author);
-                        metadata.setDescription(description);
-                        metadata.setName(QStringLiteral("Pexels Image (%1)").arg(id));
-                        metadata.setSource(QStringLiteral("./images/%1").arg(result.fileName()));
-
-                        QUrl packUri
-                        (
-                            QStringLiteral("file://%1/%2").arg
-                            (
-                                QStandardPaths::writableLocation(QStandardPaths::TempLocation),
-                                id
-                            )
-                        );
-
-                        QUrl packImageUri
-                        (
-                            QStringLiteral("file://%1/%2/images/%3").arg
-                            (
-                                QStandardPaths::writableLocation(QStandardPaths::TempLocation),
-                                id,
-                                result.fileName()
-                            )
-                        );
-
-                        QDir packDirectory(packUri.toLocalFile());
-
-                        if(!packDirectory.mkpath(packUri.toLocalFile()))
-                        {
-                            throw FileException(QStringLiteral("Could not create directory"));
-                        }
-
-                        packDirectory.mkdir(QStringLiteral("images"));
-
-                        QFile::rename(result.toLocalFile(), packImageUri.toLocalFile());
-
-                        QFile packFile
-                        (
-                            packDirectory.absoluteFilePath
-                            (
-                                QStringLiteral("pack.json")
-                            )
-                        );
-
-                        if(!packFile.open(QFile::ReadWrite))
-                        {
-                            setError(QStringLiteral("File Error"), packFile.errorString());
-                            throw FileException(packFile.errorString());
-                        }
-
-                        QByteArray data = metadata.json().toJson(QJsonDocument::Indented);
-
-                        if(packFile.write(data) != data.length())
-                        {
-                            setError(QStringLiteral("File Error"), packFile.errorString());
-                            throw FileException(packFile.errorString());
-                        }
-
-                        packFile.close();
-
-                        return packUri;
-                    }
-                )
-                .then
-                (
-                    [this](QUrl result) -> QUrl
-                    {
-                        return install(result);
-                    }
-                )
-                .then
-                (
-                    [this](QUrl result)
-                    {
-                        setLastInstalledFile(result.toLocalFile());
-                        setState(Complete);
-                    }
-                )
-                .onCanceled
-                (
-                    [this]()
-                    {
-                        reset();
-                    }
-                )
-                .onFailed
-                (
-                    [this] (const NetworkException &e)
-                    {
-                        reset();
-                        setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
-                    }
-                )
-                .onFailed
-                (
-                    [this] (const FileException &e)
-                    {
-                        reset();
-                        setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
-                    }
-                )
-                .onFailed
-                (
-                    [this] ()
-                    {
-                        reset();
-                        setError(QStringLiteral("Unknown Exception"), QString());
-                    }
+                    QStringLiteral("file://%1/%2").arg
+                    (
+                        QStandardPaths::writableLocation(QStandardPaths::TempLocation),
+                        id
+                    )
                 );
 
-    //         downloadUri.waitForFinished();
-    //     }
-    // );
+                QUrl packImageUri
+                (
+                    QStringLiteral("file://%1/%2/images/%3").arg
+                    (
+                        QStandardPaths::writableLocation(QStandardPaths::TempLocation),
+                        id,
+                        result.fileName()
+                    )
+                );
+
+                QDir packDirectory(packUri.toLocalFile());
+
+                if(!packDirectory.mkpath(packUri.toLocalFile()))
+                {
+                    throw FileException(QStringLiteral("Could not create directory"));
+                }
+
+                packDirectory.mkdir(QStringLiteral("images"));
+
+                QFile::rename(result.toLocalFile(), packImageUri.toLocalFile());
+
+                QFile packFile
+                (
+                    packDirectory.absoluteFilePath
+                    (
+                        QStringLiteral("pack.json")
+                    )
+                );
+
+                if(!packFile.open(QFile::ReadWrite))
+                {
+                    setError(QStringLiteral("File Error"), packFile.errorString());
+                    throw FileException(packFile.errorString());
+                }
+
+                QByteArray data = metadata.json().toJson(QJsonDocument::Indented);
+
+                if(packFile.write(data) != data.length())
+                {
+                    setError(QStringLiteral("File Error"), packFile.errorString());
+                    throw FileException(packFile.errorString());
+                }
+
+                packFile.close();
+
+                return packUri;
+            }
+        )
+        .then
+        (
+            [this](QUrl result) -> QUrl
+            {
+                return install(result);
+            }
+        )
+        .then
+        (
+            [this](QUrl result)
+            {
+                setLastInstalledFile(result.toLocalFile());
+                setState(Complete);
+            }
+        )
+        .onCanceled
+        (
+            [this]()
+            {
+                reset();
+            }
+        )
+        .onFailed
+        (
+            [this] (const NetworkException &e)
+            {
+                reset();
+                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
+            }
+        )
+        .onFailed
+        (
+            [this] (const FileException &e)
+            {
+                reset();
+                setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
+            }
+        )
+        .onFailed
+        (
+            [this] ()
+            {
+                reset();
+                setError(QStringLiteral("Unknown Exception"), QString());
+            }
+        );
 }
 
-auto DownloadManager::downloadVideo(const QString &author, const QString &authorId, const QString &description, const QUrl &url) -> void
+auto DownloadManager::downloadVideo(const QString &author, const QString &authorId, const QUrl &url) -> void
 {
-    QFuture future = QtConcurrent::run
-    (
-        [this, url, author, authorId, description]()
-        {
-            QNetworkRequest request(url);
-            QString id = QUuid::createUuidV7().toString(QUuid::WithoutBraces);
+    QNetworkRequest request(url);
+    QString id = QUuid::createUuidV7().toString(QUuid::WithoutBraces);
 
-            QFuture<QUrl> downloadUri = download(request, id);
+    setState(Downloading);
 
-            downloadUri
-                .then
+    if(m_downloadFuture.isRunning())
+    {
+        m_downloadFuture.cancelChain();
+    }
+
+    m_downloadFuture = download(request, id, Get);
+
+    m_downloadFuture
+        .then
+        (
+            [this, author, id](QUrl result) -> QUrl
+            {
+                ShaderPack metadata;
+                metadata.setAuthor(author);
+                metadata.setType(ShaderPack::Video);
+                metadata.setName(QStringLiteral("Pexels Video (%1)").arg(id));
+                metadata.setSource(QStringLiteral("./videos/%1").arg(result.fileName()));
+
+                QUrl packUri
                 (
-                    [this, author, description, id](QUrl result) -> QUrl
-                    {
-                        ShaderPack metadata;
-                        metadata.setAuthor(author);
-                        metadata.setDescription(description);
-                        metadata.setName(QStringLiteral("Pexels Video (%1)").arg(id));
-                        metadata.setType(ShaderPack::Video);
-
-                        QUrl packUri
-                        (
-                            QStringLiteral("%1/%2").arg
-                            (
-                                QStandardPaths::writableLocation(QStandardPaths::TempLocation),
-                                id
-                            )
-                        );
-
-                        QUrl packImageUri
-                        (
-                            QStringLiteral("%1/%2/images/%3").arg
-                            (
-                                QStandardPaths::writableLocation(QStandardPaths::TempLocation),
-                                id,
-                                result.fileName()
-                            )
-                        );
-
-                        QDir packDirectory(packUri.toLocalFile());
-                        packDirectory.mkpath(packUri.toLocalFile());
-                        packDirectory.mkdir(QStringLiteral("images"));
-
-                        QFile::rename(result.toLocalFile(), packImageUri.toLocalFile());
-
-                        QFile packFile
-                        (
-                            packDirectory.absoluteFilePath
-                            (
-                                QStringLiteral("pack.json")
-                            )
-                        );
-
-                        if(!packFile.open(QFile::ReadWrite))
-                        {
-                            setError(QStringLiteral("File Error"), packFile.errorString());
-                            throw FileException(packFile.errorString());
-                        }
-
-                        QByteArray data = metadata.json().toJson(QJsonDocument::Compact);
-
-                        if(packFile.write(data) != data.length())
-                        {
-                            setError(QStringLiteral("File Error"), packFile.errorString());
-                            throw FileException(packFile.errorString());
-                        }
-
-                        packFile.close();
-
-                        return packUri;
-                    }
-                )
-                .then
-                (
-                    [this](QUrl result)
-                    {
-                        install(result);
-                    }
-                )
-                .onCanceled
-                (
-                    [this]()
-                    {
-                        reset();
-                    }
-                )
-                .onFailed
-                (
-                    [this] ()
-                    {
-                        reset();
-                    }
+                    QStringLiteral("%1/%2").arg
+                    (
+                        QStandardPaths::writableLocation(QStandardPaths::TempLocation),
+                        id
+                    )
                 );
-        }
-    );
+
+                QUrl packVideoUri
+                (
+                    QStringLiteral("%1/%2/videos/%3").arg
+                    (
+                        QStandardPaths::writableLocation(QStandardPaths::TempLocation),
+                        id,
+                        result.fileName()
+                    )
+                );
+
+                QDir packDirectory(packUri.toLocalFile());
+                packDirectory.mkpath(packUri.toLocalFile());
+                packDirectory.mkdir(QStringLiteral("images"));
+
+                QFile::rename(result.toLocalFile(), packVideoUri.toLocalFile());
+
+                QFile packFile
+                (
+                    packDirectory.absoluteFilePath
+                    (
+                        QStringLiteral("pack.json")
+                    )
+                );
+
+                if(!packFile.open(QFile::ReadWrite))
+                {
+                    setError(QStringLiteral("File Error"), packFile.errorString());
+                    throw FileException(packFile.errorString());
+                }
+
+                QByteArray data = metadata.json().toJson(QJsonDocument::Compact);
+
+                if(packFile.write(data) != data.length())
+                {
+                    setError(QStringLiteral("File Error"), packFile.errorString());
+                    throw FileException(packFile.errorString());
+                }
+
+                packFile.close();
+
+                return packUri;
+            }
+        )
+        .then
+        (
+            [this](QUrl result) -> QUrl
+            {
+                return install(result);
+            }
+        )
+        .then
+        (
+            [this](QUrl result)
+            {
+                setLastInstalledFile(result.toLocalFile());
+                setState(Complete);
+            }
+        )
+        .onCanceled
+        (
+            [this]()
+            {
+                reset();
+            }
+        )
+        .onFailed
+        (
+            [this] (const NetworkException &e)
+            {
+                reset();
+                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
+            }
+        )
+        .onFailed
+        (
+            [this] (const FileException &e)
+            {
+                reset();
+                setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
+            }
+        )
+        .onFailed
+        (
+            [this] ()
+            {
+                reset();
+                setError(QStringLiteral("Unknown Exception"), QString());
+            }
+        );
 }
 
 auto DownloadManager::downloadPack(const QString &id) -> void
 {
-    QFuture aether = QtConcurrent::run
+    QUrl downloadUrl = QUrl
     (
-        [this, id]()
-        {
-            QUrl downloadUrl = QUrl
-            (
-                QStringLiteral("%1/%2/%3").arg
-                (
-                    KOMPLEX_API_HOST,
-                    KOMPLEX_API_VERSION,
-                    KOMPLEX_ENDPOINT_PACKS_ITEM
-                )
-            );
-
-            QNetworkRequest request(downloadUrl);
-            request.setRawHeader(QByteArray("uuid"), id.toUtf8());
-
-            QFuture<QUrl> downloadUri = download(request, id, Post);
-
-            downloadUri
-                .then
-                (
-                    [this](QUrl result) -> QUrl
-                    {
-                        return m_compiler->process(result).result();
-                    }
-                )
-                .then
-                (
-                    [this](QUrl result) -> QUrl
-                    {
-                        return install(result);
-                    }
-                )
-                .then
-                (
-                    [this] (QUrl result)
-                    {
-                        setState(Complete);
-                    }
-                )
-                .onFailed
-                (
-                    [this]()
-                    {
-                        reset();
-                        setError(m_compiler->errorTitle(), m_compiler->errorMessage());
-                    }
-                )
-                .onCanceled
-                (
-                    [this]()
-                    {
-                        reset();
-                    }
-                );
-        }
+        QStringLiteral("%1/%2/%3").arg
+        (
+            KOMPLEX_API_HOST,
+            KOMPLEX_API_VERSION,
+            KOMPLEX_ENDPOINT_PACKS_ITEM
+        )
     );
+
+    QNetworkRequest request(downloadUrl);
+    request.setRawHeader(QByteArray("uuid"), id.toUtf8());
+
+    QFuture<QUrl> downloadUri = download(request, id, Post);
+
+    downloadUri
+        .then
+        (
+            [this](QUrl result) -> QUrl
+            {
+                return m_compiler->process(result).result();
+            }
+        )
+        .then
+        (
+            [this](QUrl result) -> QUrl
+            {
+                return install(result);
+            }
+        )
+        .then
+        (
+            [this](QUrl result)
+            {
+                setLastInstalledFile(result.toLocalFile());
+                setState(Complete);
+            }
+        )
+        .onCanceled
+        (
+            [this]()
+            {
+                reset();
+            }
+        )
+        .onFailed
+        (
+            [this] (const NetworkException &e)
+            {
+                reset();
+                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
+            }
+        )
+        .onFailed
+        (
+            [this] (const FileException &e)
+            {
+                reset();
+                setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
+            }
+        )
+        .onFailed
+        (
+            [this] ()
+            {
+                reset();
+                setError(QStringLiteral("Unknown Exception"), QString());
+            }
+        );
 }
 
 auto DownloadManager::reset() -> void

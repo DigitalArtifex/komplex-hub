@@ -1,8 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+
 import KomplexHub
+import KomplexHub.Controls
 import KomplexHub.Kero
+import KomplexHub.Plugin
+import KomplexHub.Views
+import KomplexHub.Pages
 
 Item {
     readonly property bool searchable: false
