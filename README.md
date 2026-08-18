@@ -37,7 +37,7 @@
 <small>Note: Application style is based on your system theme. It will look different than it does in the screenshots. I am using a modified KVantum Glass, Blur and Neon Sunset Wallpaper Pack.</small>
 
 ## Development
-Most of the development of Komplex and applications under its project umbrella will now happen here, instead of Github.
+Most of the development of Komplex and applications under its project umbrella will now happen on https://git.digitalartifex.dev instead of Github.
 
 ## Installation
 
@@ -54,6 +54,7 @@ Most of the development of Komplex and applications under its project umbrella w
   - Qt6 Shader Tools
 - CMake
 - clang
+- C Pre Processor (cpp)
 
 #### Build
 ```console
