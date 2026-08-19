@@ -6,7 +6,7 @@ import KomplexHub
 Item {
     property string title: qsTr("Warning")
     property string description: qsTr("Kero noticed there might be an issue")
-    property color color: palette.window
+    property color color: "transparent"
 
     id: keroWarningAvatarRoot
 
