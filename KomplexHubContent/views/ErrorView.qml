@@ -51,12 +51,6 @@ Item
                     }
                 }
             }
-            SquareButton
-            {
-                Layout.preferredWidth: 186
-                Layout.fillHeight: true
-                text: qsTr("Set Wallpaper")
-            }
         }
 
         VerticalSpacer {}
