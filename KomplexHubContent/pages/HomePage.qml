@@ -702,6 +702,7 @@ Item
         viewMoreWallpaperPopup.description = packsModel.data(packsModel.index(index,0), NewestPacksModel.DescriptionRole)
         viewMoreWallpaperPopup.thumbnail = packsModel.data(packsModel.index(index,0), NewestPacksModel.ThumbnailRole)
         viewMoreWallpaperPopup.name = packsModel.data(packsModel.index(index,0), NewestPacksModel.NameRole)
+        viewMoreWallpaperPopup.uuid = packsModel.data(packsModel.index(index,0), NewestPacksModel.UuidRole)
         viewMoreWallpaperPopup.opacity = 1
         popupContainer.opacity = 1
         pageArea.opacity = 0
