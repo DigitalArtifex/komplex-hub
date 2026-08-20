@@ -114,6 +114,7 @@ protected:
 
     auto createDirectory(const QUrl &uri) -> void;
 
+    auto localCheck(const QUrl &uri) noexcept(false) -> void;
     auto extract(const QUrl &sourceUri) noexcept(false) -> QUrl;
     auto copyFile(const QUrl &sourceUri, const QUrl &destinationUri) noexcept(false) -> void;
     auto compile(const QUrl &uri) noexcept(false) -> void;

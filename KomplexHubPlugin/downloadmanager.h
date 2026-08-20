@@ -145,6 +145,7 @@ private:
     auto install(const QUrl &uri) noexcept(false) -> QUrl;
     auto download(const QNetworkRequest &request, const QString &id, RequestType type = Get, const QString &filename = QString()) -> QFuture<QUrl>;
     auto readShaderToyEntry(const QUrl &uri) noexcept(false) -> ShaderToyEntry;
+    auto validateUri(const QUrl &uri) noexcept(false) -> void;
 
     QString m_lastInstalledFile;
 

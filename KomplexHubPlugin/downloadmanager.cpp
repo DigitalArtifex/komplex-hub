@@ -387,20 +387,29 @@ auto DownloadManager::downloadPack(const QString &id) -> void
         )
         .onFailed
         (
-            [this, tempFile] (const NetworkException &e)
+            [this, tempFile] (const std::filesystem::filesystem_error &e)
             {
                 QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
-                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
+                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.code().value())), e.what());
             }
         )
         .onFailed
         (
-            [this, tempFile] (const FileException &e)
+            [this, tempFile] (const std::logic_error &e)
             {
                 QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
-                setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
+                setError(QStringLiteral("Logic Exception %1"), e.what());
+            }
+        )
+        .onFailed
+        (
+            [this, tempFile] (const std::exception &e)
+            {
+                QFile::remove(QStringLiteral("/tmp/") + tempFile);
+                reset();
+                setError(QStringLiteral("Logic Exception %1"), e.what());
             }
         )
         .onFailed
@@ -501,10 +510,7 @@ auto DownloadManager::setDownloadProgress(qreal progress) -> void
 
 auto DownloadManager::install(const QUrl &uri) noexcept(false) -> QUrl
 {
-    if(!uri.isLocalFile())
-    {
-        throw FileException(QStringLiteral("URI is not a local file"));
-    }
+    validateUri(uri);
 
     QDir tempDirectory(uri.toLocalFile());
 
@@ -633,7 +639,7 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
                 reply,
                 &QNetworkReply::readyRead,
                 this,
-                [this, downloadUri/*, reply, &downloadFile*/]()
+                [this, downloadUri]()
                 {
                     QMutexLocker locker(&m_fileMutex);
                     QFile downloadFile(downloadUri.toLocalFile());
@@ -647,9 +653,14 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
 
                     if(reply == nullptr)
                     {
-                        throw NetworkException
+                        throw std::system_error
                         {
-                            QStringLiteral("Reply is not a qobject")
+                            std::error_code
+                            (
+                                ENOENT,
+                                std::system_category()
+                            ),
+                            QStringLiteral("Reply is not a qobject").toStdString()
                         };
                     }
 
@@ -681,29 +692,61 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
     );
 }
 
+auto DownloadManager::validateUri(const QUrl &uri) noexcept(false) -> void
+{
+    if(!uri.isValid() || !uri.isLocalFile())
+    {
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("URI %1 is not a local file uri").arg
+            (
+                uri.toString()
+            ).toStdString(),
+            std::error_code
+            (
+                ENOENT,
+                std::system_category()
+            )
+        );
+    }
+}
+
 auto DownloadManager::readShaderToyEntry(const QUrl &uri) noexcept(false) -> ShaderToyEntry
 {
-    if(!uri.isLocalFile())
-    {
-        throw FileException(QStringLiteral("URI is not a local file"));
-    }
+    validateUri(uri);
 
     QDir packDir(uri.toLocalFile());
 
     if(!packDir.exists(QStringLiteral("pack.json")))
     {
-        throw FileException(QStringLiteral("Pack file not found"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Pack file not found").arg
+            (
+                uri.toString()
+            ).toStdString(),
+            std::error_code
+            (
+                ENOENT,
+                std::system_category()
+            )
+        );
     }
 
     QFile packFile(packDir.absoluteFilePath(QStringLiteral("pack.json")));
 
     if(!packFile.open(QFile::ReadOnly))
     {
-        throw FileException
+        throw std::filesystem::filesystem_error
         (
-            QStringLiteral("Could not open pack file: %1").arg
+            QStringLiteral("Could not open pack file").arg
             (
-                packFile.errorString()
+                uri.toString()
+            ).toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
             )
         );
     }
@@ -715,11 +758,16 @@ auto DownloadManager::readShaderToyEntry(const QUrl &uri) noexcept(false) -> Sha
 
     if(jsonError.error != QJsonParseError::NoError)
     {
-        throw FileException
+        throw std::filesystem::filesystem_error
         (
-            QStringLiteral("Could parse pack file: %1").arg
+            QStringLiteral("URI %1 is not a local file uri").arg
             (
-                jsonError.errorString()
+                uri.toString()
+            ).toStdString(),
+            std::error_code
+            (
+                EIO,
+                std::system_category()
             )
         );
     }

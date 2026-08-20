@@ -60,15 +60,6 @@ auto PackCompiler::process(const QUrl &uri) -> QFuture<QUrl>
             setStatus(QStringLiteral("Compiling %1").arg(uri.fileName()));
             setState(Compiling);
 
-            // this was a leftover from ThumbnailGenerator
-            // if(!validateDirectory(uri))
-            // {
-            //     throw FileException
-            //     (
-            //         QStringLiteral("Source directory is invalid")
-            //     );
-            // }
-
             QFileInfo info(uri.toLocalFile());
 
             QUrl buildUri;
@@ -79,21 +70,29 @@ auto PackCompiler::process(const QUrl &uri) -> QFuture<QUrl>
                 prepareShaders(buildUri);
                 compile(buildUri);
             }
-            catch (FileException e)
+            catch (const std::filesystem::filesystem_error &e)
             {
                 removeDirectory(buildUri);
-                setError(QStringLiteral("File Error"), e.message);
+                setError(QStringLiteral("File Error"), e.what());
                 throw e;
             }
-            catch (ShaderCompilerException e)
+            catch (const std::logic_error &e)
             {
                 removeDirectory(buildUri);
-                setError(QStringLiteral("Compiler Error"), e.message);
+                setError(QStringLiteral("Compiler Error"), e.what());
+                throw e;
+            }
+            catch (const std::exception &e)
+            {
+                removeDirectory(buildUri);
+                setError(QStringLiteral("Generic Error"), e.what());
                 throw e;
             }
             catch (...)
             {
                 removeDirectory(buildUri);
+                setError(QStringLiteral("Unknown Error"), QString());
+                throw std::exception();
             }
 
             return buildUri;
@@ -105,11 +104,16 @@ auto PackCompiler::prepareShaders(const QUrl &uri) noexcept(false) -> void
 {
     if(!uri.isLocalFile())
     {
-        throw FileException
+        throw std::filesystem::filesystem_error
         (
             QStringLiteral("URI %1 is not a local file uri").arg
             (
                 uri.toString()
+            ).toStdString(),
+            std::error_code
+            (
+                ENOENT,
+                std::system_category()
             )
         );
     }
@@ -172,11 +176,16 @@ auto PackCompiler::prepareShaders(const QUrl &uri) noexcept(false) -> void
 
         if(!file.open(QFile::ReadWrite))
         {
-            throw FileException
+            throw std::filesystem::filesystem_error
             (
                 QStringLiteral("Could not open file %1 for preperation").arg
                 (
                     shaderDirectory.absoluteFilePath(entry)
+                ).toStdString(),
+                std::error_code
+                (
+                    errno,
+                    std::system_category()
                 )
             );
         }
@@ -185,11 +194,16 @@ auto PackCompiler::prepareShaders(const QUrl &uri) noexcept(false) -> void
 
         if(fileData.length() != file.size())
         {
-            throw FileException
+            throw std::filesystem::filesystem_error
             (
                 QStringLiteral("Could not read file %1 for preperation").arg
                 (
                     shaderDirectory.absoluteFilePath(entry)
+                ).toStdString(),
+                std::error_code
+                (
+                    EIO,
+                    std::system_category()
                 )
             );
         }
@@ -208,12 +222,12 @@ auto PackCompiler::prepareShaders(const QUrl &uri) noexcept(false) -> void
         }
         else
         {
-            throw FileException
+            throw std::logic_error
             (
                 QStringLiteral("File %1 is an unrecognized shader type (frag/vert)").arg
                 (
                     shaderDirectory.absoluteFilePath(entry)
-                )
+                ).toStdString()
             );
         }
 
@@ -244,22 +258,32 @@ auto PackCompiler::prepareShaders(const QUrl &uri) noexcept(false) -> void
 
         if(!file.open(QFile::ReadWrite | QFile::Truncate))
         {
-            throw FileException
+            throw std::filesystem::filesystem_error
             (
                 QStringLiteral("Could not open file %1 for writing preperation").arg
                 (
                     shaderDirectory.absoluteFilePath(entry)
+                ).toStdString(),
+                std::error_code
+                (
+                    errno,
+                    std::system_category()
                 )
             );
         }
 
         if(file.write(preparedData) != preparedData.length())
         {
-            throw FileException
+            throw std::filesystem::filesystem_error
             (
                 QStringLiteral("Could not write file %1 preperation").arg
                 (
                     shaderDirectory.absoluteFilePath(entry)
+                ).toStdString(),
+                std::error_code
+                (
+                    errno,
+                    std::system_category()
                 )
             );
         }
@@ -271,16 +295,7 @@ auto PackCompiler::prepareShaders(const QUrl &uri) noexcept(false) -> void
 
 auto PackCompiler::loadCommonFragmentData(const QUrl &uri) -> QByteArray
 {
-    if(!uri.isLocalFile())
-    {
-        throw FileException
-        (
-            QStringLiteral("URI %1 is not a local file uri").arg
-            (
-                uri.toString()
-            )
-        );
-    }
+    localCheck(uri);
 
     QDir sourceDirectory
     (
@@ -308,14 +323,30 @@ auto PackCompiler::loadCommonFragmentData(const QUrl &uri) -> QByteArray
 
         if(!file.open(QFile::ReadWrite))
         {
-            throw FileException(QStringLiteral("Could not open common shader data"));
+            throw std::filesystem::filesystem_error
+            (
+                QStringLiteral("Could not open common shader data").toStdString(),
+                std::error_code
+                (
+                    errno,
+                    std::system_category()
+                )
+            );
         }
 
         data = file.readAll();
 
         if(data.length() != file.size())
         {
-            throw FileException(QStringLiteral("Common fragment shader file read error"));
+            throw std::filesystem::filesystem_error
+            (
+                QStringLiteral("Common file read error").toStdString(),
+                std::error_code
+                (
+                    errno,
+                    std::system_category()
+                )
+            );
         }
 
         file.close();
@@ -327,16 +358,7 @@ auto PackCompiler::loadCommonFragmentData(const QUrl &uri) -> QByteArray
 
 auto PackCompiler::loadCommonVertexData(const QUrl &uri) -> QByteArray
 {
-    if(!uri.isLocalFile())
-    {
-        throw FileException
-        (
-            QStringLiteral("URI %1 is not a local file uri").arg
-            (
-                uri.toString()
-            )
-        );
-    }
+    localCheck(uri);
 
     QDir sourceDirectory
     (
@@ -364,14 +386,30 @@ auto PackCompiler::loadCommonVertexData(const QUrl &uri) -> QByteArray
 
         if(!file.open(QFile::ReadWrite))
         {
-            throw FileException(QStringLiteral("Could not open common vertex shader data"));
+            throw std::filesystem::filesystem_error
+            (
+                QStringLiteral("Common vertex file open error").toStdString(),
+                std::error_code
+                (
+                    errno,
+                    std::system_category()
+                )
+            );
         }
 
         data = file.readAll();
 
         if(data.length() != file.size())
         {
-            throw FileException(QStringLiteral("Common vertex shader file read error"));
+            throw std::filesystem::filesystem_error
+            (
+                QStringLiteral("Common vertex file read error").toStdString(),
+                std::error_code
+                (
+                    EIO,
+                    std::system_category()
+                )
+            );
         }
 
         file.close();
@@ -383,16 +421,7 @@ auto PackCompiler::loadCommonVertexData(const QUrl &uri) -> QByteArray
 
 auto PackCompiler::loadGlobalData(const QUrl &uri) -> QByteArray
 {
-    if(!uri.isLocalFile())
-    {
-        throw FileException
-        (
-            QStringLiteral("URI %1 is not a local file uri").arg
-            (
-                uri.toString()
-            )
-        );
-    }
+    localCheck(uri);
 
     QDir sourceDirectory
     (
@@ -420,9 +449,14 @@ auto PackCompiler::loadGlobalData(const QUrl &uri) -> QByteArray
 
         if(!file.open(QFile::ReadWrite))
         {
-            throw FileException
+            throw std::filesystem::filesystem_error
             (
-                QStringLiteral("Could not open global shader data")
+                QStringLiteral("Common global file open error").toStdString(),
+                std::error_code
+                (
+                    errno,
+                    std::system_category()
+                )
             );
         }
 
@@ -430,9 +464,9 @@ auto PackCompiler::loadGlobalData(const QUrl &uri) -> QByteArray
 
         if(data.length() != file.size())
         {
-            throw FileException
+            throw std::underflow_error
             (
-                QStringLiteral("Global shader file read error")
+                QStringLiteral("Common vertex file read error").toStdString()
             );
         }
 
@@ -456,10 +490,7 @@ auto PackCompiler::validateDirectory(const QUrl &uri) -> bool
 
 auto PackCompiler::createDirectory(const QUrl &uri) -> void
 {
-    if(!uri.isLocalFile() || !uri.isValid())
-    {
-        throw FileException(QStringLiteral("Uri needs to be a local file"), 0);
-    }
+    localCheck(uri);
 
     QStringList arguments =
     {
@@ -467,68 +498,103 @@ auto PackCompiler::createDirectory(const QUrl &uri) -> void
         uri.toLocalFile()
     };
 
-    QProcess *process = new QProcess(this);
+    QProcess process;
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardOutput,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardOutput();
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardOutput,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardOutput();
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardError,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardError();
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardError,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardError();
 
-            if(!processData.isValidUtf8())
-            {
-                qWarning() << QStringLiteral("Process output not valid UTF8 data");
-                return;
-            }
+    //         if(!processData.isValidUtf8())
+    //         {
+    //             qWarning() << QStringLiteral("Process output not valid UTF8 data");
+    //             return;
+    //         }
 
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    process->start(QStringLiteral("mkdir"), arguments);
+    process.start(QStringLiteral("mkdir"), arguments);
 
-    if(!process->waitForStarted(3000))
+    if(!process.waitForStarted(3000))
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Could not start preprocessor"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Could not start process for create directory").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(!process->waitForFinished())
+    if(!process.waitForFinished())
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Preprocessor timeout"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Process timeout for create directory").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(process->exitCode() != 0)
+    if(process.exitCode() != 0)
     {
-        process->deleteLater();
-        throw ShaderCompilerException(m_compilerOutput);
+        throw std::ios_base::failure
+        (
+            QStringLiteral("Process exited abnormally").toStdString(),
+            std::error_code
+            (
+                process.exitCode(),
+                std::system_category()
+            )
+        );
     }
+}
 
-    process->deleteLater();
+auto PackCompiler::localCheck(const QUrl &uri) noexcept(false) -> void
+{
+    if(!uri.isValid() || !uri.isLocalFile())
+    {
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("URI %1 is not a local file uri").arg
+            (
+                uri.toString()
+            ).toStdString(),
+            std::error_code
+            (
+                ENOENT,
+                std::system_category()
+            )
+        );
+    }
 }
 
 auto PackCompiler::extract(const QUrl &sourceUri) noexcept(false) -> QUrl
 {
-    if(!sourceUri.isLocalFile() || !sourceUri.isValid())
-    {
-        throw FileException(QStringLiteral("Uri needs to be a local file"), 0);
-    }
+    localCheck(sourceUri);
 
     QFileInfo info(sourceUri.toLocalFile());
 
@@ -555,60 +621,82 @@ auto PackCompiler::extract(const QUrl &sourceUri) noexcept(false) -> QUrl
         createDirectory(outputUri);
     }
 
-    QProcess *process = new QProcess(this);
+    QProcess process;
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardOutput,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardOutput();
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardOutput,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardOutput();
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardError,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardError();
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardError,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardError();
 
-            if(!processData.isValidUtf8())
-            {
-                qWarning() << QStringLiteral("Process output not valid UTF8 data");
-                return;
-            }
+    //         if(!processData.isValidUtf8())
+    //         {
+    //             qWarning() << QStringLiteral("Process output not valid UTF8 data");
+    //             return;
+    //         }
 
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    process->start(QStringLiteral("tar"), arguments);
+    process.start(QStringLiteral("tar"), arguments);
 
-    if(!process->waitForStarted(3000))
+    if(!process.waitForStarted(3000))
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Could not start preprocessor"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Could not start process for extract").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(!process->waitForFinished())
+    if(!process.waitForFinished())
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Preprocessor timeout"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Process timeout for extract").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(process->exitCode() != 0)
+    if(process.exitCode() != 0)
     {
-        process->deleteLater();
-        throw ShaderCompilerException(m_compilerOutput);
+        throw std::ios_base::failure
+        (
+            QStringLiteral("Extract process exited abnormally: %1").arg
+            (
+                process.readAllStandardError()
+            ).toStdString(),
+            std::error_code
+            (
+                process.exitCode(),
+                std::system_category()
+            )
+        );
     }
-
-    process->deleteLater();
 
     QFile::remove(sourceUri.toLocalFile());
 
@@ -630,10 +718,7 @@ auto PackCompiler::copyFile(const QUrl &sourceUri, const QUrl &destinationUri) n
 
 auto PackCompiler::compile(const QUrl &uri) noexcept(false) -> void
 {
-    if(!uri.isLocalFile() || !uri.isValid())
-    {
-        throw FileException(QStringLiteral("Uri needs to be a local file"), 0);
-    }
+    localCheck(uri);
 
     setState(Compiling);
 
@@ -704,60 +789,79 @@ auto PackCompiler::preprocess(const QUrl &uri) noexcept(false) -> void
         outputUri.toLocalFile()
     };
 
-    QProcess *process = new QProcess(this);
+    QProcess process;
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardOutput,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardOutput();
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardOutput,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardOutput();
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardError,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardError();
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardError,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardError();
 
-            if(!processData.isValidUtf8())
-            {
-                qWarning() << QStringLiteral("Process output not valid UTF8 data");
-                return;
-            }
+    //         if(!processData.isValidUtf8())
+    //         {
+    //             qWarning() << QStringLiteral("Process output not valid UTF8 data");
+    //             return;
+    //         }
 
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    process->start(QStringLiteral("cpp"), arguments);
+    process.start(QStringLiteral("cpp"), arguments);
 
-    if(!process->waitForStarted(3000))
+    if(!process.waitForStarted(3000))
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Could not start preprocessor"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Could not start preprocessor").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(!process->waitForFinished())
+    if(!process.waitForFinished())
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Preprocessor timeout"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Process timeout for preprocessor").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(process->exitCode() != 0)
+    if(process.exitCode() != 0)
     {
-        process->deleteLater();
-        throw ShaderCompilerException(m_compilerOutput);
+        throw std::ios_base::failure
+        (
+            QStringLiteral("Preprocessor exited abnormally").toStdString(),
+            std::error_code
+            (
+                process.exitCode(),
+                std::system_category()
+            )
+        );
     }
-
-    process->deleteLater();
 
     QFile::remove(uri.toLocalFile());
     QFile::rename(outputUri.toLocalFile(), uri.toLocalFile());
@@ -765,16 +869,21 @@ auto PackCompiler::preprocess(const QUrl &uri) noexcept(false) -> void
 
 auto PackCompiler::appendVersion(const QUrl &uri) noexcept(false) -> void
 {
-    if(!uri.isValid() || !uri.isLocalFile())
-    {
-        throw FileException(QStringLiteral("File is not a valid local file"));
-    }
+    localCheck(uri);
 
     QFile file(uri.toLocalFile());
 
     if(!file.open(QFile::ReadWrite))
     {
-        throw FileException(QStringLiteral("Could not open file for appending"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Could not open file for appending").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
     QByteArray data = file.readAll();
@@ -790,13 +899,7 @@ auto PackCompiler::appendVersion(const QUrl &uri) noexcept(false) -> void
 
 auto PackCompiler::compileShader(const QUrl &uri) noexcept(false) -> void
 {
-    if(!uri.isLocalFile())
-    {
-        throw FileException
-        (
-            QStringLiteral("Uri needs to be a local file")
-        );
-    }
+    localCheck(uri);
 
     QString qsb = QStringLiteral("/usr/lib/qt6/bin/qsb");
 
@@ -822,66 +925,93 @@ auto PackCompiler::compileShader(const QUrl &uri) noexcept(false) -> void
         uri.toLocalFile()
     };
 
-    QProcess *process = new QProcess(this);
+    QProcess process;
     QString path = uri.toDisplayString(QUrl::RemoveFilename | QUrl::RemoveScheme).remove(QStringLiteral("//"));
-    process->setWorkingDirectory(path);
+    process.setWorkingDirectory(path);
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardOutput,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardOutput();
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardOutput,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardOutput();
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    QObject::connect
-    (
-        process,
-        &QProcess::readyReadStandardError,
-        this,
-        [this, process]()
-        {
-            QByteArray processData = process->readAllStandardError();
+    // QObject::connect
+    // (
+    //     &process,
+    //     &QProcess::readyReadStandardError,
+    //     this,
+    //     [this, &process]()
+    //     {
+    //         QByteArray processData = process.readAllStandardError();
 
-            if(!processData.isValidUtf8())
-            {
-                qWarning() << QStringLiteral("Process output not valid UTF8 data");
-                return;
-            }
+    //         if(!processData.isValidUtf8())
+    //         {
+    //             qWarning() << QStringLiteral("Process output not valid UTF8 data");
+    //             return;
+    //         }
 
-            setCompilerOutput(m_compilerOutput + processData);
-        }
-    );
+    //         setCompilerOutput(m_compilerOutput + processData);
+    //     }
+    // );
 
-    process->start(qsb, arguments);
+    process.start(qsb, arguments);
 
-    if(!process->waitForStarted(3000))
+    if(!process.waitForStarted(3000))
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Could not start shader compiler"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Could not start preprocessor").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(!process->waitForFinished())
+    if(!process.waitForFinished())
     {
-        process->deleteLater();
-        throw FileException(QStringLiteral("Shader compiler timeout"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Process timeout for preprocessor").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 
-    if(process->exitCode() != 0)
+    if(process.exitCode() != 0)
     {
-        process->deleteLater();
-        throw ShaderCompilerException(m_compilerOutput);
+        throw std::ios_base::failure
+        (
+            QStringLiteral("Preprocessor exited abnormally").toStdString(),
+            std::error_code
+            (
+                process.exitCode(),
+                std::system_category()
+            )
+        );
     }
-
-    process->deleteLater();
 
     if(!QFile::remove(uri.toLocalFile()))
     {
-        throw FileException(QStringLiteral("Could not clean up"));
+        throw std::filesystem::filesystem_error
+        (
+            QStringLiteral("Could not cleanup").toStdString(),
+            std::error_code
+            (
+                errno,
+                std::system_category()
+            )
+        );
     }
 }
 
@@ -893,29 +1023,24 @@ auto PackCompiler::removeDirectory(const QUrl &uri) -> bool
         uri.toLocalFile()
     };
 
-    QProcess *process = new QProcess(this);
+    QProcess process;
+    process.start(QStringLiteral("rm"), arguments);
 
-    process->start(QStringLiteral("rm"), arguments);
-
-    if(!process->waitForStarted(3000))
+    if(!process.waitForStarted(3000))
     {
-        process->deleteLater();
         return false;
     }
 
-    if(!process->waitForFinished())
+    if(!process.waitForFinished())
     {
-        process->deleteLater();
         return false;
     }
 
-    if(process->exitCode() != 0)
+    if(process.exitCode() != 0)
     {
-        process->deleteLater();
         return false;
     }
 
-    process->deleteLater();
     return true;
 }
 
