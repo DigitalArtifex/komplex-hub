@@ -136,6 +136,7 @@ Rectangle
         viewMoreWallpaperPopup.authorId = packsModel.data(packsModel.index(index,0), NewestPacksModel.AuthorIdRole)
         viewMoreWallpaperPopup.description = packsModel.data(packsModel.index(index,0), NewestPacksModel.DescriptionRole)
         viewMoreWallpaperPopup.thumbnail = packsModel.data(packsModel.index(index,0), NewestPacksModel.ThumbnailRole)
+        viewMoreWallpaperPopup.uuid = packsModel.data(packsModel.index(index,0), NewestPacksModel.UuidRole)
         viewMoreWallpaperPopup.opacity = 1
         popupContainer.opacity = 1
         resultsLayout.opacity = 0

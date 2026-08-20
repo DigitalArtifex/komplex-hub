@@ -60,29 +60,22 @@ auto PackCompiler::process(const QUrl &uri) -> QFuture<QUrl>
             setStatus(QStringLiteral("Compiling %1").arg(uri.fileName()));
             setState(Compiling);
 
-            if(!validateDirectory(uri))
-            {
-                throw FileException
-                (
-                    QStringLiteral("Source directory is invalid")
-                );
-            }
+            // this was a leftover from ThumbnailGenerator
+            // if(!validateDirectory(uri))
+            // {
+            //     throw FileException
+            //     (
+            //         QStringLiteral("Source directory is invalid")
+            //     );
+            // }
 
-            QUrl buildUri
-            (
-                QStringLiteral("file://%1/komplex/build/%2").arg
-                (
-                    QStandardPaths::writableLocation
-                    (
-                        QStandardPaths::TempLocation
-                    ),
-                    uri.fileName()
-                )
-            );
+            QFileInfo info(uri.toLocalFile());
+
+            QUrl buildUri;
 
             try
             {
-                extract(uri, buildUri);
+                buildUri = extract(uri);
                 prepareShaders(buildUri);
                 compile(buildUri);
             }
@@ -97,6 +90,10 @@ auto PackCompiler::process(const QUrl &uri) -> QFuture<QUrl>
                 removeDirectory(buildUri);
                 setError(QStringLiteral("Compiler Error"), e.message);
                 throw e;
+            }
+            catch (...)
+            {
+                removeDirectory(buildUri);
             }
 
             return buildUri;
@@ -457,18 +454,89 @@ auto PackCompiler::validateDirectory(const QUrl &uri) -> bool
     );
 }
 
-auto PackCompiler::extract(const QUrl &sourceUri, const QUrl &destinationUri) noexcept(false) -> void
+auto PackCompiler::createDirectory(const QUrl &uri) -> void
+{
+    if(!uri.isLocalFile() || !uri.isValid())
+    {
+        throw FileException(QStringLiteral("Uri needs to be a local file"), 0);
+    }
+
+    QStringList arguments =
+    {
+        QStringLiteral("-p"),
+        uri.toLocalFile()
+    };
+
+    QProcess *process = new QProcess(this);
+
+    QObject::connect
+    (
+        process,
+        &QProcess::readyReadStandardOutput,
+        this,
+        [this, process]()
+        {
+            QByteArray processData = process->readAllStandardOutput();
+            setCompilerOutput(m_compilerOutput + processData);
+        }
+    );
+
+    QObject::connect
+    (
+        process,
+        &QProcess::readyReadStandardError,
+        this,
+        [this, process]()
+        {
+            QByteArray processData = process->readAllStandardError();
+
+            if(!processData.isValidUtf8())
+            {
+                qWarning() << QStringLiteral("Process output not valid UTF8 data");
+                return;
+            }
+
+            setCompilerOutput(m_compilerOutput + processData);
+        }
+    );
+
+    process->start(QStringLiteral("mkdir"), arguments);
+
+    if(!process->waitForStarted(3000))
+    {
+        process->deleteLater();
+        throw FileException(QStringLiteral("Could not start preprocessor"));
+    }
+
+    if(!process->waitForFinished())
+    {
+        process->deleteLater();
+        throw FileException(QStringLiteral("Preprocessor timeout"));
+    }
+
+    if(process->exitCode() != 0)
+    {
+        process->deleteLater();
+        throw ShaderCompilerException(m_compilerOutput);
+    }
+
+    process->deleteLater();
+}
+
+auto PackCompiler::extract(const QUrl &sourceUri) noexcept(false) -> QUrl
 {
     if(!sourceUri.isLocalFile() || !sourceUri.isValid())
     {
         throw FileException(QStringLiteral("Uri needs to be a local file"), 0);
     }
 
+    QFileInfo info(sourceUri.toLocalFile());
+
     QUrl outputUri
     (
-        QStringLiteral("file://%1_proc").arg
+        QStringLiteral("file:///tmp/%1").arg
         (
-            sourceUri.toLocalFile()
+            info.baseName()
         )
     );
 
@@ -479,6 +547,13 @@ auto PackCompiler::extract(const QUrl &sourceUri, const QUrl &destinationUri) no
         QStringLiteral("-C"),
         outputUri.toLocalFile()
     };
+
+    QDir outputDir(outputUri.toLocalFile());
+
+    if(!outputDir.exists())
+    {
+        createDirectory(outputUri);
+    }
 
     QProcess *process = new QProcess(this);
 
@@ -534,6 +609,10 @@ auto PackCompiler::extract(const QUrl &sourceUri, const QUrl &destinationUri) no
     }
 
     process->deleteLater();
+
+    QFile::remove(sourceUri.toLocalFile());
+
+    return outputUri;
 }
 
 auto PackCompiler::copyFile(const QUrl &sourceUri, const QUrl &destinationUri) noexcept(false) -> void

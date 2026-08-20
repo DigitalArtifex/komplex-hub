@@ -350,8 +350,9 @@ auto DownloadManager::downloadPack(const QString &id) -> void
 
     QNetworkRequest request(downloadUrl);
     request.setRawHeader(QByteArray("uuid"), id.toUtf8());
+    QString tempFile(QString("%1.tar.gz").arg(id));
 
-    QFuture<QUrl> downloadUri = download(request, id, Post);
+    QFuture<QUrl> downloadUri = download(request, id, Post, tempFile);
 
     downloadUri
         .then
@@ -378,31 +379,35 @@ auto DownloadManager::downloadPack(const QString &id) -> void
         )
         .onCanceled
         (
-            [this]()
+            [this, tempFile]()
             {
+                QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
             }
         )
         .onFailed
         (
-            [this] (const NetworkException &e)
+            [this, tempFile] (const NetworkException &e)
             {
+                QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
                 setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
             }
         )
         .onFailed
         (
-            [this] (const FileException &e)
+            [this, tempFile] (const FileException &e)
             {
+                QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
                 setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
             }
         )
         .onFailed
         (
-            [this] ()
+            [this, tempFile] ()
             {
+                QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
                 setError(QStringLiteral("Unknown Exception"), QString());
             }
@@ -503,7 +508,7 @@ auto DownloadManager::install(const QUrl &uri) noexcept(false) -> QUrl
 
     QDir tempDirectory(uri.toLocalFile());
 
-    QUrl installLocation = QStringLiteral("%1/.local/share/komplex/packs/%2").arg
+    QUrl installLocation = QStringLiteral("file://%1/.local/share/komplex/packs/%2").arg
     (
         QStandardPaths::writableLocation(QStandardPaths::HomeLocation),
         tempDirectory.dirName()
@@ -537,24 +542,28 @@ auto DownloadManager::install(const QUrl &uri) noexcept(false) -> QUrl
     return installLocation;
 }
 
-auto DownloadManager::download(const QNetworkRequest &request, const QString &id, RequestType type) -> QFuture<QUrl>
+auto DownloadManager::download(const QNetworkRequest &request, const QString &id, RequestType type, const QString &filename) -> QFuture<QUrl>
 {
     return QtConcurrent::run
     (
-        [this, request, id, type]() -> QUrl
+        [this, request, id, type, _filename = filename]() -> QUrl
         {
             QEventLoop loop;
-            QString filename = id;
+            QString filename = _filename;
 
-            if(filename.isEmpty())
+            if(filename.isEmpty() && !request.url().fileName().isEmpty())
             {
-                filename = QUuid::createUuidV7().toString();
+                filename = request.url().fileName();
+            }
+            else if(filename.isEmpty())
+            {
+                filename = id;
             }
 
             QUrl downloadUri = QStringLiteral("file://%1/%2").arg
             (
                 QStandardPaths::writableLocation(QStandardPaths::TempLocation),
-                request.url().fileName()
+                filename
             );
 
             auto manager = CoreServices::networkAccessManager().toStrongRef();
@@ -578,13 +587,13 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
 
             switch(type)
             {
-            case Post:
-                reply = manager->post(request, nullptr);
-                break;
-            default:
-            case Get:
-                reply = manager->get(request, nullptr);
-                break;
+                case Post:
+                    reply = manager->post(request, nullptr);
+                    break;
+                default:
+                case Get:
+                    reply = manager->get(request, nullptr);
+                    break;
             }
 
             QObject::connect
@@ -624,8 +633,9 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
                 reply,
                 &QNetworkReply::readyRead,
                 this,
-                [this, downloadUri, reply]()
+                [this, downloadUri/*, reply, &downloadFile*/]()
                 {
+                    QMutexLocker locker(&m_fileMutex);
                     QFile downloadFile(downloadUri.toLocalFile());
 
                     if(!downloadFile.open(QFile::ReadWrite | QFile::Append))
@@ -633,8 +643,19 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
                         throw FileException(QStringLiteral("Could not open temp file location"));
                     }
 
+                    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+
+                    if(reply == nullptr)
+                    {
+                        throw NetworkException
+                        {
+                            QStringLiteral("Reply is not a qobject")
+                        };
+                    }
+
                     quint64 bytes = reply->bytesAvailable();
-                    quint64 bytesWritten = downloadFile.write(reply->readAll()/*bytes)*/);
+                    QByteArray data = reply->readAll();
+                    quint64 bytesWritten = downloadFile.write(data/*bytes)*/);
 
                     downloadFile.close();
                 }

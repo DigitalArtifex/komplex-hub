@@ -304,4 +304,6 @@ Item
     {
         downloadManager.downloadPack(uuid)
     }
+
+    Component.onCompleted: () => downloadManager.reset()
 }

@@ -143,7 +143,7 @@ signals:
 private:
     auto compile(const QUrl &uri) noexcept(false) -> QUrl;
     auto install(const QUrl &uri) noexcept(false) -> QUrl;
-    auto download(const QNetworkRequest &request, const QString &id, RequestType type = Get) -> QFuture<QUrl>;
+    auto download(const QNetworkRequest &request, const QString &id, RequestType type = Get, const QString &filename = QString()) -> QFuture<QUrl>;
     auto readShaderToyEntry(const QUrl &uri) noexcept(false) -> ShaderToyEntry;
 
     QString m_lastInstalledFile;
@@ -159,6 +159,7 @@ private:
     State m_state;
 
     QMutex m_downloadMutex;
+    QMutex m_fileMutex;
 
     PackCompiler *m_compiler = nullptr;
 
