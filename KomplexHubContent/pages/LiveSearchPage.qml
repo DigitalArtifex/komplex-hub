@@ -112,6 +112,7 @@ Item
         viewMoreWallpaperPopup.authorId = searchModel.data(searchModel.index(index,0), PackSearchModel.AuthorIdRole)
         viewMoreWallpaperPopup.description = searchModel.data(searchModel.index(index,0), PackSearchModel.DescriptionRole)
         viewMoreWallpaperPopup.thumbnail = searchModel.data(searchModel.index(index,0), PackSearchModel.ThumbnailRole)
+        viewMoreWallpaperPopup.uuid = searchModel.data(searchModel.index(index,0), PackSearchModel.UuidRole)
         viewMoreWallpaperPopup.opacity = 1
         popupContainer.opacity = 1
         paginator.opacity = 0

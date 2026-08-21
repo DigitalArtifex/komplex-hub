@@ -105,6 +105,7 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
                 metadata.setDescription(description);
                 metadata.setName(QStringLiteral("Pexels Image (%1)").arg(id));
                 metadata.setSource(QStringLiteral("./images/%1").arg(result.fileName()));
+                metadata.setId(id);
 
                 QUrl packUri
                 (
@@ -187,18 +188,26 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
         )
         .onFailed
         (
-            [this] (const NetworkException &e)
+            [this] (const std::filesystem::filesystem_error &e)
             {
                 reset();
-                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
+                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.code().value())), e.what());
             }
         )
         .onFailed
         (
-            [this] (const FileException &e)
+            [this] (const std::logic_error &e)
             {
                 reset();
-                setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
+                setError(QStringLiteral("Logic Exception %1"), e.what());
+            }
+        )
+        .onFailed
+        (
+            [this] (const std::exception &e)
+            {
+                reset();
+                setError(QStringLiteral("Logic Exception %1"), e.what());
             }
         )
         .onFailed
@@ -235,6 +244,7 @@ auto DownloadManager::downloadVideo(const QString &author, const QString &author
                 metadata.setType(ShaderPack::Video);
                 metadata.setName(QStringLiteral("Pexels Video (%1)").arg(id));
                 metadata.setSource(QStringLiteral("./videos/%1").arg(result.fileName()));
+                metadata.setId(id);
 
                 QUrl packUri
                 (
@@ -312,18 +322,26 @@ auto DownloadManager::downloadVideo(const QString &author, const QString &author
         )
         .onFailed
         (
-            [this] (const NetworkException &e)
+            [this] (const std::filesystem::filesystem_error &e)
             {
                 reset();
-                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.errorCode)), e.message);
+                setError(QStringLiteral("Network Exception %1").arg(QString::number(e.code().value())), e.what());
             }
         )
         .onFailed
         (
-            [this] (const FileException &e)
+            [this] (const std::logic_error &e)
             {
                 reset();
-                setError(QStringLiteral("File Exception %1").arg(QString::number(e.errorCode)), e.message);
+                setError(QStringLiteral("Logic Exception %1"), e.what());
+            }
+        )
+        .onFailed
+        (
+            [this] (const std::exception &e)
+            {
+                reset();
+                setError(QStringLiteral("Logic Exception %1"), e.what());
             }
         )
         .onFailed

@@ -139,19 +139,19 @@ Content purchases will be processed through the website using Paypal as will art
 | - Popular Videos | ✅ | |
 | - View More | ✅ | |
 |  |    |  |
-| Media Search | ✔ | |
+| Media Search | ✅ | |
 | - Packs | ✅ | |
 | - Videos | ✅ | |
 | - Images | ✅ | |
 |  |    |  |
-| Media Downloader | ✔ | |
-| - Packs | ❌ | |
-| - Videos | ❌ | |
+| Media Downloader | ✅ | |
+| - Packs | ✅ | |
+| - Videos | ✅ | |
 | - Images | ✅ | |
 |  |    |  |
-| Detailed Views | ✔ | |
-| - Packs | ✔ | |
-| - Videos | ✔ | |
+| Detailed Views | ✅ | |
+| - Packs | ✅ | |
+| - Videos | ✅ | |
 | - Images | ✅ | |
 |  |    |  |
 | App Management | ✔ | |
@@ -182,8 +182,6 @@ Content purchases will be processed through the website using Paypal as will art
 | - Artist Payout | ❌ | |
 | - User Media Purchase | ❌ | |
 
-This app is currently under development and is currently alpha. The API is now being hosted on https://komplex.dev.
+This app is currently under development and is currently BETA1 and the new API is live. Please do expect bugs in pack compiling at this stage.
 
-I have begun adding download functionality, however it is not yet complete.
 "Featured" Live wallpapers is currently a duplicated of "Newest". The featured endpoint will take manual curation, so this will take some time.
-BETA should be here within a few weeks.

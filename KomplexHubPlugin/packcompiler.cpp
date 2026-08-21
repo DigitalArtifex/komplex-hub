@@ -42,20 +42,7 @@ auto PackCompiler::process(const QUrl &uri) -> QFuture<QUrl>
     (
         [this, uri] () -> QUrl
         {
-            if(!uri.isLocalFile())
-            {
-                setError
-                (
-                    QStringLiteral("File Error"),
-                    QStringLiteral("URI %1 is not a local file").arg
-                    (
-                        uri.toString()
-                    )
-                );
-
-                return {};
-            }
-
+            validateUri(uri);
             reset();
             setStatus(QStringLiteral("Compiling %1").arg(uri.fileName()));
             setState(Compiling);
@@ -295,7 +282,7 @@ auto PackCompiler::prepareShaders(const QUrl &uri) noexcept(false) -> void
 
 auto PackCompiler::loadCommonFragmentData(const QUrl &uri) -> QByteArray
 {
-    localCheck(uri);
+    validateUri(uri);
 
     QDir sourceDirectory
     (
@@ -358,7 +345,7 @@ auto PackCompiler::loadCommonFragmentData(const QUrl &uri) -> QByteArray
 
 auto PackCompiler::loadCommonVertexData(const QUrl &uri) -> QByteArray
 {
-    localCheck(uri);
+    validateUri(uri);
 
     QDir sourceDirectory
     (
@@ -421,7 +408,7 @@ auto PackCompiler::loadCommonVertexData(const QUrl &uri) -> QByteArray
 
 auto PackCompiler::loadGlobalData(const QUrl &uri) -> QByteArray
 {
-    localCheck(uri);
+    validateUri(uri);
 
     QDir sourceDirectory
     (
@@ -490,7 +477,7 @@ auto PackCompiler::validateDirectory(const QUrl &uri) -> bool
 
 auto PackCompiler::createDirectory(const QUrl &uri) -> void
 {
-    localCheck(uri);
+    validateUri(uri);
 
     QStringList arguments =
     {
@@ -573,7 +560,7 @@ auto PackCompiler::createDirectory(const QUrl &uri) -> void
     }
 }
 
-auto PackCompiler::localCheck(const QUrl &uri) noexcept(false) -> void
+auto PackCompiler::validateUri(const QUrl &uri) noexcept(false) -> void
 {
     if(!uri.isValid() || !uri.isLocalFile())
     {
@@ -594,7 +581,7 @@ auto PackCompiler::localCheck(const QUrl &uri) noexcept(false) -> void
 
 auto PackCompiler::extract(const QUrl &sourceUri) noexcept(false) -> QUrl
 {
-    localCheck(sourceUri);
+    validateUri(sourceUri);
 
     QFileInfo info(sourceUri.toLocalFile());
 
@@ -718,7 +705,7 @@ auto PackCompiler::copyFile(const QUrl &sourceUri, const QUrl &destinationUri) n
 
 auto PackCompiler::compile(const QUrl &uri) noexcept(false) -> void
 {
-    localCheck(uri);
+    validateUri(uri);
 
     setState(Compiling);
 
@@ -869,7 +856,7 @@ auto PackCompiler::preprocess(const QUrl &uri) noexcept(false) -> void
 
 auto PackCompiler::appendVersion(const QUrl &uri) noexcept(false) -> void
 {
-    localCheck(uri);
+    validateUri(uri);
 
     QFile file(uri.toLocalFile());
 
@@ -899,7 +886,7 @@ auto PackCompiler::appendVersion(const QUrl &uri) noexcept(false) -> void
 
 auto PackCompiler::compileShader(const QUrl &uri) noexcept(false) -> void
 {
-    localCheck(uri);
+    validateUri(uri);
 
     QString qsb = QStringLiteral("/usr/lib/qt6/bin/qsb");
 
