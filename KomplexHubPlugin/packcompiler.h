@@ -59,7 +59,6 @@
 struct KOMPLEX_EXPORT BuildContext
 {
     QMap<QByteArray, QByteArray> commonData;
-    QPromise<QUrl> promise;
 };
 
 /**
@@ -83,6 +82,10 @@ class PackCompiler : public QObject
     Q_OBJECT
 public:
 
+    /**
+     * @brief The State enum
+     * Enum of the possible states of the compiler
+     */
     enum State
     {
         Idle,
@@ -94,23 +97,59 @@ public:
 
     explicit PackCompiler(QObject *parent = nullptr);
 
-    auto compilerOutput() const -> const QString & { return m_compilerOutput; }
+    /**
+     * @brief progress
+     * Current compiler progress
+     * @return
+     */
     auto progress() -> qreal { return m_progress; }
+
+    /**
+     * @brief currentStep
+     * Current compiler step
+     * @return
+     */
     auto currentStep() -> qint64 { return m_currentStep; }
+
+    /**
+     * @brief totalSteps
+     * Total steps in the current compile
+     * @return
+     */
     auto totalSteps() -> qint64 { return m_totalSteps; }
-    auto errorTitle() const -> const QString & { return m_errorTitle; }
-    auto errorMessage() const -> const QString & { return m_errorMessage; }
+
+    /**
+     * @brief status
+     * Current status message
+     * @return
+     */
     auto status() const -> const QString & { return m_status; }
+
+    /**
+     * @brief state
+     * Current compiler state
+     * @return
+     */
     auto state() const -> State { return m_state; }
+
+    /**
+     * @brief reset
+     * Resets the compiler state
+     */
     auto reset() -> void;
 
+    /**
+     * @brief build
+     * Builds a Komplex pack from a tar.gz file
+     * @param uri
+     * Uri of the tar.gz
+     * @return
+     * Uri of the built pack
+     */
     auto build(const QUrl &uri) -> QUrl;
 
 signals:
     auto compilerOutputChanged() -> void;
-    auto errorOcurred() -> void;
-    auto errorTitleChanged() -> void;
-    auto errorMessageChanged() -> void;
     auto stateChanged() -> void;
     auto progressChanged() -> void;
     auto currentStepChanged() -> void;
@@ -230,36 +269,161 @@ private:
     auto compile(const QByteArray &data, const QString &filename, const QShader::Stage stage) noexcept(false) -> QShader;
 
     //[13]
+    /**
+     * @brief save
+     * Saves a serialized version of the shader to the specified uri
+     * @param uri
+     * Uri of the file to create
+     * @param shader
+     * The compiled shader
+     */
     auto save(const QUrl &uri, const QShader &shader) noexcept(false) -> void;
 
-    //helpers
+//@BEGIN helpers
+    /**
+     * @brief validateUri
+     * Validates that the uri is a local file or direcotry
+     * @param uri
+     */
     auto validateUri(const QUrl &uri) const noexcept(false) -> void;
+
+    /**
+     * @brief run
+     * Runs the supplied command with the given arguments as a QProcess. If
+     * data is supplied, it is written to the standard input channel after the
+     * process has started
+     * @param command
+     * System command or program to run
+     * @param arguments
+     * QStringList of the given arguments. Minimal wildcard expansion available.
+     * @param data
+     * Optional data to write
+     * @return
+     * Standard non-error output
+     */
     auto run(const QString &command, const QStringList &arguments, const QByteArray &data = {}) noexcept(false) -> QByteArray;
+
+    /**
+     * @brief readFile
+     * Reads the file at the given uri and returns its data
+     * @param uri
+     * Uri of the file
+     * @return
+     * File contents
+     */
     auto readFile(const QUrl &uri) noexcept(false) -> QByteArray;
+
+    /**
+     * @brief writeFile
+     * Writes the supplied data to the given uri
+     * @param uri
+     * Uri of the file
+     * @param data
+     * Data to write
+     */
     auto writeFile(const QUrl &uri, const QByteArray &data) noexcept(false) -> void;
+
+    /**
+     * @brief copyFile
+     * Copys file to new uri
+     * @param sourceUri
+     * File to copy
+     * @param destinationUri
+     * New file location/name
+     */
     auto copyFile(const QUrl &sourceUri, const QUrl &destinationUri) noexcept(false) -> void;
+
+    /**
+     * @brief createDirectory
+     * QDir::mkpath was failing, so this helper function calls mkdir -p
+     * @param uri
+     * Directory path to create
+     */
     auto createDirectory(const QUrl &uri) noexcept(false) -> void;
+
+    /**
+     * @brief removeDirectory
+     * Calls rm -rf, but should be replaced with an agnostic solution
+     * @param uri
+     * Directory to remove
+     */
     auto removeDirectory(const QUrl &uri) noexcept(false) -> void;
+
+    /**
+     * @brief getStageFromSuffix
+     * Supplies the stage/type of shader based on the shaders file extension
+     * @param suffix
+     * @return
+     */
     auto getStageFromSuffix(const QString &suffix) const -> QShader::Stage;
 
-    auto setError(const QString &title, const QString &message, const QUrl &uri = {}) -> void;
-    auto setCompilerOutput(const QString &compilerOutput) -> void;
+    /**
+     * @brief setState
+     * Sets the current state of the compiler
+     * @param state
+     */
     auto setState(State state) -> void;
+
+    /**
+     * @brief setProgress
+     * Sets the current progress of the compiler
+     * @param progress
+     */
     auto setProgress(qreal progress) -> void;
+
+    /**
+     * @brief setTotalSteps
+     * Sets the total steps pack will take to build
+     * @param steps
+     */
     auto setTotalSteps(qint64 steps) -> void;
+
+    /**
+     * @brief setCurrentStep
+     * Sets the current step
+     * @param step
+     */
     auto setCurrentStep(qint64 step) -> void;
+
+    /**
+     * @brief setStatus
+     * Sets the current status message
+     * @param status
+     */
     auto setStatus(const QString &status) -> void;
+
+    /**
+     * @brief incrementCompileStep
+     * Increments the current step and updates progress
+     */
     auto incrementCompileStep() -> void;
 
+//@END helpers
+
 #ifdef HAS_VULKAN
+    /**
+     * @brief vulkanVersion
+     * Returns the current version reported by the vulkan api
+     * @return
+     */
     auto vulkanVersion() const -> qint32;
 #endif
 
 #ifdef HAS_OPENGL
+    /**
+     * @brief openGlVersion
+     * Returns the current version reported by the opengl api
+     * @return
+     */
     auto openGlVersion() const -> qint32;
 #endif
 
     //members
+    /**
+     * @brief m_updateVariables
+     * Standard variables expected by most online shaders, mainly
+     * shadertoy and similar.
+     */
     static inline const QStringList m_updateVariables
     {
         QStringLiteral("iTime"),
@@ -275,6 +439,16 @@ private:
         QStringLiteral("iChannelResolution")
     };
 
+    /**
+     * @brief m_variableExpressions
+     * Regular expressions of standardized variables. Built at runtime
+     */
+    static inline QList<QRegularExpression> m_variableExpressions;
+
+    /**
+     * @brief m_shaderNameFilters
+     * Name filters for supported shader types
+     */
     static inline const QStringList m_shaderNameFilters
     {
         QStringLiteral("*.frag"),
@@ -286,6 +460,10 @@ private:
         QStringLiteral("*.glsl")
     };
 
+    /**
+     * @brief m_shaderStages
+     * Map of supported file suffix to their QShader::Stage
+     */
     static inline const QMap<QString, QShader::Stage> m_shaderStages
     {
         {
@@ -314,11 +492,19 @@ private:
         }
     };
 
+    /**
+     * @brief m_version
+     * Version to be appended to the shader before build
+     */
     static inline const QByteArray m_version
     {
         R"(#version 450)"
     };
 
+    /**
+     * @brief m_header
+     * Header to be appended to the shader before build
+     */
     static inline const QByteArray m_header
     {
         R"(layout(location = 0) in vec2 qt_TexCoord0;
@@ -348,6 +534,10 @@ layout(binding = 4) uniform sampler2D iChannel3;
 vec2 fragCoord = vec2(qt_TexCoord0.x, 1.0 - qt_TexCoord0.y) * ubuf.iResolution.xy;)"
     };
 
+    /**
+     * @brief m_footer
+     * Footer to be appended to the shader before build
+     */
     static inline const QByteArray m_footer
     {
         R"(
@@ -358,29 +548,12 @@ void main() {
 })"
     };
 
-    QMap<QByteArray, QByteArray> m_commonData;
-    QMap<QByteArray, QShaderBaker> m_shaders;
-
-    QString m_compilerOutput;
-    QString m_errorMessage;
-    QString m_errorTitle;
-    QString m_status;
-
     State m_state;
-
     qreal m_currentStep = 0;
     qreal m_progress = 0;
     qreal m_totalSteps = 0;
+    QString m_status;
 
-    QMutex m_downloadMutex;
-
-    QFuture<QUrl> m_buildFuture;
-
-    static inline QList<QRegularExpression> m_variableExpressions;
-
-    Q_PROPERTY(QString compilerOutput READ compilerOutput WRITE setCompilerOutput NOTIFY compilerOutputChanged FINAL)
-    Q_PROPERTY(QString errorTitle READ errorTitle NOTIFY errorTitleChanged FINAL)
-    Q_PROPERTY(QString errorMessage READ errorMessage NOTIFY errorMessageChanged FINAL)
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged FINAL)
     Q_PROPERTY(qint64 totalSteps READ totalSteps NOTIFY totalStepsChanged FINAL)
     Q_PROPERTY(qint64 currentStep READ currentStep NOTIFY currentStepChanged FINAL)

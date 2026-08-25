@@ -24,17 +24,17 @@ PackCompiler::PackCompiler(QObject *parent)
 
 auto PackCompiler::reset() -> void
 {
-    setError({}, {});
     setProgress(std::numeric_limits<qreal>::infinity());
     setTotalSteps(0);
     setCurrentStep(0);
-    setCompilerOutput({});
-    setStatus({});
     setState(Idle);
 }
 
 auto PackCompiler::build(const QUrl &uri) -> QUrl
 {
+    setState(Compiling);
+    setStatus(QStringLiteral("Preparing Komplex Pack For Building"));
+
     BuildContext *context = new BuildContext;
     QUrl extractedUri = extract(uri);
 
@@ -42,6 +42,8 @@ auto PackCompiler::build(const QUrl &uri) -> QUrl
     context->commonData = loadCommonData(extractedUri);
     processShaders(extractedUri, context);
 
+    setState(Complete);
+    setStatus(QStringLiteral("Complete"));
     delete context;
 
     return extractedUri;
@@ -50,6 +52,7 @@ auto PackCompiler::build(const QUrl &uri) -> QUrl
 auto PackCompiler::extract(const QUrl &sourceUri) noexcept(false) -> const QUrl
 {
     validateUri(sourceUri);
+    setStatus(QStringLiteral("Extracting Komplex Pack"));
 
     QFileInfo info(sourceUri.toLocalFile());
 
@@ -77,7 +80,6 @@ auto PackCompiler::extract(const QUrl &sourceUri) noexcept(false) -> const QUrl
     }
 
     run(QStringLiteral("tar"), arguments);
-
     QFile::remove(sourceUri.toLocalFile());
 
     return std::move(outputUri);
@@ -101,6 +103,7 @@ auto PackCompiler::validatePack(const QUrl &uri) const noexcept(false) -> void
 auto PackCompiler::loadCommonData(const QUrl &uri) -> QMap<QByteArray,QByteArray>
 {
     validateUri(uri);
+    setStatus(QStringLiteral("Loading Common Data"));
 
     QMap<QByteArray,QByteArray> commonData;
 
@@ -166,18 +169,21 @@ auto PackCompiler::processShaders(const QUrl &uri, BuildContext *context) -> voi
 
     const QStringList entries = shaderDirectory.entryList();
 
+    setTotalSteps(entries.count());
+    setProgress(0);
+
     for(const QString &entry : entries)
     {
         QFileInfo entryInfo(shaderDirectory.absoluteFilePath(entry));
-        QByteArray shaderData;
         QUrl entryUri = QStringLiteral("file://%1").arg
         (
             entryInfo.absoluteFilePath()
         );
 
-        shaderData += readFile(entryUri);
+        setStatus(QStringLiteral("Compiling: %1").arg(entry));
 
         QShader::Stage stage = getStageFromSuffix(entryInfo.suffix());
+        QByteArray shaderData = readFile(entryUri);
 
         appendCommonData(&shaderData, entryInfo.suffix().toUtf8(), context);
         replaceUniformVariables(&shaderData);
@@ -195,6 +201,7 @@ auto PackCompiler::processShaders(const QUrl &uri, BuildContext *context) -> voi
         save(outputUri, shader);
 
         QFile::remove(entryUri.toLocalFile());
+        incrementCompileStep();
     }
 }
 
@@ -237,13 +244,6 @@ auto PackCompiler::compile(const QByteArray &data, const QString &filename, cons
 
     if(!shader.isValid())
     {
-        QUrl errorUri
-        (
-            QStringLiteral("file://tmp/_err")
-        );
-
-        writeFile(errorUri, data);
-
         throw shader::logic_error
         (
             std::string("Compiler Error"),
@@ -539,42 +539,6 @@ auto PackCompiler::setProgress(qreal progress) -> void
 
     m_progress = progress;
     Q_EMIT progressChanged();
-}
-
-void PackCompiler::setCompilerOutput(const QString &compilerOutput)
-{
-    if (m_compilerOutput == compilerOutput)
-    {
-        return;
-    }
-
-    m_compilerOutput = compilerOutput;
-    emit compilerOutputChanged();
-}
-
-auto PackCompiler::setError(const QString &title, const QString &message, const QUrl &uri) -> void
-{
-    if(title == m_errorTitle && message == m_errorMessage)
-    {
-        return;
-    }
-
-    m_errorMessage = std::move(message);
-    m_errorTitle = std::move(title);
-
-    if(uri.isValid() && uri.isLocalFile())
-    {
-        QFile errorFile(uri.toLocalFile());
-
-        if(errorFile.open(QFile::ReadWrite | QFile::Append))
-        {
-            errorFile.write(message.toLocal8Bit() + QByteArray("\n"));
-        }
-    }
-
-    Q_EMIT errorTitleChanged();
-    Q_EMIT errorMessageChanged();
-    Q_EMIT errorOcurred();
 }
 
 auto PackCompiler::setState(State state) -> void
