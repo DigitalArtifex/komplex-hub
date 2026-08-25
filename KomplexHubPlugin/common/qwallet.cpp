@@ -1,5 +1,6 @@
 #include "qwallet.h"
 #include "../3rdparty/qtkeychain/qtkeychain/keychain.h"
+#include "common/exceptions.h"
 
 auto QWallet::read(const QString &service, const QString &key) const -> QFuture<QByteArray>
 {
@@ -29,7 +30,11 @@ auto QWallet::read(const QString &service, const QString &key) const -> QFuture<
                     else
                     {
                         m_errorString = qPrintable(j->errorString());
-                        throw std::exception();
+                        throw wallet_exception
+                        (
+                            QStringLiteral("Wallet read error").toStdString(),
+                            errorString().toStdString()
+                        );
                     }
 
                     loop.quit();
@@ -65,11 +70,15 @@ auto QWallet::write(const QString &service, const QString &key, const QByteArray
                 this,
                 [this, key, &loop, &success](QKeychain::Job *job)
                 {
-                    auto j = static_cast<QKeychain::ReadPasswordJob*>(job);
+                    auto j = static_cast<QKeychain::WritePasswordJob*>(job);
                     if (j->error() != QKeychain::NoError)
                     {
                         setErrorString(qPrintable(j->errorString()));
-                        throw std::exception();
+                        throw wallet_exception
+                        (
+                            QStringLiteral("Wallet write error").toStdString(),
+                            errorString().toStdString()
+                        );
                     }
 
                     loop.quit();
@@ -102,7 +111,7 @@ auto QWallet::remove(const QString &service, const QString &key) -> QFuture<void
                 this,
                 [this, key, &loop, &value](QKeychain::Job *job)
                 {
-                    auto j = static_cast<QKeychain::ReadPasswordJob*>(job);
+                    auto j = static_cast<QKeychain::DeletePasswordJob*>(job);
                     if (j->error() != QKeychain::NoError)
                     {
                         m_errorString = qPrintable(j->errorString());
