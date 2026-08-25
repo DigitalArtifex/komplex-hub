@@ -130,7 +130,7 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
 
                 if(!packDirectory.mkpath(packUri.toLocalFile()))
                 {
-                    throw FileException(QStringLiteral("Could not create directory"));
+                    throw file_exception(QStringLiteral("Could not create directory").toStdString());
                 }
 
                 packDirectory.mkdir(QStringLiteral("images"));
@@ -148,7 +148,7 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
                 if(!packFile.open(QFile::ReadWrite))
                 {
                     setError(QStringLiteral("File Error"), packFile.errorString());
-                    throw FileException(packFile.errorString());
+                    throw file_exception(packFile.errorString().toStdString());
                 }
 
                 QByteArray data = metadata.json().toJson(QJsonDocument::Indented);
@@ -156,7 +156,7 @@ auto DownloadManager::downloadImage(const QString &author, const QString &author
                 if(packFile.write(data) != data.length())
                 {
                     setError(QStringLiteral("File Error"), packFile.errorString());
-                    throw FileException(packFile.errorString());
+                    throw file_exception(packFile.errorString().toStdString());
                 }
 
                 packFile.close();
@@ -239,6 +239,8 @@ auto DownloadManager::downloadVideo(const QString &author, const QString &author
         (
             [this, author, id](QUrl result) -> QUrl
             {
+                setState(Installing);
+
                 ShaderPack metadata;
                 metadata.setAuthor(author);
                 metadata.setType(ShaderPack::Video);
@@ -282,7 +284,7 @@ auto DownloadManager::downloadVideo(const QString &author, const QString &author
                 if(!packFile.open(QFile::ReadWrite))
                 {
                     setError(QStringLiteral("File Error"), packFile.errorString());
-                    throw FileException(packFile.errorString());
+                    throw file_exception(packFile.errorString().toStdString());
                 }
 
                 QByteArray data = metadata.json().toJson(QJsonDocument::Compact);
@@ -290,7 +292,7 @@ auto DownloadManager::downloadVideo(const QString &author, const QString &author
                 if(packFile.write(data) != data.length())
                 {
                     setError(QStringLiteral("File Error"), packFile.errorString());
-                    throw FileException(packFile.errorString());
+                    throw file_exception(packFile.errorString().toStdString());
                 }
 
                 packFile.close();
@@ -369,6 +371,7 @@ auto DownloadManager::downloadPack(const QString &id) -> void
     QNetworkRequest request(downloadUrl);
     request.setRawHeader(QByteArray("uuid"), id.toUtf8());
     QString tempFile(QString("%1.tar.gz").arg(id));
+    setState(Downloading);
 
     QFuture<QUrl> downloadUri = download(request, id, Post, tempFile);
 
@@ -377,7 +380,8 @@ auto DownloadManager::downloadPack(const QString &id) -> void
         (
             [this](QUrl result) -> QUrl
             {
-                return m_compiler->process(result).result();
+                setState(Compiling);
+                return m_compiler->build(result);
             }
         )
         .then
@@ -414,11 +418,11 @@ auto DownloadManager::downloadPack(const QString &id) -> void
         )
         .onFailed
         (
-            [this, tempFile] (const std::logic_error &e)
+            [this, tempFile] (const shader::logic_error &e)
             {
                 QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
-                setError(QStringLiteral("Logic Exception %1"), e.what());
+                setError(e.what(), QString::fromStdString(e.details));
             }
         )
         .onFailed
@@ -427,7 +431,7 @@ auto DownloadManager::downloadPack(const QString &id) -> void
             {
                 QFile::remove(QStringLiteral("/tmp/") + tempFile);
                 reset();
-                setError(QStringLiteral("Logic Exception %1"), e.what());
+                setError(QStringLiteral("Exception %1"), e.what());
             }
         )
         .onFailed
@@ -554,13 +558,13 @@ auto DownloadManager::install(const QUrl &uri) noexcept(false) -> QUrl
     if(!m_moveProcess.waitForStarted(3000))
     {
         qWarning() << QStringLiteral("Could not start copy process: %1").arg(m_moveProcess.readAllStandardError());
-        throw FileException(QStringLiteral("Could not start install process"));
+        throw file_exception(QStringLiteral("Could not start install process").toStdString());
     }
 
     if(!m_moveProcess.waitForFinished())
     {
         qWarning() << QStringLiteral("Copy process took longer than expected (>30s)");
-        throw FileException(QStringLiteral("Install process took longer than expected (>30s)"));
+        throw file_exception(QStringLiteral("Install process took longer than expected (>30s)").toStdString());
     }
 
     return installLocation;
@@ -594,7 +598,7 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
 
             if(manager == nullptr)
             {
-                throw NetworkException
+                throw network_exception
                 {
                     QStringLiteral("Network Manager reference has already been deleted")
                 };
@@ -604,7 +608,7 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
 
             if(downloadFile.exists() && !downloadFile.remove())
             {
-                throw FileException(downloadFile.errorString());
+                throw file_exception(downloadFile.errorString().toStdString());
             }
 
             QNetworkReply *reply = nullptr;
@@ -629,7 +633,7 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
                 {
                     loop.quit();
 
-                    throw NetworkException
+                    throw network_exception
                     (
                         QStringLiteral("Network Error %1").arg
                         (
@@ -664,7 +668,7 @@ auto DownloadManager::download(const QNetworkRequest &request, const QString &id
 
                     if(!downloadFile.open(QFile::ReadWrite | QFile::Append))
                     {
-                        throw FileException(QStringLiteral("Could not open temp file location"));
+                        throw file_exception(QStringLiteral("Could not open temp file location").toStdString());
                     }
 
                     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());

@@ -11,8 +11,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     KomplexHubModuleplugin
     KomplexHubContentplugin
     KomplexHubPluginplugin
-    KomplexHubModule_Controlsplugin
-    KomplexHubModule_Keroplugin
+    KomplexHubControlsplugin
+    KomplexHubKeroplugin
     Qt6::Quick
     Qt6::Core
     Qt6::Gui

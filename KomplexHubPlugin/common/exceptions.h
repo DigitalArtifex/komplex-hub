@@ -19,36 +19,197 @@
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 #include <QString>
-#include <exception>
+#include <string>
+#include <filesystem>
 #include "komplex_global.h"
 
-struct KOMPLEX_EXPORT Exception : std::exception
+struct KOMPLEX_EXPORT network_exception : std::ios_base::failure
 {
-    explicit Exception(const QString &message, quint16 errorCode = 0)
-        : std::exception(), message(message), errorCode(errorCode){}
+    network_exception(const std::string &message, const std::string &details, const std::error_code &code) :
+        details(details),
+        std::ios_base::failure(message, code) { }
 
-    const QString message;
-    const quint16 errorCode;
+    network_exception(const std::string &message, const std::error_code &code) :
+        std::ios_base::failure(message, code) { }
+
+    network_exception(const QString &message, const QString &details, const std::error_code &code) :
+        details(details.toStdString()),
+        std::ios_base::failure(message.toStdString(), code) { }
+
+    network_exception(const QString &message, const int code = errno) :
+        std::ios_base::failure
+        (
+            message.toStdString(),
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ) { }
+
+    const std::string details;
 };
 
-struct KOMPLEX_EXPORT NetworkException : Exception
+struct KOMPLEX_EXPORT file_exception : std::filesystem::filesystem_error
 {
-    NetworkException(const QString &message, qsizetype errorCode = 0) : Exception(message, errorCode) {}
+    file_exception(const std::string &message, const std::string &details, const std::error_code &code) :
+        details(details),
+        std::filesystem::filesystem_error(message, code) { }
+
+    file_exception(const std::string &message, const std::error_code &code) :
+        std::filesystem::filesystem_error(message, code) { }
+
+    file_exception(const std::string &message, const int code = errno) :
+        std::filesystem::filesystem_error
+        (
+            message,
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ) { }
+
+    file_exception(const std::string &message, const std::string &details, const int code = errno) :
+        details(details),
+        std::filesystem::filesystem_error
+        (
+            message,
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ) { }
+
+    const std::string details;
 };
-struct KOMPLEX_EXPORT FileException : Exception
+
+struct KOMPLEX_EXPORT sql_exception : std::ios_base::failure
 {
-    FileException(const QString &message, qsizetype errorCode = 0) : Exception(message, errorCode) {}
+    sql_exception(const std::string &message, const std::string &details, const std::error_code &code) :
+        details(details),
+        std::ios_base::failure(message, code) { }
+
+    sql_exception(const std::string &message, const std::error_code &code) :
+        std::ios_base::failure(message, code) { }
+
+    sql_exception(const std::string &message, const int code = errno) :
+        std::ios_base::failure
+        (
+            message,
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ) { }
+
+    const std::string details;
 };
-struct KOMPLEX_EXPORT SqlException : Exception
+
+struct KOMPLEX_EXPORT wallet_exception : std::ios_base::failure
 {
-    SqlException(const QString &message, qsizetype errorCode = 0) : Exception(message, errorCode) {}
+    wallet_exception(const std::string &message, const std::string &details, const std::error_code &code) :
+        details(details),
+        std::ios_base::failure(message, code) { }
+
+    wallet_exception(const std::string &message, const std::error_code &code) :
+        std::ios_base::failure(message, code) { }
+
+    wallet_exception(const std::string &message, const std::string &details, const int code = errno) :
+        details(details),
+        std::ios_base::failure
+        (
+            message,
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ) { }
+
+    wallet_exception(const std::string &message, const int code = errno) :
+        std::ios_base::failure
+        (
+            message,
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ) { }
+
+    const std::string details;
 };
-struct KOMPLEX_EXPORT WalletException : Exception
+
+struct KOMPLEX_EXPORT process_exception : std::runtime_error
 {
-    WalletException(const QString &message, qsizetype errorCode = 0) : Exception(message, errorCode) {}
+    process_exception(const std::string &message, const std::string &details, const std::error_code &code) :
+        details(details),
+        code(code),
+        std::runtime_error(message) { }
+
+    process_exception(const std::string &message, const std::error_code &code) :
+        code(code),
+        std::runtime_error(message) { }
+
+    process_exception(const std::string &message, const int code = errno) :
+        code
+        (
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ),
+        std::runtime_error
+        (
+            message
+        ) { }
+
+    process_exception(const std::string &message, const std::string &details, const int code = errno) :
+        details(details),
+        code
+        (
+            std::error_code
+            (
+                code,
+                std::system_category()
+            )
+        ),
+        std::runtime_error (message) { }
+
+    const std::string details;
+    const std::error_code code;
 };
-struct KOMPLEX_EXPORT ShaderCompilerException : Exception
+
+namespace shader
 {
-    ShaderCompilerException(const QString &message, qsizetype errorCode = 0) : Exception(message, errorCode) {}
-};
+    struct KOMPLEX_EXPORT logic_error : std::logic_error
+    {
+        logic_error(const std::string &message, const std::string &details, const std::error_code &code) :
+            details(details),
+            code(code),
+            std::logic_error(message) { }
+
+        logic_error(const std::string &message, const std::error_code &code) :
+            code(code),
+            std::logic_error(message) { }
+
+        logic_error(const std::string &message, const std::string &details = {}, const int code = errno) :
+            code
+            (
+                std::error_code
+                (
+                    code,
+                    std::system_category()
+                )
+            ),
+            std::logic_error(message) { }
+
+        const std::string details;
+        const std::error_code code;
+    };
+}
 #endif // EXCEPTIONS_H
