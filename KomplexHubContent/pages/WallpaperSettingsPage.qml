@@ -23,13 +23,29 @@
  */
 // pragma ComponentBehavior: Bound
 
+/*
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2026 @DigitalArtifex
+ *  https://digitalartifex.dev - https://github.com/DigitalArtifex
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>
+ */
+import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
-//import org.kde.kirigami as Kirigami
-//import org.kde.plasma.core as PlasmaCore
-import QtCore
 import Qt.labs.folderlistmodel 2.15
 
 import KomplexHub
@@ -52,13 +68,9 @@ Item
 
     id: root
     property alias cfg_pauseMode: pauseModeCombo.currentIndex
-    property alias cfg_isPaused: runningCombo.checked
     property alias cfg_shaderSpeed: speedSlider.value
     property alias cfg_mouseSpeedBias: mouseBiasSlider.value
-    property bool cfg_infoPlasma6Preview_dismissed
-    property bool cfg_warningResources_dismissed
-    property bool cfg_emergencyHelp_dismissed
-    property bool cfg_infoiChannelSettings_dismissed
+    property alias cfg_enableMouseTracking: mouseTrackingCheckbox.checked
     property alias cfg_checkActiveScreen: activeScreenOnlyCheckbox.checked
     property alias cfg_excludeWindows: excludeWindows.windows
     property alias cfg_running: runningCombo.checked
@@ -76,6 +88,9 @@ Item
     property int resolution: 1920
     property bool enableMouseTracking: true
     property real mouseTrackingBias: 0.5
+
+    property bool updated: updates.length > 0
+    property var updates: []
 
     Rectangle {
         anchors.fill: parent
@@ -123,19 +138,17 @@ Item
                     currentIndex: manager.shaderPackIndex
                     displayText: currentIndex === -1 ? "Custom File" : currentText.replace("_", " ").charAt(0).toUpperCase() + currentText.replace("_", " ").slice(1)
 
-                    // onCurrentTextChanged:
-                    // {
-                    //     root.cfg_shader_package_index = currentIndex;
-
-                    //     if (root.cfg_shader_package_index === -1)
-                    //         return;
-
-                    //     var source = currentText
-                    //     shaderPackModel.loadMetadata(source)
-                    //     root.cfg_shader_package = "file://" + shaderPackModel.path(source)
-                    // }
-
-
+                    onCurrentIndexChanged:
+                    {
+                        if(updates.indexOf("wallpaper") >= 0 && value === manager.shaderPackIndex)
+                        {
+                            updates.slice(updates.indexOf("wallpaper"), 1)
+                        }
+                        else
+                        {
+                            updates.push("wallpaper")
+                        }
+                    }
                 }
 
                 Item { Layout.preferredHeight: Constants.smallMargin }
@@ -174,6 +187,15 @@ Item
                         onEditingFinished: () =>
                         {
                             value = parseInt(text)
+
+                            if(updates.indexOf("resolutionX") >= 0 && value === manager.resolutionX)
+                            {
+                                updates.slice(updates.indexOf("resolutionX"), 1)
+                            }
+                            else
+                            {
+                                updates.push("resolutionX")
+                            }
                         }
 
                         Keys.onPressed: (event) =>
@@ -196,7 +218,8 @@ Item
                         }
                     }
 
-                    Text {
+                    Text
+                    {
                         text: qsTr("Y")
                         font: Constants.h3Font
                         color: palette.text
@@ -205,7 +228,8 @@ Item
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    TextField {
+                    TextField
+                    {
                         property int value: manager.resolutionY
 
                         Layout.preferredHeight: 36
@@ -219,6 +243,15 @@ Item
                         onEditingFinished: () =>
                         {
                             value = parseInt(text)
+
+                            if(updates.indexOf("resolutionY") >= 0 && value === manager.resolutionY)
+                            {
+                                updates.slice(updates.indexOf("resolutionY"), 1)
+                            }
+                            else
+                            {
+                                updates.push("resolutionY")
+                            }
                         }
 
                         Keys.onPressed: (event) =>
@@ -248,7 +281,8 @@ Item
                 {
                     Layout.fillWidth: true
 
-                    Text {
+                    Text
+                    {
                         text: qsTr("Frame Rate")
                         font: Constants.h3Font
                         color: palette.text
@@ -263,7 +297,19 @@ Item
                         from: 1
                         to: 60
                         stepSize: 0.01
-                        onValueChanged: frameRateField.text = String(value.toFixed(2));
+                        onValueChanged:
+                        {
+                            frameRateField.text = String(value.toFixed(2));
+
+                            if(updates.indexOf("frameRate") >= 0 && value === manager.targetFramerate)
+                            {
+                               updates.slice(updates.indexOf("frameRate"), 1)
+                            }
+                            else
+                            {
+                               updates.push("frameRate")
+                            }
+                        }
 
                         Component.onCompleted: () => {
                             value = manager.targetFramerate
@@ -313,7 +359,8 @@ Item
                     id: speedLayout
                     Layout.fillWidth: true
 
-                    Text {
+                    Text
+                    {
                         text: qsTr("Shader Speed")
                         font: Constants.h3Font
                         color: palette.text
@@ -329,9 +376,22 @@ Item
                         from: -4.0
                         to: 4.0
                         stepSize: 0.01
-                        onValueChanged: shaderSpeedField.text = String(value.toFixed(2));
+                        onValueChanged:
+                        {
+                            if(updates.indexOf("shaderSpeed") >= 0 && value === manager.shaderSpeed)
+                            {
+                               updates.slice(updates.indexOf("shaderSpeed"), 1)
+                            }
+                            else
+                            {
+                               updates.push("shaderSpeed")
+                            }
 
-                        Component.onCompleted: () => {
+                            shaderSpeedField.text = String(value.toFixed(2));
+                        }
+
+                        Component.onCompleted: () =>
+                        {
                             value = manager.shaderSpeed
                         }
                     }
@@ -414,7 +474,17 @@ Item
                         ]
 
                         textRole: modelData
-                        //onCurrentIndexChanged: root.cfg_pauseMode = currentIndex
+                        onCurrentIndexChanged:
+                        {
+                            if(updates.indexOf("pauseMode") && currentIndex === manager.pauseMode)
+                            {
+                                updates.slice(updates.indexOf("pauseMode"), 1)
+                            }
+                            else
+                            {
+                                updates.push("pauseMode")
+                            }
+                        }
                         currentIndex: manager.pauseMode
                     }
                 }
@@ -434,7 +504,8 @@ Item
                 {
                     Layout.fillWidth: true
 
-                    Text {
+                    Text
+                    {
                         text: qsTr("Excluded Windows")
                         font: Constants.h3Font
                         color: palette.text
@@ -451,6 +522,15 @@ Item
                         onEditingFinished: () =>
                         {
                             windows = excludeWindows.text.trim().replace(/\s+/g, "").split(",");
+
+                            if(updates.indexOf("excludeWindows") >= 0 && windows === manager.excludedWindows)
+                            {
+                               updates.slice(updates.indexOf("excludeWindows"), 1)
+                            }
+                            else
+                            {
+                               updates.push("excludeWindows")
+                            }
                         }
 
                         ToolTip.visible: hovered
@@ -462,16 +542,27 @@ Item
 
                 CheckBox
                 {
-                    //Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", cfg_isPaused ? "Playing" : "Paused")
-
                     id: runningCombo
                     checked: manager.running
                     text: qsTr("Shader Is Running")
+
+                    onCheckedChanged:
+                    {
+                        if(updates.indexOf("shaderRunning") > 0 && checked === manager.running)
+                        {
+                            updates.slice(updates.indexOf("shaderRunning"), 1)
+                        }
+                        else
+                        {
+                            updates.push("shaderRunning")
+                        }
+                    }
                 }
 
                 Item { Layout.preferredHeight: Constants.largeMargin }
 
-                Text {
+                Text
+                {
                     text: qsTr("Mouse Tracking")
                     font: Constants.h2Font
                     color: palette.text
@@ -483,14 +574,15 @@ Item
                 {
                     Layout.fillWidth: true
 
-                    Text {
-                        text: qsTr("Mouse Tracking Bias")
+                    Text
+                    {
+                        text: qsTr("Mouse Speed Bias")
                         font: Constants.h3Font
                         color: palette.text
                         verticalAlignment: Text.AlignVCenter
                         Layout.preferredHeight: 36
                     }
-                    //Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Mouse bias:")
+
                     Slider
                     {
                         id: mouseBiasSlider
@@ -503,6 +595,15 @@ Item
                         onValueChanged: () =>
                         {
                             mouseBiasField.text = String(value.toFixed(2));
+
+                            if(updates.indexOf("mouseSpeedBias") >= 0 && value === manager.mouseTrackingBias)
+                            {
+                                updates.slice(updates.indexOf("mouseSpeedBias"), 1)
+                            }
+                            else
+                            {
+                                updates.push("mouseSpeedBias")
+                            }
                         }
                     }
                     TextField
@@ -549,19 +650,29 @@ Item
 
                 CheckBox
                 {
-                    //Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", cfg_isPaused ? "Playing" : "Paused")
-
                     id: mouseTrackingCheckbox
                     checked: manager.mouseTrackingEnabled
                     text: qsTr("Mouse Tracking Enabled")
+
+                    onCheckedChanged:
+                    {
+                        if(updates.indexOf("mouseEnabled") >= 0 && currentIndex === manager.mouseTrackingEnabled)
+                        {
+                            updates.slice(updates.indexOf("mouseEnabled"), 1)
+                        }
+                        else
+                        {
+                            updates.push("mouseEnabled")
+                        }
+                    }
                 }
 
                 // Button
                 // {
                 //     visible: navBar.currentIndex === 2
                 //     id: kofiButton
-                //     Layout.preferredWidth: Kirigami.Units.gridUnit * 5
-                //     Layout.preferredHeight: Kirigami.Units.gridUnit * 3
+                //     Layout.preferredWidth: 4 * 5
+                //     Layout.preferredHeight: 4 * 3
 
                 //     contentItem: RowLayout
                 //     {
@@ -598,10 +709,9 @@ Item
 
                 RowLayout
                 {
-                    //Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Author:")
                     Text
                     {
-                        Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+                        Layout.preferredWidth: 4 * 11
                         text: shaderPackModel.metadata.author
                         horizontalAlignment: Text.AlignLeft
                         color: palette.text
@@ -610,10 +720,9 @@ Item
 
                 RowLayout
                 {
-                    //Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Description:")
                     Text
                     {
-                        Layout.preferredWidth: Kirigami.Units.gridUnit * 16
+                        Layout.preferredWidth: 4 * 16
                         text: shaderPackModel.metadata.description
                         horizontalAlignment: Text.AlignLeft
                         color: palette.text
@@ -625,10 +734,9 @@ Item
 
                 RowLayout
                 {
-                    //Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "License:")
                     Text
                     {
-                        Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+                        Layout.preferredWidth: 4 * 11
                         text: shaderPackModel.metadata.license
                         horizontalAlignment: Text.AlignLeft
                         color: palette.text
@@ -637,16 +745,67 @@ Item
 
                 RowLayout
                 {
-                    //Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Version:")
                     Text
                     {
-                        Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+                        Layout.preferredWidth: 4 * 11
                         text: shaderPackModel.metadata.version
                         horizontalAlignment: Text.AlignLeft
                         color: palette.text
                     }
                 }
             }
+        }
+    }
+
+    Settings
+    {
+        id: settings
+        property bool animationsEnabled: true
+
+        //ms length of page change
+        property int pageChangeAnimationDuration: 250
+        property int pageFadeAnimationDuration: 250
+
+        property int slowAnimationDuration: 750
+        property int normalAnimationDuration: 250
+        property int fastAnimationDuration: 125
+    }
+
+    function apply()
+    {
+        if(updated)
+        {
+            manager.pauseMode = cfg_pauseMode
+            manager.shaderSpeed = cfg_shaderSpeed
+            manager.mouseTrackingBias = cfg_mouseSpeedBias
+            manager.mouseTrackingEnabled = cfg_enableMouseTracking
+            manager.onlyCheckActiveScreen = cfg_checkActiveScreen
+            manager.excludedWindows = cfg_excludeWindows
+            manager.running = cfg_running
+            manager.resolutionX = cfg_resolution_x
+            manager.resolutionY = cfg_resolution_y
+            manager.targetFramerate = cfg_framerate_limit
+
+            updates.splice(0, updates.length)
+        }
+    }
+
+    function reset()
+    {
+        if(updated)
+        {
+            cfg_pauseMode = manager.pauseMode
+            cfg_shaderSpeed = manager.shaderSpeed
+            cfg_mouseSpeedBias = manager.mouseTrackingBias
+            cfg_enableMouseTracking = manager.mouseTrackingEnabled
+            cfg_checkActiveScreen = manager.onlyCheckActiveScreen
+            cfg_excludeWindows = manager.excludedWindows
+            cfg_running = manager.running
+            cfg_resolution_x = manager.resolutionX
+            cfg_resolution_y = manager.resolutionY
+            cfg_framerate_limit = manager.targetFramerate
+
+            updates.splice(0, updates.length)
         }
     }
 }
