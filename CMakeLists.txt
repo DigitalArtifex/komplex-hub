@@ -103,11 +103,11 @@ qt_add_resources(${CMAKE_PROJECT_NAME} "app_images"
     "images/kero/kero_warning.png"
 )
 
-target_compile_definitions(
-  ${CMAKE_PROJECT_NAME}
-  PUBLIC
-    KOMPLEX_LOCAL_DEV
-)
+# target_compile_definitions(
+#   ${CMAKE_PROJECT_NAME}
+#   PUBLIC
+#     KOMPLEX_LOCAL_DEV
+# )
 
 include(qds)
 
