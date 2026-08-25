@@ -1,3 +1,22 @@
+/*
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2026 @DigitalArtifex
+ *  https://digitalartifex.dev - https://github.com/DigitalArtifex
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>
+ */
+import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -11,6 +30,9 @@ import KomplexHub.Pages
 
 Item {
     readonly property bool searchable: false
+    property bool settingsUpdated: wallpaperSettingsUpdated || komplexSettingsUpdated
+    property bool wallpaperSettingsUpdated: wallpaperSettingsPage.updated && pageStack.currentIndex === 0
+    property bool komplexSettingsUpdated: komplexSettingsPage.updated && pageStack.currentIndex === 1
 
     id: settingsPageRoot
 
@@ -30,6 +52,9 @@ Item {
                     text: qsTr("Wallpaper")
                 }
                 TabButton {
+                    text: qsTr("Komplex")
+                }
+                TabButton {
                     text: qsTr("Account")
                 }
                 TabButton {
@@ -37,33 +62,53 @@ Item {
                 }
             }
 
-            StackLayout {
-
+            StackLayout
+            {
+                id: pageStack
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 currentIndex: bar.currentIndex
 
-                Item {
+                Item
+                {
                     id: wallpaperTab
 
                     Layout.fillHeight: true
                     Layout.fillWidth: true
 
-                    WallpaperSettingsPage {
+                    WallpaperSettingsPage
+                    {
+                        id: wallpaperSettingsPage
                         anchors.fill: parent
                     }
                 }
-                Item {
+                Item
+                {
+                    id: komplexTab
+
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    KomplexSettingsPage
+                    {
+                        id: komplexSettingsPage
+                        anchors.fill: parent
+                    }
+                }
+                Item
+                {
                     id: accountTab
 
                     Layout.fillHeight: true
                     Layout.fillWidth: true
 
-                    UserProfilePage {
+                    UserProfilePage
+                    {
                         anchors.fill: parent
                     }
                 }
-                Item {
+                Item
+                {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     property string title: qsTr("Hello!")
@@ -78,14 +123,17 @@ Pexels")
 
                     id: keroHelloAvatarRoot
 
-                    Rectangle {
+                    Rectangle
+                    {
                         anchors.fill: parent
                         color: "transparent"
 
-                        ColumnLayout {
+                        ColumnLayout
+                        {
                             anchors.fill: parent
 
-                            KeroHelloAvatar {
+                            KeroHelloAvatar
+                            {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
                                 antialiasing: true
@@ -93,7 +141,8 @@ Pexels")
 
                             Item { Layout.preferredHeight: 36 }
 
-                            Text {
+                            Text
+                            {
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
                                 Layout.margins: Constants.largeMargin
@@ -106,7 +155,8 @@ Pexels")
                                 textFormat: Text.MarkdownText
                             }
 
-                            Text {
+                            Text
+                            {
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
                                 Layout.margins: Constants.largeMargin
@@ -121,16 +171,19 @@ Pexels")
 
                             Item { Layout.fillHeight: true }
 
-                            RowLayout {
+                            RowLayout
+                            {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignTop | Qt.AlignRight
 
-                                ColumnLayout {
+                                ColumnLayout
+                                {
                                     Layout.alignment: Qt.AlignTop | Qt.AlignRight
                                     Layout.margins: Constants.largeMargin
                                     Layout.fillHeight: true
 
-                                    Text {
+                                    Text
+                                    {
                                         text: qsTr("Contributors")
                                         color: palette.text.darker()
                                         font: Constants.h5Font
@@ -141,7 +194,8 @@ Pexels")
                                         textFormat: Text.MarkdownText
                                     }
 
-                                    Text {
+                                    Text
+                                    {
                                         id: contributorText
                                         text: keroHelloAvatarRoot.contributors
                                         color: palette.text.darker()
@@ -153,12 +207,14 @@ Pexels")
                                     }
                                 }
 
-                                ColumnLayout {
+                                ColumnLayout
+                                {
                                     Layout.alignment: Qt.AlignTop | Qt.AlignRight
                                     Layout.margins: Constants.largeMargin
                                     Layout.fillHeight: true
 
-                                    Text {
+                                    Text
+                                    {
                                         text: qsTr("Special Thanks")
                                         color: palette.text.darker()
                                         font: Constants.h5Font
@@ -169,7 +225,8 @@ Pexels")
                                         textFormat: Text.MarkdownText
                                     }
 
-                                    Text {
+                                    Text
+                                    {
                                         id: thanksText
                                         text: keroHelloAvatarRoot.thanks
                                         color: palette.text.darker()
@@ -183,10 +240,92 @@ Pexels")
                             }
                         }
                     }
+                }
+            }
 
+            Rectangle
+            {
+                Layout.fillWidth: true
+                Layout.preferredHeight: settingsUpdated ? 64 : 0
+                color: palette.base
+                border.color: palette.midlight
+                opacity: settingsUpdated ? 1 : 0
+
+                RowLayout
+                {
+                    anchors.fill: parent
+                    anchors.rightMargin: Constants.mediumMargin
+
+                    Item
+                    {
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                    }
+
+                    SquareButton
+                    {
+                        Layout.preferredHeight: 50
+                        Layout.preferredWidth: 160
+
+                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                        icon.source: "qrc:/images/icons/icons8-reply-arrow.svg"
+                        text: qsTr("Reset")
+                    }
+
+                    SquareButton
+                    {
+                        Layout.preferredHeight: 50
+                        Layout.preferredWidth: 160
+                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                        icon.source: "qrc:/images/icons/icons8-check-mark.svg"
+                        text: qsTr("Apply")
+                    }
+                }
+
+                Behavior on opacity
+                {
+                    NumberAnimation
+                    {
+                        duration: settings.animationsEnabled ?
+                                      settings.normalAnimationDuration : 0
+                    }
+                }
+
+                Behavior on height
+                {
+                    NumberAnimation
+                    {
+                        duration: settings.animationsEnabled ?
+                                      settings.normalAnimationDuration : 0
+                    }
                 }
             }
         }
+    }
 
+    function applyCurrentSettings()
+    {
+        if(pageStack.currentIndex === 0 && wallpaperSettingsPage.updated)
+        {
+            wallpaperSettingsPage.apply()
+        }
+
+        else if(pageStack.currentIndex === 1 && komplexSettingsPage.updated)
+        {
+            komplexSettingsPage.apply()
+        }
+    }
+
+    function resetCurrentSettings()
+    {
+        if(pageStack.currentIndex === 0 && wallpaperSettingsPage.updated)
+        {
+            wallpaperSettingsPage.reset()
+        }
+
+        else if(pageStack.currentIndex === 1 && komplexSettingsPage.updated)
+        {
+            komplexSettingsPage.reset()
+        }
     }
 }
