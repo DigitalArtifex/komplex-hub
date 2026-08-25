@@ -1,9 +1,22 @@
 /*
-This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
-It is supposed to be strictly declarative and only uses a subset of QML. If you edit
-this file manually, you might introduce QML code that is not supported by Qt Design Studio.
-Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
-*/
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2026 @DigitalArtifex
+ *  https://digitalartifex.dev - https://github.com/DigitalArtifex
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>
+ */
+import QtCore
 import QtQuick
 import QtQuick.Controls 2.0
 import QtQuick.Layouts
@@ -12,7 +25,8 @@ import KomplexHub.Controls
 import KomplexHub.Kero
 import KomplexHubContent
 
-Rectangle {
+Rectangle
+{
     property MenuButton currentMenuButton
     property bool popup: false
 
@@ -20,12 +34,14 @@ Rectangle {
 
     color: palette.window
 
-    RowLayout {
+    RowLayout
+    {
         id: windowRootLayout
         anchors.fill: parent
         spacing: 0
 
-        Rectangle {
+        Rectangle
+        {
             id: windowMenu
 
             Layout.fillWidth: false
@@ -58,10 +74,12 @@ Rectangle {
                         selected = false
                     }
 
-                    Behavior on opacity {
+                    Behavior on opacity
+                    {
                         NumberAnimation
                         {
-                            duration: 250
+                            duration: settings.animationsEnabled ?
+                                        settings.normalAnimationDuration : 0
                         }
                     }
                 }
@@ -228,7 +246,7 @@ Rectangle {
                 {
                     NumberAnimation
                     {
-                        duration: 250
+                        duration: settings.animationsEnabled ? settings.normalAnimationDuration : 0
                     }
                 }
             }
@@ -266,8 +284,12 @@ Rectangle {
                         pageLoader.setSearchTerm()
                     }
 
-                    Behavior on preferredHeight {
-                        NumberAnimation { duration: Constants.normalAnimationDuration }
+                    Behavior on preferredHeight
+                    {
+                        NumberAnimation
+                        {
+                            duration: settings.animationsEnabled ? settings.normalAnimationDuration : 0
+                        }
                     }
                 }
 
@@ -302,7 +324,7 @@ Rectangle {
                             id: pageLoaderAnimation
 
                             target: pageLoader
-                            duration: 150
+                            duration: settings.animationsEnabled ? settings.pageChangeAnimationDuration : 0
 
                             onFinished: () => {
                                 if(pageLoader.loading && pageLoader.opacity === 0)
@@ -381,23 +403,6 @@ Rectangle {
         }
     }
 
-    KeroBuildingAnimation
-    {
-        id: buildingOverlay
-
-        anchors.fill: parent
-        visible: false
-    }
-
-    KeroLoadingAnimation
-    {
-        id: loadingAnimation
-        anchors.fill: parent
-
-        visible: opacity > 0
-        opacity: 0
-    }
-
     Connections
     {
         id: popupConnection
@@ -414,7 +419,6 @@ Rectangle {
         currentMenuButton = homeMenubutton
         pageLoader.page = "pages/HomePage.qml"
         searchContainer.preferredHeight = 0
-        loadingAnimation.opacity = 0
     }
 
     states: [
@@ -446,4 +450,17 @@ Rectangle {
         }
 
     ]
+
+    Settings
+    {
+        id: settings
+        property bool animationsEnabled: true
+        //ms length of page change
+        property int pageChangeAnimationDuration: 250
+        property int pageFadeAnimationDuration: 250
+
+        property int slowAnimationDuration: 750
+        property int normalAnimationDuration: 250
+        property int fastAnimationDuration: 125
+    }
 }
