@@ -63,7 +63,7 @@ QtObject {
     readonly property int normalAnimationDuration: 250
     readonly property int fastAnimationDuration: 125
 
-    property StudioApplication application: StudioApplication {
-        fontPath: Qt.resolvedUrl("../KomplexHubContent/" + relativeFontDirectory)
-    }
+    // property StudioApplication application: StudioApplication {
+    //     fontPath: Qt.resolvedUrl("../KomplexHubContent/" + relativeFontDirectory)
+    // }
 }

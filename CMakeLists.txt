@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.21.1)
 option(LINK_INSIGHT "Link Qt Insight Tracker library" ON)
 option(BUILD_QDS_COMPONENTS "Build design studio components" ON)
 
-project(KomplexHub LANGUAGES CXX) 
+project(KomplexHub VERSION 1.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -21,7 +21,7 @@ set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
 )
 
 find_package(
-  Qt6 6.8
+  Qt6
     REQUIRED COMPONENTS
       Core
       Gui
@@ -38,6 +38,7 @@ qt_standard_project_setup()
 
 qt_add_executable(${CMAKE_PROJECT_NAME}
 )
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES VERSION "1.0")
 
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
   PREFIX "/"

@@ -18,5 +18,6 @@ qt6_add_qml_module(KomplexHubModule
         "WallpaperModelData.qml"
 )
 
+set_target_properties(KomplexHubModule PROPERTIES VERSION "1.0")
 add_subdirectory("Controls")
 add_subdirectory("Kero")
