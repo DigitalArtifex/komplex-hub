@@ -1,7 +1,33 @@
+find_package(
+  Qt6
+    REQUIRED COMPONENTS
+      Core
+      Gui
+      GuiPrivate
+      Widgets
+      Qml
+      Quick
+      QuickControls2
+      QuickTimeline
+      ShaderTools
+      ShaderToolsPrivate
+      Concurrent
+)
+
+find_package(
+  OpenGL REQUIRED COMPONENTS OpenGL
+)
+
+find_package(
+  Vulkan REQUIRED COMPONENTS glslang SPIRV-Tools
+)
+
 add_library(
     KomplexHubPlugin
     STATIC
 )
+
+set_target_properties(KomplexHubPlugin PROPERTIES VERSION "1.0")
 
 qt_add_qml_module(
     KomplexHubPlugin
@@ -62,6 +88,7 @@ qt_add_qml_module(
       common/qwallet.cpp
       usermodel.h 
       usermodel.cpp
+      SOURCES
 )
 
 target_compile_definitions(
@@ -73,8 +100,13 @@ target_compile_definitions(
 add_subdirectory(3rdparty/qtkeychain)
 
 target_link_libraries(KomplexHubPlugin PRIVATE
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Gui
+    Qt6::Core
+    Qt6::Concurrent
+    Qt6::Gui
+    Qt6::GuiPrivate
+    Qt6::ShaderTools
+    Qt6::ShaderToolsPrivate
+    Vulkan::Vulkan
     qt6keychain
 )
 
