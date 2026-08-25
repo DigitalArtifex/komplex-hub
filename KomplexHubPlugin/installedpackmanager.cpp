@@ -249,7 +249,7 @@ auto InstalledPackManager::setState(State state) -> void
 
 auto InstalledPackManager::resetState() -> void
 {
-    setState(Idle); // TODO: Adapt to use your actual default value
+    setState(Idle);
 }
 
 auto InstalledPackManager::roleNames() const -> QHash<int, QByteArray>
